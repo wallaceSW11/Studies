@@ -16,16 +16,14 @@ namespace Registration.Models
             }
         }
         public string Email { get; set; }
-        public string Password { get; set; }
 
         public Person():base(){}
 
-        public Person(string firstName, string lastName, string email, string password):base()
+        public Person(string firstName, string lastName, string email):base()
         {
             FirstName = firstName;
             LastName = lastName;
             Email = email;
-            Password = password;
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Administrator
 
                     var obj = Newtonsoft.Json.JsonConvert.DeserializeObject<Shared.ObjectTransfer>(json);
 
-                    Console.WriteLine(obj.CardNumber);
+                    Console.WriteLine($"Mensagem recebida: Nr Card: {obj.CardNumber}");
                 }
             }
         }

@@ -37,19 +37,19 @@ namespace POS
                                      basicProperties: null,
                                      body: body);
 
-                Console.WriteLine("Mensagem enviada!");
+                // Console.WriteLine("Mensagem enviada!");
             }
 
         }
 
         private void Evento_NaoConfirmacao(object sender, BasicNackEventArgs e)
         {
-            Console.WriteLine("Nack");
+            Console.WriteLine("Evento nao confirmado!");
         }
 
         private void Evento_Confirmacao(object sender, BasicAckEventArgs e)
         {
-            Console.WriteLine("Ack");
+            // Console.WriteLine("Ack");
         }
 
 

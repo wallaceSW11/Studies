@@ -1,22 +1,28 @@
 ﻿using POS;
 
+var opcao = String.Empty;
 
 ShowTitle();
-var opcao = Console.ReadLine();
+opcao = Console.ReadLine();
 
 while (opcao != "0")
 {
     switch (opcao)
     {
         case "1":
-            Console.WriteLine("Digite o valor da venda:");
+            Console.Write("Digite o valor da venda: ");
             var valor = Console.ReadLine();
-            Console.WriteLine("Digite o número do cartão:");
+            Console.Write("Digite o número do cartão: ");
             var numerocartao = Console.ReadLine();
 
             SendMessage(new Shared.ObjectTransfer(numerocartao, float.Parse(valor)));
-            opcao = null;
+
+            Console.WriteLine("Pressione uma tecla para continuar.");
+            Console.ReadKey();
+
+            opcao = String.Empty;
             ShowTitle();
+            opcao = Console.ReadLine();
             break;
         case "0":
         default:
@@ -54,6 +60,7 @@ static void ShowTitle()
     Console.WriteLine("Digite a opção desejada:");
     Console.WriteLine("1 - Nova venda");
     Console.WriteLine("0 - Sair");
+    Console.Write("Opção: ");
 }
 
 // try

@@ -20,7 +20,7 @@ while (opcao != "0")
             break;
         case "0":
         default:
-            Console.ReadKey();
+            Environment.Exit(0);
             break;
 
     }

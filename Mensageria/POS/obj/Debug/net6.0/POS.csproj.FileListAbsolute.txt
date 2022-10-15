@@ -30,7 +30,7 @@
 /home/wall/DEV/Git/Studies/Mensageria/POS/obj/Debug/net6.0/POS.csproj.CoreCompileInputs.cache
 /home/wall/DEV/Git/Studies/Mensageria/POS/obj/Debug/net6.0/POS.csproj.CopyComplete
 /home/wall/DEV/Git/Studies/Mensageria/POS/obj/Debug/net6.0/POS.dll
-/home/wall/DEV/Git/Studies/Mensageria/POS/obj/Debug/net6.0/refint/POS.dll
 /home/wall/DEV/Git/Studies/Mensageria/POS/obj/Debug/net6.0/POS.pdb
 /home/wall/DEV/Git/Studies/Mensageria/POS/obj/Debug/net6.0/POS.genruntimeconfig.cache
 /home/wall/DEV/Git/Studies/Mensageria/POS/obj/Debug/net6.0/ref/POS.dll
+/home/wall/dev/git/Studies/Mensageria/POS/bin/Debug/net6.0/ref/POS.dll

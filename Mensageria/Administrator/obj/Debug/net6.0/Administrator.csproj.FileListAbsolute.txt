@@ -30,7 +30,7 @@
 /home/wall/DEV/Git/Studies/Mensageria/Administrator/obj/Debug/net6.0/Administrator.csproj.CoreCompileInputs.cache
 /home/wall/DEV/Git/Studies/Mensageria/Administrator/obj/Debug/net6.0/Administrator.csproj.CopyComplete
 /home/wall/DEV/Git/Studies/Mensageria/Administrator/obj/Debug/net6.0/Administrator.dll
-/home/wall/DEV/Git/Studies/Mensageria/Administrator/obj/Debug/net6.0/refint/Administrator.dll
 /home/wall/DEV/Git/Studies/Mensageria/Administrator/obj/Debug/net6.0/Administrator.pdb
 /home/wall/DEV/Git/Studies/Mensageria/Administrator/obj/Debug/net6.0/Administrator.genruntimeconfig.cache
 /home/wall/DEV/Git/Studies/Mensageria/Administrator/obj/Debug/net6.0/ref/Administrator.dll
+/home/wall/dev/git/Studies/Mensageria/Administrator/bin/Debug/net6.0/ref/Administrator.dll

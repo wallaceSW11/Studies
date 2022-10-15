@@ -25,8 +25,12 @@ while (opcao != "0")
             opcao = Console.ReadLine();
             break;
         case "0":
-        default:
             Environment.Exit(0);
+            break;
+
+        default:
+            ShowTitle();
+            opcao = Console.ReadLine();
             break;
 
     }

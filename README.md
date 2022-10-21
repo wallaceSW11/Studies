@@ -1,2 +1,9 @@
 # Studies
-Some projects
+
+Projects to test:
+
+## Docker
+
+## RabbitMQ (running in docker)
+
+## vuetify

@@ -21,26 +21,27 @@
 
     <v-layout>
       <v-flex mb-4>
-        <v-btn color="primary" @click="addToDo" block>Add</v-btn>
+        <v-btn color="primary" @click="addToDo" block>{{ isEditing ? 'Save' : 'Add'}}</v-btn>
       </v-flex>
     </v-layout>
     <v-divider />
     <h4 class="text-center">What I have to do:</h4>
     <v-divider />
 
-    <v-card v-for="todo in todos" :key="todo.title" class="my-3 pa-2">
+    <v-card v-for="todo in todos" :key="todo.id" class="my-3 pa-2" >
       <v-layout>
-        <v-flex xs10 sm4>
+        <v-flex xs9 sm4>
           <div class="caption">Title</div>
           <span>{{ todo.title }}</span>
         </v-flex>
-        <v-flex sm4 mx-3 class="hidden-xs-only">
+        <v-flex sm3 mx-3 class="hidden-xs-only">
           <div class="caption">Description</div>
           <span>{{ todo.description }}</span>
         </v-flex>
-        <v-flex sm3 class="hidden-xs-only">
+        <v-flex sm3 class="hidden-xs-only d-flex flex-column">
           <div class="caption">Created</div>
-          <span>{{ todo.createdAt }}</span>
+          <span>{{ todo.createdAt.substring(0, 10) }}</span>
+          <span>{{ todo.createdAt | timeFormated }}</span>
         </v-flex>
         <v-flex xs1 sm2 class="d-flex justify-center align-center">
           <span>
@@ -48,8 +49,38 @@
             <v-icon v-else color="red">mdi-clock-alert-outline</v-icon>
           </span>
         </v-flex>
+        <v-flex xs1 sm1 class="d-flex justify-center align-center">
+          <v-menu
+            top
+            left
+            offset-y
+            transition="slide-x-transition"
+          >
+
+            <template v-slot:activator="{ on, attrs }">
+
+              <v-btn
+                icon
+                v-bind="attrs"
+                v-on="on"
+                :disabled="isEditing"
+              >
+                <v-icon >mdi-dots-vertical</v-icon>
+              </v-btn>
+            </template>
+
+            <v-flex class="d-flex flex-row pa-2" style="background-color: rgba(188, 206, 251, 1); z-index: 99">
+              <v-btn text @click="editTodo(todo)"> <v-icon>mdi-pencil</v-icon></v-btn>
+              <v-btn text @click="setTodoDone(todo.id)" v-if="!todo.done"><v-icon>mdi-check</v-icon></v-btn>
+              <v-btn text @click="setTodoUnDone(todo.id)" v-else><v-icon>mdi-clock-alert-outline</v-icon></v-btn>
+              <v-btn text @click="deleteTodo(todo.id)"><v-icon>mdi-delete</v-icon></v-btn>
+            </v-flex>
+
+          </v-menu>
+        </v-flex>
       </v-layout>
     </v-card>
+
 
     <v-footer
       padless
@@ -88,24 +119,32 @@ export default {
   name: "HomeView",
   data() {
     return {
+      id: undefined,
       title: undefined,
       description: undefined,
+      createdAt: undefined,
+      done: false,
       totalTasksDone: 0,
       totalTasksToDo: 0,
+      openDialog: true,
+      isEditing: false,
       todos: [
         {
+          id: 0,
           title: "Create a new TO DO APP",
           description: "I need to study VueJS",
           done: true,
           createdAt: "2023-01-24T20:22:00",
         },
         {
+          id: 1,
           title: "Clean the bathroon",
           description: "Visits are comming",
           done: false,
           createdAt: "2023-01-24T20:22:00",
         },
         {
+          id: 2,
           title: "Do the dishes",
           description: "lets keeping clean",
           done: false,
@@ -119,19 +158,62 @@ export default {
     this.calculateTodos();
   },
 
+  filters: {
+    timeFormated(date) {
+      let today = new Date(date);
+      return `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
+    },
+  },
+
   methods: {
+    clearFields() {
+      this.title = undefined;
+      this.description = undefined;
+      this.isEditing = false;
+    },
+
     addToDo() {
-      this.todos.push({ title: this.title, description: this.description, done: false, createdAt: this.today() });
+      // validate
+
+      if (this.isEditing) {
+        let index = this.todos.findIndex(t => t.id == this.id);
+        this.todos[index] = { id: this.id, title: this.title, description: this.description, done: this.done, createdAt: this.createdAt };
+        this.calculateTodos();
+        this.clearFields();
+        return;
+      }
+
+      this.todos.push({id: Math.random(12), title: this.title, description: this.description, done: false, createdAt: this.today() });
       this.calculateTodos();
-      this.title = "";
-      this.description = "";
+      this.clearFields();
+    },
+
+    deleteTodo(id) {
+      let index = this.todos.findIndex(t => t.id == id);
+      this.todos.splice(index, 1);
+    },
+
+    setTodoUnDone(id) {
+      let index = this.todos.findIndex(t => t.id == id);
+      this.todos[index] = {...this.todos[index], done: false};
+      this.calculateTodos();
+    },
+
+    setTodoDone(id) {
+      let index = this.todos.findIndex(t => t.id == id);
+      this.todos[index] = {...this.todos[index], done: true};
+      this.calculateTodos();
     },
 
     today() {
-      const timeElapsed = Date.now();
-      const today = new Date(timeElapsed);
+      const today = new Date();
       return today.toISOString();
     },
+
+    // timeFormated() {
+    //   let today = new Date();
+    //   return `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
+    // },
 
     tamanhoTela(){
       return `${window.screen.width} x ${window.screen.height}`;
@@ -153,6 +235,15 @@ export default {
         }
       }
 
+    },
+
+    editTodo(item) {
+      this.isEditing = true;
+      this.id = item.id;
+      this.title = item.title;
+      this.description = item.description;
+      this.createdAt = item.createdAt;
+      this.done = item.done;
     }
   },
 };

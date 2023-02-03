@@ -30,7 +30,7 @@
 
     <v-card v-for="todo in todos" :key="todo.id" class="my-3 pa-2" >
       <v-layout>
-        <v-flex xs9 sm4>
+        <v-flex xs10 sm4>
           <div class="caption">Title</div>
           <span>{{ todo.title }}</span>
         </v-flex>
@@ -38,10 +38,12 @@
           <div class="caption">Description</div>
           <span>{{ todo.description }}</span>
         </v-flex>
-        <v-flex sm3 class="hidden-xs-only d-flex flex-column">
-          <div class="caption">Created</div>
-          <span>{{ todo.createdAt.substring(0, 10) }}</span>
-          <span>{{ todo.createdAt | timeFormated }}</span>
+        <v-flex sm3 class="hidden-xs-only ">
+          <v-flex class="d-flex flex-column">
+            <div class="caption">Created</div>
+            <span>{{ todo.createdAt.substring(0, 10) }}</span>
+            <span>{{ todo.createdAt | timeFormated }}</span>
+          </v-flex>
         </v-flex>
         <v-flex xs1 sm2 class="d-flex justify-center align-center">
           <span>
@@ -209,11 +211,6 @@ export default {
       const today = new Date();
       return today.toISOString();
     },
-
-    // timeFormated() {
-    //   let today = new Date();
-    //   return `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
-    // },
 
     tamanhoTela(){
       return `${window.screen.width} x ${window.screen.height}`;

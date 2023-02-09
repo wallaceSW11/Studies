@@ -26,7 +26,7 @@
       </v-flex>
     </v-layout>
     <v-divider />
-    <h4 class="text-center">What I have to do:</h4>
+    <h4 class="text-center">What I have to do?</h4>
     <v-divider />
 
     <v-flex v-if="!todos.length" class="mt-4 d-flex justify-center">
@@ -35,7 +35,7 @@
 
     <v-card v-else v-for="todo in todos" :key="todo.id" :class="'my-3 pa-2 ' + (todo.done ? 'task-done' : 'task-todo')" >
       <v-layout>
-        <v-flex xs10 sm4>
+        <v-flex xs8 sm4>
           <div class="caption">Title</div>
           <span class="text-truncate">{{ todo.title }}</span>
         </v-flex>
@@ -50,13 +50,13 @@
             <span>{{ todo.createdAt | timeFormated }}</span>
           </v-flex>
         </v-flex>
-        <v-flex xs1 sm2 class="d-flex justify-center align-center">
+        <v-flex xs2 sm2 class="d-flex justify-center align-center">
           <span>
             <v-icon v-if="todo.done" color="green">mdi-check</v-icon>
             <v-icon v-else color="red">mdi-clock-alert-outline</v-icon>
           </span>
         </v-flex>
-        <v-flex xs1 sm1 class="d-flex justify-center align-center">
+        <v-flex xs2 sm1 class="d-flex justify-center align-center">
           <v-menu
             top
             left
@@ -202,7 +202,7 @@ export default {
 
     addToDo() {
       if (!this.title) {
-        this.requidedField = 'Please, insert the title.';
+        this.requidedField = 'Please, type the title.';
         return;
       }
 
@@ -236,6 +236,7 @@ export default {
       this.todos.splice(index, 1);
       this.calculateTodos();
       this.showDeleteDialog = false;
+      localStorage.setItem('todos', JSON.stringify(this.todos));
     },
 
     setTodoUnDone(id) {

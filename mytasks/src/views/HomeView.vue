@@ -6,6 +6,7 @@
           label="I need to do..."
           v-model="title"
           prepend-icon="mdi-calendar-check"
+          :error-messages="requidedField"
         ></v-text-field>
       </v-flex>
       <v-flex>
@@ -28,15 +29,19 @@
     <h4 class="text-center">What I have to do:</h4>
     <v-divider />
 
-    <v-card v-for="todo in todos" :key="todo.id" class="my-3 pa-2" >
+    <v-flex v-if="!todos.length" class="mt-4 d-flex justify-center">
+      <img src="@/assets/nothing-to-do.gif" alt="nothing to do" srcset="">
+    </v-flex>
+
+    <v-card v-else v-for="todo in todos" :key="todo.id" :class="'my-3 pa-2 ' + (todo.done ? 'task-done' : 'task-todo')" >
       <v-layout>
         <v-flex xs10 sm4>
           <div class="caption">Title</div>
-          <span>{{ todo.title }}</span>
+          <span class="text-truncate">{{ todo.title }}</span>
         </v-flex>
         <v-flex sm3 mx-3 class="hidden-xs-only">
           <div class="caption">Description</div>
-          <span>{{ todo.description }}</span>
+          <span>{{ descriptionShort(todo.description) || '-' }}</span>
         </v-flex>
         <v-flex sm3 class="hidden-xs-only ">
           <v-flex class="d-flex flex-column">
@@ -60,7 +65,6 @@
           >
 
             <template v-slot:activator="{ on, attrs }">
-
               <v-btn
                 icon
                 v-bind="attrs"
@@ -75,13 +79,45 @@
               <v-btn text @click="editTodo(todo)"> <v-icon>mdi-pencil</v-icon></v-btn>
               <v-btn text @click="setTodoDone(todo.id)" v-if="!todo.done"><v-icon>mdi-check</v-icon></v-btn>
               <v-btn text @click="setTodoUnDone(todo.id)" v-else><v-icon>mdi-clock-alert-outline</v-icon></v-btn>
-              <v-btn text @click="deleteTodo(todo.id)"><v-icon>mdi-delete</v-icon></v-btn>
+              <v-btn text @click="confirmDelete(todo.id)"><v-icon>mdi-delete</v-icon></v-btn>
             </v-flex>
 
           </v-menu>
         </v-flex>
       </v-layout>
     </v-card>
+
+    <v-dialog
+     v-model="showDeleteDialog"
+     width="300px"
+    >
+
+    <v-card>
+      <v-card-title>
+        Delete todo
+      </v-card-title>
+      <v-card-text>
+        Are you sure?
+      </v-card-text>
+      <v-card-actions>
+        <v-flex class="d-flex justify-center py-3">
+          <v-btn
+            color="primary"
+            @click="deleteTodo">
+            <v-icon>mdi-check</v-icon> Yes
+          </v-btn>
+          <v-btn
+            class="mx-3"
+            outlined
+            @click="cancelDelete"
+          >
+           <v-icon>mdi-cancel</v-icon>No
+          </v-btn>
+        </v-flex>
+      </v-card-actions>
+    </v-card>
+    </v-dialog>
+
 
 
     <v-footer
@@ -130,33 +166,23 @@ export default {
       totalTasksToDo: 0,
       openDialog: true,
       isEditing: false,
-      todos: [
-        {
-          id: 0,
-          title: "Create a new TO DO APP",
-          description: "I need to study VueJS",
-          done: true,
-          createdAt: "2023-01-24T20:22:00",
-        },
-        {
-          id: 1,
-          title: "Clean the bathroon",
-          description: "Visits are comming",
-          done: false,
-          createdAt: "2023-01-24T20:22:00",
-        },
-        {
-          id: 2,
-          title: "Do the dishes",
-          description: "lets keeping clean",
-          done: false,
-          createdAt: "2023-01-24T20:30:00",
-        },
-      ],
+      todos: [],
+      showDeleteDialog: false,
+      requidedField: undefined
     };
   },
 
+  watch: {
+    title(newValue) {
+      if (newValue) {
+        this.requidedField = undefined;
+      }
+    }
+  },
   created () {
+    if (!localStorage.getItem('todos')) return;
+
+    this.todos = JSON.parse(localStorage.getItem('todos'));
     this.calculateTodos();
   },
 
@@ -175,7 +201,10 @@ export default {
     },
 
     addToDo() {
-      // validate
+      if (!this.title) {
+        this.requidedField = 'Please, insert the title.';
+        return;
+      }
 
       if (this.isEditing) {
         let index = this.todos.findIndex(t => t.id == this.id);
@@ -188,11 +217,25 @@ export default {
       this.todos.push({id: Math.random(12), title: this.title, description: this.description, done: false, createdAt: this.today() });
       this.calculateTodos();
       this.clearFields();
+
+      localStorage.setItem('todos', JSON.stringify(this.todos));
     },
 
-    deleteTodo(id) {
-      let index = this.todos.findIndex(t => t.id == id);
+    confirmDelete(id) {
+      this.id = id;
+      this.showDeleteDialog = true;
+    },
+
+    cancelDelete() {
+      this.id = undefined;
+      this.showDeleteDialog = false;
+    },
+
+    deleteTodo() {
+      let index = this.todos.findIndex(t => t.id == this.id);
       this.todos.splice(index, 1);
+      this.calculateTodos();
+      this.showDeleteDialog = false;
     },
 
     setTodoUnDone(id) {
@@ -241,11 +284,26 @@ export default {
       this.description = item.description;
       this.createdAt = item.createdAt;
       this.done = item.done;
+    },
+
+    descriptionShort(description) {
+      if (!description) return;
+
+      if (description.length > 20) {
+        return description.substring(0, 20) + '...';
+      }
+
+      return description;
     }
   },
 };
 </script>
 
 <style scoped>
-
+.task-done {
+  border-left: 5px solid green;
+}
+.task-todo {
+  border-left: 5px solid red;
+}
 </style>

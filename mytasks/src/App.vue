@@ -19,11 +19,35 @@
       <v-btn
         text
         outlined
+        @click="showDialog = true"
       >
         <span class="mr-2">Log in</span>
         <v-icon>mdi-login</v-icon>
       </v-btn>
+
     </v-app-bar>
+
+    <v-dialog
+        v-model="showDialog"
+        activator="parent"
+        width="auto"
+      >
+        <v-card>
+          <v-card-title>
+            Test
+          </v-card-title>
+          <v-card-text>
+            <v-flex class="d-flex flex-column">
+              <span>Full screen: {{ fullScreen() }}</span>
+              <span>Screen avaliable: {{ screenAvaliable() }}</span>
+            </v-flex>
+
+          </v-card-text>
+          <v-card-actions class="d-flex justify-center">
+            <v-btn color="primary" @click="showDialog = false">Close</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
 
     <v-main>
       <router-view/>
@@ -37,7 +61,24 @@ export default {
   name: 'App',
 
   data: () => ({
-    //
+    showDialog: false
   }),
+
+  methods: {
+    fullScreen(){
+      return `${window.screen.width} x ${window.screen.height}`;
+    },
+
+    screenAvaliable(){
+      return `${window.innerWidth} x ${window.innerHeight}`
+    },
+  },
 };
 </script>
+
+<style scoped>
+.back-white {
+  background-color: white !important;
+}
+
+</style>

@@ -30,7 +30,7 @@
               class="mx-3"
               color="primary"
               v-on="on"
-              @click="showDialog = true"
+              @click="() => showDialog = true"
               :disabled="time == '__:__'"
             >
               mdi-timer-edit-outline
@@ -76,7 +76,7 @@
 
         <v-card-actions class="d-flex justify-center">
           <v-btn
-            @click=" showDialog = !showDialog"
+            @click="() => showDialog = !showDialog"
           > OK
           </v-btn>
         </v-card-actions>

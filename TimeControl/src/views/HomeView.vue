@@ -24,82 +24,12 @@
 
     </header>
 
-
-    <!-- <v-flex xs12 class="d-flex flex-wrap justify-space-between">
-        <v-text-field
-          id="field-begin"
-          v-model="appointment.begin"
-          label="Begin"
-          :disabled="false"
-          prepend-icon="mdi-clock-time-eight-outline"
-
-        >
-          <v-template class="d-flex flex-nowrap" slot="append-outer">
-            <v-icon>mdi-pencil</v-icon>
-            <v-icon>mdi-delete</v-icon>
-          </v-template>
-      </v-text-field>
-
-        <v-text-field
-          id="field-begin"
-          v-model="appointment.lunch"
-          label="Lunch"
-          :disabled="false"
-          prepend-icon="mdi-clock-time-eight-outline"
-          append-outer-icon="mdi-pencil"
-        ></v-text-field>
-
-        <v-text-field
-          id="field-begin"
-          v-model="appointment.return"
-          label="Return"
-          :disabled="false"
-          prepend-icon="mdi-clock-time-eight-outline"
-          append-outer-icon="mdi-pencil"
-        ></v-text-field>
-
-        <v-text-field
-          id="field-begin"
-          v-model="appointment.end"
-          label="End"
-          :disabled="false"
-          prepend-icon="mdi-clock-time-eight-outline"
-          append-outer-icon="mdi-pencil"
-        ></v-text-field>
+    {{ appointment }} <br>
+    {{ appointment.morning() }} <br>
+    {{ appointment.afternoon() }} <br>
+    {{ appointment.balance() }} <br>
 
 
-
-
-      </v-flex> -->
-
-    <!-- <v-flex xs12 class="d-flex justify-center mb-5" style="border: 1px solid black"> -->
-        <!-- <span>
-        {{ timeNow }}
-      </span> -->
-
-
-
-
-      <!-- <v-btn
-        color="primary"
-        @click="markTime"
-
-      >
-      Lets mark the time: {{ typeOfTime[typeTimeToMark].description }}
-      </v-btn>
-
-      <v-btn
-        class="ml-5"
-        color="secondary"
-        text
-        outlined
-        @click="markBreak"
-      >
-      {{ startOfBreak ? 'Start of break' : 'End of break' }}
-
-      </v-btn>
-
-    </v-flex> -->
 
     <v-flex xs12>
       <v-flex xs12 class="d-flex justify-end">
@@ -268,6 +198,13 @@ import MarkTime from '@/components/MarkTime.vue';
           }
         ]
       }
+    },
+
+    created () {
+      this.appointment.begin = '08:00';
+      this.appointment.lunch = '12:30';
+      this.appointment.return = '13:30';
+      this.appointment.end = '15:30';
     },
 
     methods: {

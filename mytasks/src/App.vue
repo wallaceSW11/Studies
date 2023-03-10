@@ -15,6 +15,21 @@
       </div>
 
       <v-spacer></v-spacer>
+      <v-flex>
+        <v-btn
+          class="mr-3"
+          text
+          :outlined="this.$route.name == 'home' "
+          @click="() => this.$router.push({ name: 'home' })"
+        >Homer</v-btn>
+        <v-btn
+          class="ml-3"
+          text
+          :outlined="this.$route.name == 'market' "
+          @click="() => this.$router.push({ name: 'market' })"
+        >Market</v-btn>
+      </v-flex>
+      <v-spacer></v-spacer>
 
       <v-btn
         text

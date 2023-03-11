@@ -4,12 +4,27 @@
       app
       color="primary"
       dark
+      class="opa"
     >
+
+    <v-flex>
+      <v-btn
+        icon
+        text
+        v-if="$vuetify.breakpoint.xsOnly"
+      > <v-icon>mdi-menu</v-icon>
+
+      </v-btn>
+    </v-flex>
       <div class="d-flex align-center text--">
-        <h1>
+        <h1 v-if="this.$route.name == 'home' ">
           <span>TO</span>
           <span class="font-weight-light">DO</span>
-          <span style="font-size: .8rem"><s>DONE</s></span>
+        </h1>
+
+        <h1 v-else>
+          <span>MAR</span>
+          <span class="font-weight-light">ket</span>
         </h1>
 
       </div>
@@ -71,7 +86,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'App',
 
@@ -96,4 +110,8 @@ export default {
   background-color: white !important;
 }
 
+.opa {
+  margin-left: 0;
+  padding-left: 0;
+}
 </style>

@@ -111,14 +111,8 @@ export default {
 
   data() {
     return {
-      productList: PRODUCTS_LIST, //['Arroz', 'Feijão', 'Suco'],
+      productList: PRODUCTS_LIST,
       products: [],
-      // products: [{
-      //   description: 'Suco',
-      //   quantity: 12,
-      //   price: 0.79,
-      //   totalItem: 0.79
-      // }],
       selectedProduct: undefined,
       quantity: 1,
       price: undefined,

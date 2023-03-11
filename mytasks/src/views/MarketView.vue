@@ -42,12 +42,21 @@
         color="primary"
         @click="addItem"
         width="100%"
-      >Add</v-btn>
+      > {{ isEditing ? 'Save' : 'ADD' }}</v-btn>
+    </v-flex>
+
+    <v-flex xs12 v-if="!products.length" mt-3>
+      <h1 class="text-center" >Let's go baby</h1>
     </v-flex>
 
 
-    <v-flex xs12 mt-3>
-      <v-card v-for="(item, index) in products" :key="index" class="d-flex flex-row px-3 my-1 py-1">
+    <v-flex v-else xs12 mt-3>
+      <v-card
+        v-for="(item, index) in products"
+        :key="index"
+        class="d-flex flex-row px-3 my-1 py-1"
+        @click="options(item, index)"
+        >
           <v-flex xs7>
             <h5>Product</h5>
             <p class="no-space"> {{ item.description }} </p>
@@ -62,9 +71,25 @@
             <h5>Total</h5>
             <p class="no-space"> {{ item.totalItem | formatedMoney }} </p>
           </v-flex>
+
+
       </v-card>
 
     </v-flex>
+
+    <v-dialog
+      v-model="showOptions"
+      max-width="150px"
+    >
+      <v-flex class="d-flex justify-center flex-row background-dialog">
+        <v-btn text @click="editProduct" color="primary"> <v-icon>mdi-pencil</v-icon></v-btn>
+        <v-btn text @click="deleteItem" color="primary"><v-icon>mdi-delete</v-icon></v-btn>
+
+      </v-flex>
+
+    </v-dialog>
+
+
 
 
 
@@ -77,30 +102,34 @@
 </template>
 
 <script>
+
+import { PRODUCTS_LIST } from "@/storage/products-list.js";
+
 export default {
+
+
 
   data() {
     return {
-      productList: ['Arroz', 'Feijão', 'Suco'],
-      products: [{
-        'description': 'Suco',
-        'quantity': 10,
-        'unitPrice': 0.79,
-        'totalItem': 1.79
-      },
-      {
-        'description': 'Arroz',
-        'quantity': 2,
-        'unitPrice': 22.90,
-        'totalItem': 45.80
-      }],
+      productList: PRODUCTS_LIST, //['Arroz', 'Feijão', 'Suco'],
+      products: [],
+      // products: [{
+      //   description: 'Suco',
+      //   quantity: 12,
+      //   price: 0.79,
+      //   totalItem: 0.79
+      // }],
       selectedProduct: undefined,
       quantity: 1,
       price: undefined,
       totalAmount: 0.00,
       requiredProduct: undefined,
       requiredQuantity: undefined,
-      requiredPrice: undefined
+      requiredPrice: undefined,
+      showOptions: false,
+      item: undefined,
+      index: undefined,
+      isEditing: false
     }
   },
 
@@ -127,7 +156,9 @@ export default {
   watch: {
     price(price) {
       if (price) {
-        this.price = price.replace(',', '.');
+        if (typeof(price) == 'string') {
+          this.price = price.replace(',', '.');
+        }
         this.requiredPrice = undefined;
       }
     },
@@ -159,6 +190,9 @@ export default {
       this.selectedProduct = undefined;
       this.quantity = 1;
       this.price = undefined;
+
+      this.item = undefined;
+      this.index = undefined;
     },
 
     modelValid() {
@@ -170,7 +204,7 @@ export default {
         this.requiredQuantity = 'Required'
       }
 
-      if (!this.selectedProduct) {
+      if (!this.price) {
         this.requiredPrice = 'Required'
       }
 
@@ -184,12 +218,34 @@ export default {
       this.products.push({
         description: this.selectedProduct,
         quantity: this.quantity,
-        unitPrice: this.price,
+        price: this.price,
         totalItem: this.totalItem
       });
 
       this.cleanField();
+    },
 
+    options(item, index) {
+      this.item = item;
+      this.index = index;
+      this.showOptions = true;
+    },
+
+    editProduct() {
+      this.selectedProduct = this.item.description;
+      this.quantity = this.item.quantity;
+      this.price = this.item.price;
+
+      this.products.splice(this.index, 1);
+
+      this.isEditing = true;
+      this.showOptions = false;
+    },
+
+    deleteItem() {
+      this.products.splice(this.index, 1);
+      this.index = undefined;
+      this.showOptions = false;
     }
   },
 }
@@ -201,4 +257,7 @@ export default {
   padding: 0;
 }
 
+.background-dialog {
+  background-color: #fff;
+}
 </style>

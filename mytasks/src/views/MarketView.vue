@@ -145,11 +145,17 @@ export default {
 
   filters: {
     formatedMoney: function(value) {
+      if (!value) return;
+
       return value.toLocaleString('pt-BR', {
         style: 'currency',
         currency: "BRL"
       })
     }
+  },
+
+  created () {
+    this.products = JSON.parse(localStorage.getItem('products'));
   },
 
 
@@ -170,7 +176,9 @@ export default {
     },
 
     products() {
-      if (!this.products.length) {
+      localStorage.setItem('products', JSON.stringify(this.products));
+
+      if (this.products && !this.products.length) {
         this.totalAmount = 0.00;
         return
       }

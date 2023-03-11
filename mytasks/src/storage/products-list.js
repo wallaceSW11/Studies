@@ -1,5 +1,27 @@
 export let PRODUCTS_LIST = [
   'Arroz',
   'Feijão',
-  'Macarrão'
+  'Macarrão',
+  'Açucar',
+  'Trigo',
+  'Farinha farofa',
+  'Batata palha',
+  'Suco',
+  'Refri',
+  'Sabão',
+  'Amaciante',
+  'Detergente',
+  'Shampoo',
+  'Condicionador',
+  'Pasta de dente',
+  'Frango',
+  'Carne',
+  'Pão de queijo',
+  'Manteiga',
+  'Requijão',
+  'Danone',
+  'Alho',
+  'Cebola',
+  'Pão',
+  'Maça'
 ];

@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="d-flex flex-wrap">
     <v-flex xs12>
       <v-combobox
         prepend-icon="mdi-shopping"
@@ -11,7 +11,7 @@
       ></v-combobox>
     </v-flex>
 
-    <v-flex xs12>
+    <v-flex xs4>
       <v-text-field
         prepend-icon="mdi-counter"
         label="Quantity"
@@ -21,7 +21,7 @@
         :error-messages="requiredQuantity"
       ></v-text-field>
     </v-flex>
-    <v-flex xs12>
+    <v-flex xs8>
       <v-text-field
         prepend-icon="mdi-currency-usd"
         label="Price"
@@ -155,7 +155,11 @@ export default {
   },
 
   created () {
-    this.products = JSON.parse(localStorage.getItem('products'));
+    let productsStorage = JSON.parse(localStorage.getItem('products'))
+
+    if (productsStorage) {
+      this.products = productsStorage;
+    }
   },
 
 

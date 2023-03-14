@@ -8,10 +8,11 @@
         v-model="selectedProduct"
         :error-messages="requiredProduct"
         clearable
+        ref="productInput"
       ></v-combobox>
     </v-flex>
 
-    <v-flex xs4>
+    <v-flex xs3 mr-3>
       <v-text-field
         prepend-icon="mdi-counter"
         label="Quantity"
@@ -19,15 +20,17 @@
         v-model.number="quantity"
         @focus="$event.target.select()"
         :error-messages="requiredQuantity"
+        reverse
       ></v-text-field>
     </v-flex>
-    <v-flex xs8>
+    <v-flex xs8 ml-3>
       <v-text-field
         prepend-icon="mdi-currency-usd"
         label="Price"
         type="tel"
         v-model="price"
         :error-messages="requiredPrice"
+        @keydown.enter="addItem"
       ></v-text-field>
     </v-flex>
 
@@ -38,11 +41,12 @@
 
     <v-flex xs12>
       <v-btn
-        prepend-icon="mdi-plus"
         color="primary"
         @click="addItem"
         width="100%"
-      > {{ isEditing ? 'Save' : 'ADD' }}</v-btn>
+      >
+      <v-icon>{{ isEditing ? 'mdi-check' : 'mdi-plus' }}</v-icon>
+      {{ isEditing ? 'Save' : 'ADD' }}</v-btn>
     </v-flex>
 
     <v-flex xs12 v-if="!products.length" mt-3>
@@ -50,14 +54,14 @@
     </v-flex>
 
 
-    <v-flex v-else xs12 mt-3>
+    <v-flex v-else xs12 mt-3 mb-12>
       <v-card
         v-for="(item, index) in products"
         :key="index"
         class="d-flex flex-row px-3 my-1 py-1"
         @click="options(item, index)"
         >
-          <v-flex xs7>
+          <v-flex xs6>
             <h5>Product</h5>
             <p class="no-space"> {{ item.description }} </p>
           </v-flex>
@@ -67,8 +71,8 @@
             <p class="no-space"> {{ item.quantity }} </p>
           </v-flex>
 
-          <v-flex xs3 class="text-right">
-            <h5>Total</h5>
+          <v-flex xs4 class="text-right">
+            <h5>Total item</h5>
             <p class="no-space"> {{ item.totalItem | formatedMoney }} </p>
           </v-flex>
 
@@ -93,10 +97,35 @@
 
 
 
-    <v-footer fixed>
-      <v-flex xs12 class="text-right mr-3">
+    <v-footer fixed class="d-flex flex-row">
+      <v-flex class="d-flex flex-row">
+        <v-flex xs6>
+          <v-btn
+            text
+            @click="clearList"
+            style="padding-left: 0"
+          >
+          <v-icon>mdi-delete-forever-outline</v-icon>
+          clear list
+          </v-btn>
+        </v-flex>
+        <v-flex xs6 class="d-flex flex-row justify-end align-center text-right">
+          <h3>Total: <strong> {{ totalAmount | formatedMoney }}</strong></h3>
+        </v-flex>
+
+      </v-flex>
+      <!-- <v-flex xs6>
+        <v-btn
+          text
+          @click="clearList"
+        >
+        <v-icon>mdi-delete-forever-outline</v-icon>
+        clear list
+        </v-btn>
+      </v-flex>
+      <v-flex xs6 class="text-right mr-3">
         <h3>Total: <strong> {{ totalAmount | formatedMoney }}</strong></h3>
-    </v-flex>
+      </v-flex> -->
     </v-footer>
   </v-container>
 </template>
@@ -139,8 +168,6 @@ export default {
 
   filters: {
     formatedMoney: function(value) {
-      if (!value) return;
-
       return value.toLocaleString('pt-BR', {
         style: 'currency',
         currency: "BRL"
@@ -229,6 +256,8 @@ export default {
       });
 
       this.cleanField();
+      const productInput = this.$refs.productInput;
+      productInput.focus();
     },
 
     options(item, index) {
@@ -252,8 +281,16 @@ export default {
       this.products.splice(this.index, 1);
       this.index = undefined;
       this.showOptions = false;
+    },
+
+    clearList() {
+      this.products = [];
+      alert('Cleaned!');
+
     }
   },
+
+
 }
 </script>
 

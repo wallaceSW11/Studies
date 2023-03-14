@@ -1,5 +1,54 @@
 <template>
   <v-app>
+    <v-navigation-drawer
+      v-model="sideMenu"
+      app
+    >
+      <v-flex class="d-flex justify-center align-items ma-3">
+        <v-avatar
+        class="mb-4"
+        color="grey darken-1"
+        size="64"
+        ></v-avatar>
+      </v-flex>
+
+      <v-flex class="d-flex justify-center align-items mb-3">
+        <v-btn
+          text
+          outlined
+          @click="showDialog = true"
+        >
+          <span class="mr-2">Log in</span>
+          <v-icon>mdi-login</v-icon>
+        </v-btn>
+      </v-flex>
+
+      <v-divider></v-divider>
+
+      <v-list>
+        <v-list-item
+          v-for="(item, index) in menuList"
+          :key="index"
+          link
+          @click="$router.push({ path: item.router })"
+        >
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>{{ item.text }}</v-list-item-title>
+          </v-list-item-content>
+
+        </v-list-item>
+      </v-list>
+
+
+
+
+    </v-navigation-drawer>
+
+
     <v-app-bar
       app
       color="primary"
@@ -7,11 +56,11 @@
       class="opa"
     >
 
-    <v-flex>
+    <v-flex v-if="$vuetify.breakpoint.xsOnly">
       <v-btn
         icon
         text
-        v-if="$vuetify.breakpoint.xsOnly"
+        @click="() => sideMenu = !sideMenu"
       > <v-icon>mdi-menu</v-icon>
 
       </v-btn>
@@ -30,7 +79,7 @@
       </div>
 
       <v-spacer></v-spacer>
-      <v-flex>
+      <v-flex v-if="$vuetify.breakpoint.smAndUp">
         <v-btn
           class="mr-3"
           text
@@ -50,6 +99,7 @@
         text
         outlined
         @click="showDialog = true"
+        v-if="$vuetify.breakpoint.smAndUp"
       >
         <span class="mr-2">Log in</span>
         <v-icon>mdi-login</v-icon>
@@ -90,7 +140,20 @@ export default {
   name: 'App',
 
   data: () => ({
-    showDialog: false
+    showDialog: false,
+    sideMenu: false,
+    menuList: [
+      {
+        icon: 'mdi-check',
+        text: 'Todo-list',
+        router: '/'
+      },
+      {
+        icon: 'mdi-shopping',
+        text: 'Market',
+        router: '/market'
+      },
+    ]
   }),
 
   methods: {

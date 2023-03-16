@@ -6,9 +6,9 @@
     >
       <v-flex class="d-flex justify-center align-items ma-3">
         <v-avatar
-        class="mb-4"
-        color="grey darken-1"
-        size="64"
+          class="mb-4"
+          color="grey darken-1"
+          size="64"
         ></v-avatar>
       </v-flex>
 
@@ -69,6 +69,7 @@
         <h1 v-if="this.$route.name == 'home' ">
           <span>TO</span>
           <span class="font-weight-light">DO</span>
+          <span style="font-size: .8rem"><s>DONE</s></span>
         </h1>
 
         <h1 v-else>
@@ -79,7 +80,7 @@
       </div>
 
       <v-spacer></v-spacer>
-      <v-flex v-if="$vuetify.breakpoint.smAndUp">
+      <v-flex d-flex justify-center v-if="$vuetify.breakpoint.smAndUp">
         <v-btn
           class="mr-3"
           text

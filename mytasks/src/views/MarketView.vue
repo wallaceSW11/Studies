@@ -1,6 +1,6 @@
 <template>
-  <v-container class="d-flex flex-wrap">
-    <v-flex xs12>
+  <v-container :class="'d-flex flex-wrap justify-center' ">
+    <v-flex xs12 sm3>
       <v-combobox
         prepend-icon="mdi-shopping"
         label="Product"
@@ -12,7 +12,7 @@
       ></v-combobox>
     </v-flex>
 
-    <v-flex xs3 mr-3>
+    <v-flex xs4 sm2 pr-3 px-sm-3>
       <v-text-field
         prepend-icon="mdi-counter"
         label="Quantity"
@@ -23,7 +23,7 @@
         reverse
       ></v-text-field>
     </v-flex>
-    <v-flex xs8 ml-3>
+    <v-flex xs8 sm3 pl-3 px-sm-3>
       <v-text-field
         prepend-icon="mdi-currency-usd"
         label="Price"
@@ -34,27 +34,27 @@
       ></v-text-field>
     </v-flex>
 
-    <v-flex xs12 class="text-right mr-3">
+    <v-flex xs12 sm6 pr-sm-3 class="text-right pr-3">
         <h3>Total item</h3>
         <p> {{ totalItem | formatedMoney }}</p>
     </v-flex>
 
-    <v-flex xs12>
+    <v-flex xs12 sm6 pt-sm-3 pl-sm-3> 
       <v-btn
         color="primary"
         @click="addItem"
-        width="100%"
+        :width="mobileSize ? '100%' : '140px'"
       >
-      <v-icon>{{ isEditing ? 'mdi-check' : 'mdi-plus' }}</v-icon>
-      {{ isEditing ? 'Save' : 'ADD' }}</v-btn>
+        <v-icon>{{ isEditing ? 'mdi-check' : 'mdi-plus' }}</v-icon>
+        {{ isEditing ? 'Save' : 'ADD' }}
+      </v-btn>
     </v-flex>
 
     <v-flex xs12 v-if="!products.length" mt-3>
       <h1 class="text-center" >Let's go baby</h1>
     </v-flex>
 
-
-    <v-flex v-else xs12 mt-3 mb-12>
+    <v-flex v-else xs12 sm8 mt-3 mb-12>
       <v-card
         v-for="(item, index) in products"
         :key="index"
@@ -104,28 +104,16 @@
             text
             @click="clearList"
             style="padding-left: 0"
+            small
           >
           <v-icon>mdi-delete-forever-outline</v-icon>
           clear list
           </v-btn>
         </v-flex>
         <v-flex xs6 class="d-flex flex-row justify-end align-center text-right">
-          <h3>Total: <strong> {{ totalAmount | formatedMoney }}</strong></h3>
+          <p class="mb-0 pb-0">Total: <strong> {{ totalAmount | formatedMoney }}</strong></p>
         </v-flex>
-
       </v-flex>
-      <!-- <v-flex xs6>
-        <v-btn
-          text
-          @click="clearList"
-        >
-        <v-icon>mdi-delete-forever-outline</v-icon>
-        clear list
-        </v-btn>
-      </v-flex>
-      <v-flex xs6 class="text-right mr-3">
-        <h3>Total: <strong> {{ totalAmount | formatedMoney }}</strong></h3>
-      </v-flex> -->
     </v-footer>
   </v-container>
 </template>
@@ -135,9 +123,6 @@
 import { PRODUCTS_LIST } from "@/storage/products-list.js";
 
 export default {
-
-
-
   data() {
     return {
       productList: PRODUCTS_LIST,
@@ -163,6 +148,10 @@ export default {
       }
 
       return (this.price * this.quantity);
+    },
+
+    mobileSize(){
+      return this.$vuetify.breakpoint.xsOnly;
     }
   },
 
@@ -302,5 +291,9 @@ export default {
 
 .background-dialog {
   background-color: #fff;
+}
+
+.short-content {
+  max-width: 70%;
 }
 </style>

@@ -1,7 +1,9 @@
 <template>
   <v-app>
     <v-app-bar app color="primary" dark clipped-left>
+      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title><strong>SCHE</strong>dule</v-toolbar-title>
+
       <v-spacer></v-spacer>
       
       <v-btn
@@ -12,13 +14,17 @@
       Login
       <v-icon class="pl-3">mdi-login</v-icon>
       </v-btn>
-      
-
     </v-app-bar>
 
-    <v-navigation-drawer class="mt-14" permanent expand-on-hover absolute>  
+    <v-navigation-drawer 
+      app
+      absolute 
+      clipped
+      :mobile-breakpoint="0"
+      :mini-variant.sync="drawer"
+    >
       <v-list nav>
-        <v-list-item v-for="item in items" :key="item.title" link @click="$router.push({ path: item.route })">
+        <v-list-item v-for="item in items" :key="item.title" link>
           <v-list-item-icon>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-icon>
@@ -30,7 +36,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-main class="ml-15"> <router-view></router-view></v-main>
+    <v-main> <router-view></router-view></v-main>
   </v-app>
 </template>
 
@@ -41,7 +47,7 @@ export default {
   components: {},
 
   data: () => ({
-    drawer: null,
+    drawer: true,
     items: [
           { title: 'Schedule', icon: 'mdi-clock-time-five-outline', route: '/' },
           { title: 'Patients', icon: 'mdi-account', route: '/patients'  },
@@ -50,3 +56,13 @@ export default {
   }),
 };
 </script>
+
+<style lang="scss">
+i.v-icon.v-icon {
+  color: #1864b1;
+}
+
+.nav-margin-left {
+  margin-left: 64px;
+}
+</style>

@@ -5,15 +5,10 @@
     <v-flex>
       <v-flex xs12 class="ma-0 pa-0 mt-3 d-flex flex-row flex-grow-0">
         <v-flex xs2>
-          <v-text-field
-            name="name"
-            label="Date"
-            prepend-icon="mdi-calendar"
-            id="text-field-date"
-            v-model="selectedDate"
-            clearable
-            @click="() => {}"
-          ></v-text-field>
+          <date-picker
+            :date="selectedDate"
+          >
+          </date-picker>
         </v-flex>
         <v-spacer></v-spacer>
         <v-flex xs3 class="d-flex align-center">
@@ -45,13 +40,49 @@
           class="elevation-1"
         >
           <template v-slot:[`item.doctorone`]="{ item }">
-            <v-flex @click="showPatientCard = true" d-flex align-center v-if="item.doctorone">
-              <v-icon>mdi-account-box-outline</v-icon>
-              {{ item.doctorone }}
-            </v-flex>
-            <v-flex class="ml-0 pl-0" v-if="!item.doctorone">
-              <v-icon color="primary" @click="showDialogSchedule = true">mdi-plus-circle-outline</v-icon>
-            </v-flex>
+            <v-menu top offset-y open-on-hover>
+              <template v-slot:activator="{on}">
+                <v-flex v-on="on" d-flex align-center v-if="item.doctorone">
+                  <v-icon>mdi-account-box-outline</v-icon>
+                  {{ item.doctorone }}
+                </v-flex>
+                <v-flex class="ml-0 pl-0" v-if="!item.doctorone">
+                  <v-icon color="primary" @click="showDialogSchedule = true">mdi-plus-circle-outline</v-icon>
+                  <v-icon color="primary" @click="showDialogSchedule = true">mdi-lock-outline</v-icon>
+                  <v-icon color="primary" @click="showDialogSchedule = true">mdi-lock-open-outline</v-icon>
+                </v-flex> 
+
+              </template>
+              <v-card>
+                <v-card-title>
+                  Schedule
+                </v-card-title>
+        
+                <v-card-text>
+                  <v-flex>
+                    Name: {{ item.doctorone }}
+                  </v-flex>
+                  <v-flex>
+                    
+                  </v-flex>
+        
+                  <v-flex>
+                    At: {{ item.time }}
+                  </v-flex>
+        
+                  <v-flex>
+                    <v-icon small class="px-3">mdi-pencil</v-icon>
+                  <v-icon small>mdi-delete</v-icon>
+                  </v-flex>
+                </v-card-text>
+        
+                <v-card-actions>
+                  <v-btn @click="showPatientCard = false">
+                    close
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-menu>
           </template>
         </v-data-table>
       </v-flex>
@@ -81,7 +112,7 @@
 
           <v-flex>
             <v-icon small class="px-3">mdi-pencil</v-icon>
-          <v-icon small>mdi-delete</v-icon>
+            <v-icon small>mdi-delete</v-icon>
           </v-flex>
         </v-card-text>
 
@@ -200,11 +231,13 @@
 
 <script>
 import TitlePage from '@/components/TitlePage.vue';
+import DatePicker from '@/components/DatePicker.vue';
 
 export default {
   name: 'MainView',
   components: {
     TitlePage,
+    DatePicker
   },
 
   data () {

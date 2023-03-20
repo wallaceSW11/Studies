@@ -21,10 +21,10 @@
       absolute 
       clipped
       :mobile-breakpoint="0"
-      :mini-variant.sync="drawer"
+      :mini-variant="drawer"
     >
       <v-list nav>
-        <v-list-item v-for="item in items" :key="item.title" link>
+        <v-list-item v-for="item in items" :key="item.title" link :to="item.route">
           <v-list-item-icon>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-icon>
@@ -50,6 +50,7 @@ export default {
     drawer: true,
     items: [
           { title: 'Schedule', icon: 'mdi-clock-time-five-outline', route: '/' },
+          { title: 'Schedule2', icon: 'mdi-clock-time-five-outline', route: '/main2' },
           { title: 'Patients', icon: 'mdi-account', route: '/patients'  },
           { title: 'Setup', icon: 'mdi-cog', route: '/setup'  },
         ]

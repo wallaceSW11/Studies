@@ -72,9 +72,14 @@
           <span style="font-size: .8rem"><s>DONE</s></span>
         </h1>
 
-        <h1 v-else>
+        <h1 v-if="this.$route.name == 'market' ">
           <span>MAR</span>
           <span class="font-weight-light">ket</span>
+        </h1>
+        
+        <h1 v-if="this.$route.name == 'gas' ">
+          <span>G</span>
+          <span class="font-weight-light">as</span>
         </h1>
 
       </div>
@@ -93,6 +98,12 @@
           :outlined="this.$route.name == 'market' "
           @click="() => this.$router.push({ name: 'market' })"
         >Market</v-btn>
+        <v-btn
+          class="ml-3"
+          text
+          :outlined="this.$route.name == 'gas' "
+          @click="() => this.$router.push({ name: 'gas' })"
+        >GAS</v-btn>
       </v-flex>
       <v-spacer></v-spacer>
 
@@ -153,6 +164,11 @@ export default {
         icon: 'mdi-shopping',
         text: 'Market',
         router: '/market'
+      },
+      {
+        icon: 'mdi-gas-station',
+        text: 'Gas station',
+        router: '/gas'
       },
     ]
   }),

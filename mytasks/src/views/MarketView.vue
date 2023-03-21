@@ -14,6 +14,7 @@
 
     <v-flex xs4 sm2 pr-3 px-sm-3>
       <v-text-field
+        id="field-quantity"
         prepend-inner-icon="mdi-counter"
         label="Quantity"
         type="tel"
@@ -24,6 +25,7 @@
     </v-flex>
     <v-flex xs8 sm3 pl-3 px-sm-3>
       <v-text-field
+        id="field-price"
         prepend-inner-icon="mdi-currency-usd"
         label="Price"
         type="tel"
@@ -294,5 +296,13 @@ export default {
 
 .short-content {
   max-width: 70%;
+}
+
+::v-deep #field-quantity {
+  text-align: right;
+}
+
+::v-deep #field-price {
+  text-align: right;
 }
 </style>

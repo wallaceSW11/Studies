@@ -2,7 +2,7 @@
   <v-container :class="'d-flex flex-wrap justify-center' ">
     <v-flex xs12 sm3>
       <v-combobox
-        prepend-icon="mdi-shopping"
+        prepend-inner-icon="mdi-shopping"
         label="Product"
         :items="productList"
         v-model="selectedProduct"
@@ -14,18 +14,17 @@
 
     <v-flex xs4 sm2 pr-3 px-sm-3>
       <v-text-field
-        prepend-icon="mdi-counter"
+        prepend-inner-icon="mdi-counter"
         label="Quantity"
         type="tel"
         v-model.number="quantity"
         @focus="$event.target.select()"
         :error-messages="requiredQuantity"
-        reverse
       ></v-text-field>
     </v-flex>
     <v-flex xs8 sm3 pl-3 px-sm-3>
       <v-text-field
-        prepend-icon="mdi-currency-usd"
+        prepend-inner-icon="mdi-currency-usd"
         label="Price"
         type="tel"
         v-model="price"

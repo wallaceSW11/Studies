@@ -59,10 +59,10 @@
       <v-card
         v-for="(item, index) in products"
         :key="index"
-        class="d-flex flex-row px-3 my-1 py-1"
-        @click="options(item, index)"
+        class="d-flex flex-row pl-3 my-1 py-1"
+        
         >
-          <v-flex xs6>
+          <v-flex xs5>
             <h5>Product</h5>
             <p class="no-space"> {{ item.description }} </p>
           </v-flex>
@@ -77,26 +77,19 @@
             <p class="no-space"> {{ item.totalItem | formatedMoney }} </p>
           </v-flex>
 
-
+          <v-flex xs1 class="d-flex flex-row justify-center align-center">
+            <v-menu top offset-y >
+              <template v-slot:activator="{on}">
+                <v-icon color="primary" v-on="on">mdi-dots-vertical</v-icon>
+              </template>
+              <v-card>
+                <v-btn text @click="editProduct(item, index)" color="primary"> <v-icon>mdi-pencil</v-icon></v-btn>
+                <v-btn text @click="deleteItem(index)" color="primary"><v-icon>mdi-delete</v-icon></v-btn>
+              </v-card>
+            </v-menu>
+          </v-flex>
       </v-card>
-
     </v-flex>
-
-    <v-dialog
-      v-model="showOptions"
-      max-width="150px"
-    >
-      <v-flex class="d-flex justify-center flex-row background-dialog">
-        <v-btn text @click="editProduct" color="primary"> <v-icon>mdi-pencil</v-icon></v-btn>
-        <v-btn text @click="deleteItem" color="primary"><v-icon>mdi-delete</v-icon></v-btn>
-
-      </v-flex>
-
-    </v-dialog>
-
-
-
-
 
     <v-footer fixed class="d-flex flex-row">
       <v-flex class="d-flex flex-row">
@@ -135,10 +128,8 @@ export default {
       requiredProduct: undefined,
       requiredQuantity: undefined,
       requiredPrice: undefined,
-      showOptions: false,
-      item: undefined,
-      index: undefined,
-      isEditing: false
+      isEditing: false,
+      selectedProductIndex: undefined
     }
   },
 
@@ -213,9 +204,6 @@ export default {
       this.selectedProduct = undefined;
       this.quantity = 1;
       this.price = undefined;
-
-      this.item = undefined;
-      this.index = undefined;
     },
 
     modelValid() {
@@ -238,6 +226,20 @@ export default {
 
       if (!this.modelValid()) return;
 
+      if (this.isEditing) {
+        this.products.splice(this.selectedProductIndex, 1, {
+          description: this.selectedProduct,
+          quantity: this.quantity,
+          price: this.price,
+          totalItem: this.totalItem
+        });
+
+        this.cleanField();
+        this.$refs.productInput.focus();
+        this.isEditing = false;
+        return;
+      }
+
       this.products.push({
         description: this.selectedProduct,
         quantity: this.quantity,
@@ -246,41 +248,25 @@ export default {
       });
 
       this.cleanField();
-      const productInput = this.$refs.productInput;
-      productInput.focus();
+      this.$refs.productInput.focus();
     },
 
-    options(item, index) {
-      this.item = item;
-      this.index = index;
-      this.showOptions = true;
-    },
-
-    editProduct() {
-      this.selectedProduct = this.item.description;
-      this.quantity = this.item.quantity;
-      this.price = this.item.price;
-
-      this.products.splice(this.index, 1);
-
+    editProduct(item, index) {
+      this.selectedProduct = item.description;
+      this.quantity = item.quantity;
+      this.price = item.price;
+      this.selectedProductIndex = index;
       this.isEditing = true;
-      this.showOptions = false;
     },
 
-    deleteItem() {
-      this.products.splice(this.index, 1);
-      this.index = undefined;
-      this.showOptions = false;
+    deleteItem(index) {
+      this.products.splice(index, 1);
     },
 
     clearList() {
       this.products = [];
-      alert('Cleaned!');
-
     }
-  },
-
-
+  }
 }
 </script>
 

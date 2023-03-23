@@ -24,7 +24,10 @@
       ></v-text-field>
     </v-flex>
     <v-flex xs8 sm3 pl-3 px-sm-3>
-      <v-text-field
+      <money-field>
+
+      </money-field>
+      <!-- <v-text-field
         id="field-price"
         prepend-inner-icon="mdi-currency-usd"
         label="Price"
@@ -32,7 +35,8 @@
         v-model="price"
         :error-messages="requiredPrice"
         @keydown.enter="addItem"
-      ></v-text-field>
+        @mouseup="opa($event)"
+      ></v-text-field> -->
     </v-flex>
 
     <v-flex xs12 sm6 pr-sm-3 class="text-right pr-3">
@@ -115,21 +119,25 @@
 <script>
 
 import { PRODUCTS_LIST } from "@/storage/products-list.js";
+import MoneyField from '@/components/MoneyField.vue';
 
 export default {
+  components: { MoneyField },
+  name: 'MarketView',
   data() {
     return {
       productList: PRODUCTS_LIST,
       products: [],
       selectedProduct: undefined,
       quantity: 1,
-      price: undefined,
+      price: '0,00',
       totalAmount: 0.00,
       requiredProduct: undefined,
       requiredQuantity: undefined,
       requiredPrice: undefined,
       isEditing: false,
-      selectedProductIndex: undefined
+      selectedProductIndex: undefined,
+      priceFormated: '1,11'
     }
   },
 
@@ -166,14 +174,25 @@ export default {
 
 
   watch: {
-    price(price) {
-      if (price) {
-        if (typeof(price) == 'string') {
-          this.price = price.replace(',', '.');
-        }
-        this.requiredPrice = undefined;
-      }
+    price(value) {
+      console.log(value);
+
+      
+
+      this.price = value.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: "BRL"
+      })
     },
+
+    // price(price) {
+    //   if (price) {
+    //     if (typeof(price) == 'string') {
+    //       this.price = price.replace(',', '.');
+    //     }
+    //     this.requiredPrice = undefined;
+    //   }
+    // },
 
     selectedProduct(value) {
       if (value) {
@@ -200,6 +219,12 @@ export default {
   },
 
   methods: {
+    // opa(event) {
+    //   let end = event.target.value.length;
+    //   event.target.setSelectionRange(end, end);
+    //   event.target.focus();
+    // },
+
     cleanField() {
       this.selectedProduct = undefined;
       this.quantity = 1;

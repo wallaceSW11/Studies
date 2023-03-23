@@ -36,7 +36,9 @@
           thousands: '.',
           precision: 2
         }"
+        class="label-left"
         reverse
+        type="tel"
       >
 
       </v-text-field>
@@ -301,4 +303,8 @@ export default {
   text-align: right;
 }
 
+::v-deep .label-left .v-label {
+  left: 0 !important;
+  transform-origin: top left !important;
+}
 </style>

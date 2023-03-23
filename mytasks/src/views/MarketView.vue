@@ -22,21 +22,24 @@
         @focus="$event.target.select()"
         :error-messages="requiredQuantity"
       ></v-text-field>
-    </v-flex>
-    <v-flex xs8 sm3 pl-3 px-sm-3>
-      <money-field>
-
-      </money-field>
-      <!-- <v-text-field
-        id="field-price"
-        prepend-inner-icon="mdi-currency-usd"
-        label="Price"
-        type="tel"
+    </v-flex>    
+    <v-flex xs8 sm3 pl-3 px-sm-3>      
+      <v-text-field
+        ref="myinput"
+        id="feield-price"
         v-model="price"
+        label="Unit price"
+        @keypress.enter="addItem"
         :error-messages="requiredPrice"
-        @keydown.enter="addItem"
-        @mouseup="opa($event)"
-      ></v-text-field> -->
+        v-money="{
+          decimal: ',',
+          thousands: '.',
+          precision: 2
+        }"
+        reverse
+      >
+
+      </v-text-field>
     </v-flex>
 
     <v-flex xs12 sm6 pr-sm-3 class="text-right pr-3">
@@ -44,7 +47,7 @@
         <p> {{ totalItem | formatedMoney }}</p>
     </v-flex>
 
-    <v-flex xs12 sm6 pt-sm-3 pl-sm-3> 
+    <v-flex xs12 sm6 pt-sm-3 pl-sm-3>
       <v-btn
         color="primary"
         @click="addItem"
@@ -64,7 +67,7 @@
         v-for="(item, index) in products"
         :key="index"
         class="d-flex flex-row pl-3 my-1 py-1"
-        
+
         >
           <v-flex xs5>
             <h5>Product</h5>
@@ -119,10 +122,10 @@
 <script>
 
 import { PRODUCTS_LIST } from "@/storage/products-list.js";
-import MoneyField from '@/components/MoneyField.vue';
+import { VMoney } from 'v-money'
 
 export default {
-  components: { MoneyField },
+
   name: 'MarketView',
   data() {
     return {
@@ -130,37 +133,33 @@ export default {
       products: [],
       selectedProduct: undefined,
       quantity: 1,
-      price: '0,00',
-      totalAmount: 0.00,
+      price: undefined,
+      totalAmount: 0,
+      totalItem: 0,
       requiredProduct: undefined,
       requiredQuantity: undefined,
       requiredPrice: undefined,
       isEditing: false,
       selectedProductIndex: undefined,
-      priceFormated: '1,11'
     }
   },
 
+  directives: { money: VMoney },
+
   computed: {
-    totalItem() {
-      if (!this.price || !this.quantity) {
-        return '0,00'
-      }
-
-      return (this.price * this.quantity);
-    },
-
     mobileSize(){
       return this.$vuetify.breakpoint.xsOnly;
     }
   },
 
   filters: {
-    formatedMoney: function(value) {
+    formatedMoney(value) {
       return value.toLocaleString('pt-BR', {
         style: 'currency',
-        currency: "BRL"
-      })
+        currency: "BRL",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }) || 0;
     }
   },
 
@@ -175,24 +174,10 @@ export default {
 
   watch: {
     price(value) {
-      console.log(value);
-
-      
-
-      this.price = value.toLocaleString('pt-BR', {
-        style: 'currency',
-        currency: "BRL"
-      })
+      this.requiredPrice = undefined;
+      value = value && value.replace('.', '').replace(',', '.') || 0;
+      this.totalItem = value && value * this.quantity || 0
     },
-
-    // price(price) {
-    //   if (price) {
-    //     if (typeof(price) == 'string') {
-    //       this.price = price.replace(',', '.');
-    //     }
-    //     this.requiredPrice = undefined;
-    //   }
-    // },
 
     selectedProduct(value) {
       if (value) {
@@ -219,16 +204,15 @@ export default {
   },
 
   methods: {
-    // opa(event) {
-    //   let end = event.target.value.length;
-    //   event.target.setSelectionRange(end, end);
-    //   event.target.focus();
-    // },
+    setPrice(value) {
+      this.$refs.myinput.$el.getElementsByTagName('input')[0].value = value;
+      this.price = value;
+    },
 
     cleanField() {
       this.selectedProduct = undefined;
       this.quantity = 1;
-      this.price = undefined;
+      this.setPrice(0);
     },
 
     modelValid() {
@@ -240,7 +224,7 @@ export default {
         this.requiredQuantity = 'Required'
       }
 
-      if (!this.price) {
+      if (!this.price || this.price == "0,00") {
         this.requiredPrice = 'Required'
       }
 
@@ -279,7 +263,7 @@ export default {
     editProduct(item, index) {
       this.selectedProduct = item.description;
       this.quantity = item.quantity;
-      this.price = item.price;
+      this.setPrice(item.price);
       this.selectedProductIndex = index;
       this.isEditing = true;
     },
@@ -316,4 +300,5 @@ export default {
 ::v-deep #field-price {
   text-align: right;
 }
+
 </style>

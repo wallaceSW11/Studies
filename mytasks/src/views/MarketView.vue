@@ -124,10 +124,8 @@
 <script>
 
 import { PRODUCTS_LIST } from "@/storage/products-list.js";
-import { VMoney } from 'v-money'
 
 export default {
-
   name: 'MarketView',
   data() {
     return {
@@ -145,8 +143,6 @@ export default {
       selectedProductIndex: undefined,
     }
   },
-
-  directives: { money: VMoney },
 
   computed: {
     mobileSize(){

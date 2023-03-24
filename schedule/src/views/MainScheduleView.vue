@@ -2,18 +2,19 @@
   <v-flex class="ma-3">
     <v-tabs
       v-model="tab"
-      align-with-title
+      show-arrows
       centered
       icons-and-text
     >
       <v-tabs-slider color="yellow"></v-tabs-slider>
+
       <v-tab
-        v-for="(date, index) in dates"
-        :key="index"
+        v-for="day in daysMonth"
+        :key="day.number"
         class="d-flex flex-column flex-grow-0 flex-shrink-0 ma-0 pa-0"
       >
-        <h3 class="ma-0 pa-0">{{ date.number }}</h3><br>
-        <span class="ma-0 pa-0" style="font-size: 8px">{{ date.day }}</span>
+        <h3 class="ma-0 pa-0">{{ day.number }}</h3><br>
+        <span class="ma-0 pa-0" style="font-size: 8px">{{ day.day }}</span>
       </v-tab>
     </v-tabs>
 
@@ -22,7 +23,6 @@
         v-for="num in 5"
         :key="num"
       >
-
         <v-card
           xs12 class="d-flex flex-row ma-2 pa-2" style="border-left: 3px solid blue"
           v-for="(item, index) in hours"
@@ -112,6 +112,31 @@
             doctortwo: 'Mr Richard'
           }
         ]
+      }
+    },
+
+    mounted () {
+      // para parar no dia atual.
+      // this.tab = Number(new Date().toJSON().substring(8, 10))-1;
+    },
+
+    computed: {
+      daysMonth() {
+        const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+        var date = new Date();
+        var firstDay = new Date(date.getFullYear(), date.getMonth(), 1).getUTCDate();
+        var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getUTCDate();
+        let days = [];
+
+        for (let index = firstDay; index <= lastDay; index++) {
+          days.push({
+            number: index,
+            day: weekday[new Date(`${date.getFullYear()}-${date.getMonth()}-${index}-`).getDay()]
+          });
+        }
+
+        return days;
       }
     },
   }

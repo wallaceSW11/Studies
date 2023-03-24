@@ -27,22 +27,28 @@
           xs12 class="d-flex flex-row ma-2 pa-2" style="border-left: 3px solid blue"
           v-for="(item, index) in hours"
           :key="index"
-          link
         >
           <v-flex xs2>
             {{ item.time }}
           </v-flex>
-          <v-flex xs6 v-if="item.doctorone">{{ item.doctorone }}</v-flex>
+          <v-flex xs6 v-if="item.doctorone" style="cursor: pointer">
+            <v-icon>mdi-account-box-outline</v-icon> {{ item.doctorone }}
+          </v-flex>
           <v-flex class="ml-0 pl-0" v-if="!item.doctorone">
-            <v-icon color="primary" @click="showDialogSchedule = true">mdi-plus-circle-outline</v-icon>
-            <v-icon color="primary" @click="showDialogSchedule = true">mdi-lock-outline</v-icon>
-            <v-icon color="primary" @click="showDialogSchedule = true">mdi-lock-open-outline</v-icon>
+            <v-icon v-if="!item.locked" color="primary" @click="showDialogSchedule = true">mdi-plus-circle-outline</v-icon>
+            <v-icon v-if="!item.locked" color="primary" @click="showDialogSchedule = true">mdi-lock-outline</v-icon>
+            <v-icon v-if="item.locked" color="primary" @click="showDialogSchedule = true">mdi-lock-open-outline</v-icon>
+          </v-flex>
+          <v-flex xs2>
+            <v-chip :color="getColor(item.type)">
+              <span>{{ item.type }}</span>
+            </v-chip>
           </v-flex>
           <v-flex xs2>
             <v-icon small class="px-3">mdi-pencil</v-icon>
             <v-icon small>mdi-delete</v-icon>
           </v-flex>
-          <v-flex xs2></v-flex>
+
         </v-card>
       </v-tab-item>
     </v-tabs-items>
@@ -92,7 +98,23 @@ import { day_one, day_two } from "@/service/api/localdata/db";
 
         return days;
       }
-    }
+    },
+
+    methods: {
+      getColor(type) {
+        switch (type) {
+          case "Revision":
+            return 'yellow'
+          case "New":
+            return 'green'
+          case "Checkup":
+            return 'blue'
+          default:
+            return 'ligth-gray';
+        }
+
+      }
+    },
   }
 </script>
 

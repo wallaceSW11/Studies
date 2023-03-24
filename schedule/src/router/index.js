@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import MainView from '../views/MainView.vue'
+// import MainView from '../views/MainView.vue'
 import MainScheduleView from '../views/MainScheduleView.vue'
 import LoginView from '../views/LoginView.vue'
 import PatientsView from '../views/PatientsView.vue'
@@ -11,13 +11,13 @@ const routes = [
   {
     path: '/',
     name: 'main',
-    component: MainView
-  },
-  {
-    path: '/main2',
-    name: 'main2',
     component: MainScheduleView
   },
+  // {
+  //   path: '/main2',
+  //   name: 'main2',
+  //   component: MainScheduleView
+  // },
   {
     path: '/login',
     name: 'login',

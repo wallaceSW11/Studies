@@ -2,47 +2,65 @@ const day_one = [
   {
     time: '08:00',
     doctorone: 'Mr Rodrigues',
-    doctortwo: ''
+    doctortwo: '',
+    type: 'Check-up',
+    locked: false
   },
   {
     time: '08:30',
     doctorone: '',
-    doctortwo: 'Ms Mellis'
+    doctortwo: 'Ms Mellis',
+    type: 'Initial',
+    locked: true
   },
   {
     time: '09:00',
     doctorone: '',
-    doctortwo: ''
+    doctortwo: '',
+    type: 'Revision',
+    locked: true
   },
   {
     time: '09:30',
     doctorone: 'Mr Robson',
-    doctortwo: 'Ms Kelly'
+    doctortwo: 'Ms Kelly',
+    type: 'Revision',
+    locked: false
   },
   {
     time: '10:00',
     doctorone: '',
-    doctortwo: 'Mr Uncle'
+    doctortwo: 'Mr Uncle',
+    type: 'Revision',
+    locked: false
   },
   {
     time: '10:30',
     doctorone: '',
-    doctortwo: ''
+    doctortwo: '',
+    type: 'Revision',
+    locked: false
   },
   {
     time: '11:00',
     doctorone: '',
-    doctortwo: ''
+    doctortwo: '',
+    type: 'Revision',
+    locked: false
   },
   {
     time: '11:30',
     doctorone: 'Mr Rodolf',
-    doctortwo: ''
+    doctortwo: '',
+    type: 'Revision',
+    locked: false
   },
   {
     time: '12:00',
     doctorone: 'Mr Paul',
-    doctortwo: 'Mr Richard'
+    doctortwo: 'Mr Richard',
+    type: 'Revision',
+    locked: false
   }
 ];
 
@@ -50,47 +68,65 @@ const day_two = [
   {
     time: '08:00',
     doctorone: 'Los Santos',
-    doctortwo: ''
+    doctortwo: '',
+    type: 'Checkup',
+    locked: false
   },
   {
     time: '08:30',
     doctorone: '',
-    doctortwo: ''
+    doctortwo: '',
+    type: 'New',
+    locked: true
   },
   {
     time: '09:00',
     doctorone: '',
-    doctortwo: ''
+    doctortwo: '',
+    type: 'Revision',
+    locked: true
   },
   {
     time: '09:30',
     doctorone: 'Mr Robson',
-    doctortwo: 'Ms Kelly'
+    doctortwo: 'Ms Kelly',
+    type: 'Revision',
+    locked: false
   },
   {
     time: '10:00',
     doctorone: '',
-    doctortwo: 'Mr Uncle'
+    doctortwo: 'Mr Uncle',
+    type: 'Revision',
+    locked: false
   },
   {
     time: '10:30',
     doctorone: '',
-    doctortwo: ''
+    doctortwo: '',
+    type: 'Revision',
+    locked: false
   },
   {
     time: '11:00',
     doctorone: '',
-    doctortwo: ''
+    doctortwo: '',
+    type: 'Revision',
+    locked: false
   },
   {
     time: '11:30',
     doctorone: 'Mr Rodolf',
-    doctortwo: ''
+    doctortwo: '',
+    type: 'Revision',
+    locked: false
   },
   {
     time: '12:00',
     doctorone: 'Mr Paul',
-    doctortwo: 'Mr Richard'
+    doctortwo: 'Mr Richard',
+    type: 'Revision',
+    locked: false
   }
 ]
 

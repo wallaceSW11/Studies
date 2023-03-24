@@ -49,8 +49,8 @@ export default {
   data: () => ({
     drawer: true,
     items: [
-          { title: 'Schedule', icon: 'mdi-clock-time-five-outline', route: '/' },
-          { title: 'Schedule2', icon: 'mdi-clock-time-five-outline', route: '/main2' },
+          // { title: 'Schedule', icon: 'mdi-clock-time-five-outline', route: '/' },
+          { title: 'Schedule2', icon: 'mdi-clock-time-five-outline', route: '/' },
           { title: 'Patients', icon: 'mdi-account', route: '/patients'  },
           { title: 'Setup', icon: 'mdi-cog', route: '/setup'  },
         ]

@@ -20,7 +20,7 @@
 
     <v-tabs-items v-model="tab">
       <v-tab-item
-        v-for="num in 5"
+        v-for="num in daysMonth.length"
         :key="num"
       >
         <v-card
@@ -37,7 +37,7 @@
             <v-icon color="primary" @click="showDialogSchedule = true">mdi-plus-circle-outline</v-icon>
             <v-icon color="primary" @click="showDialogSchedule = true">mdi-lock-outline</v-icon>
             <v-icon color="primary" @click="showDialogSchedule = true">mdi-lock-open-outline</v-icon>
-          </v-flex> 
+          </v-flex>
           <v-flex xs2>
             <v-icon small class="px-3">mdi-pencil</v-icon>
             <v-icon small>mdi-delete</v-icon>
@@ -50,74 +50,28 @@
 </template>
 
 <script>
+/* eslint-disable */
+import { day_one, day_two } from "@/service/api/localdata/db";
+
   export default {
     data () {
       return {
-        tab: null,
+        tab: 0,
         isHovering: false,
-        dates: [
-          { number: '01', day: 'Sunday'},
-          { number: '02', day: 'Monday'},
-          { number: '03', day: 'Tuesday'},
-          { number: '04', day: 'Wednesday'},
-          { number: '05', day: 'Thursday'},
-          { number: '06', day: 'Friday'},
-          { number: '07', day: 'Saturday'},
-
-        ],
-        hours: [
-          {
-            time: '08:00',
-            doctorone: 'Mr Rodrigues',
-            doctortwo: ''
-          },
-          {
-            time: '08:30',
-            doctorone: '',
-            doctortwo: 'Ms Mellis'
-          },
-          {
-            time: '09:00',
-            doctorone: '',
-            doctortwo: ''
-          },
-          {
-            time: '09:30',
-            doctorone: 'Mr Robson',
-            doctortwo: 'Ms Kelly'
-          },
-          {
-            time: '10:00',
-            doctorone: '',
-            doctortwo: 'Mr Uncle'
-          },
-          {
-            time: '10:30',
-            doctorone: '',
-            doctortwo: ''
-          },
-          {
-            time: '11:00',
-            doctorone: '',
-            doctortwo: ''
-          },
-          {
-            time: '11:30',
-            doctorone: 'Mr Rodolf',
-            doctortwo: ''
-          },
-          {
-            time: '12:00',
-            doctorone: 'Mr Paul',
-            doctortwo: 'Mr Richard'
-          }
-        ]
+        hours: []
       }
     },
 
     mounted () {
       // para parar no dia atual.
-      // this.tab = Number(new Date().toJSON().substring(8, 10))-1;
+      this.tab = Number(new Date().toJSON().substring(8, 10))-1;
+    },
+
+    watch: {
+      tab(newValue) {
+        // get on API
+        this.hours = newValue % 2 == 0 ? day_one : day_two;
+      }
     },
 
     computed: {
@@ -138,7 +92,7 @@
 
         return days;
       }
-    },
+    }
   }
 </script>
 

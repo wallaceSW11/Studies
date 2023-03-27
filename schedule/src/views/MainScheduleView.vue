@@ -1,5 +1,16 @@
 <template>
   <v-flex class="ma-3">
+    <v-menu offset-x>
+      <template v-slot:activator="{on}">
+        <h1 v-on="on" style="color: #03a9f4; cursor: pointer">{{ selectedDateDescription }}</h1>
+      </template>
+      <v-date-picker
+        v-model="selectedDateString"
+        type="month"
+        no-title
+      ></v-date-picker>
+    </v-menu>
+
     <v-tabs
       v-model="tab"
       show-arrows
@@ -24,23 +35,24 @@
         :key="num"
       >
         <v-card
-          xs12 class="d-flex flex-row ma-2 pa-2" style="border-left: 3px solid blue"
+          xs12 class="d-flex flex-row align-center ma-2 pa-2" style="border-left: 3px solid blue"
           v-for="(item, index) in hours"
           :key="index"
+          :class="{ 'blocked-schedule' : item.locked }"
         >
           <v-flex xs2>
             {{ item.time }}
           </v-flex>
-          <v-flex xs6 v-if="item.doctorone" style="cursor: pointer">
+          <v-flex xs6 v-if="item.doctorone" style="cursor: pointer" class="d-flex align-center">
             <v-icon>mdi-account-box-outline</v-icon> {{ item.doctorone }}
           </v-flex>
           <v-flex class="ml-0 pl-0" v-if="!item.doctorone">
-            <v-icon v-if="!item.locked" color="primary" @click="showDialogSchedule = true">mdi-plus-circle-outline</v-icon>
-            <v-icon v-if="!item.locked" color="primary" @click="showDialogSchedule = true">mdi-lock-outline</v-icon>
-            <v-icon v-if="item.locked" color="primary" @click="showDialogSchedule = true">mdi-lock-open-outline</v-icon>
+            <icon-tooltip v-if="!item.locked" icon="mdi-plus-circle-outline" tooltip="Add schedule" @clicked="() => {}" />
+            <icon-tooltip v-if="!item.locked" icon="mdi-lock-outline" tooltip="Lock schedule" @clicked="() => {}" />
+            <icon-tooltip v-if="item.locked" icon="mdi-lock-open-outline" tooltip="Unlock schedule" @clicked="() => {}" />
           </v-flex>
           <v-flex xs2>
-            <v-chip :color="getColor(item.type)">
+            <v-chip small :color="getColor(item.type)">
               <span>{{ item.type }}</span>
             </v-chip>
           </v-flex>
@@ -58,22 +70,34 @@
 <script>
 /* eslint-disable */
 import { day_one, day_two } from "@/service/api/localdata/db";
+import moment from 'moment';
+import IconTooltip from '@/components/IconTooltip.vue';
 
   export default {
+    components: { IconTooltip },
+
     data () {
       return {
         tab: 0,
         isHovering: false,
-        hours: []
+        hours: [],
+        selectedDate: undefined,
+        selectedDateString: undefined,
       }
     },
 
     mounted () {
-      // para parar no dia atual.
-      this.tab = Number(new Date().toJSON().substring(8, 10))-1;
+      this.selectedDate = new Date();
+      this.selectedDateString = this.selectedDate.toJSON();
+      this.setTab();
     },
 
     watch: {
+      selectedDateString(newValue) {
+        this.selectedDate = moment(newValue);
+        this.setTab();
+      },
+
       tab(newValue) {
         // get on API
         this.hours = newValue % 2 == 0 ? day_one : day_two;
@@ -84,7 +108,7 @@ import { day_one, day_two } from "@/service/api/localdata/db";
       daysMonth() {
         const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
-        var date = new Date();
+        var date = new Date(this.selectedDate);
         var firstDay = new Date(date.getFullYear(), date.getMonth(), 1).getUTCDate();
         var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getUTCDate();
         let days = [];
@@ -97,27 +121,40 @@ import { day_one, day_two } from "@/service/api/localdata/db";
         }
 
         return days;
+      },
+
+      selectedDateDescription() {
+        if (!this.selectedDate) return;
+        return moment(this.selectedDate).format('MMMM-YYYY');
       }
     },
 
     methods: {
+      setTab() {
+        this.tab = (moment(this.selectedDate).format('MM') == moment().format('MM'))
+        ? moment().format('DD')-1
+        : 0;
+      },
+
       getColor(type) {
         switch (type) {
           case "Revision":
             return 'yellow'
-          case "New":
+          case "Initial":
             return 'green'
-          case "Checkup":
-            return 'blue'
+          case "Check-up":
+            return 'light-blue'
           default:
             return 'ligth-gray';
         }
-
       }
     },
   }
 </script>
 
-<style>
+<style lang="scss" scoped>
+.blocked-schedule {
+  background-color: lightgrey;
+}
 
 </style>

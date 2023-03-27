@@ -66,4 +66,13 @@ i.v-icon.v-icon {
 .nav-margin-left {
   margin-left: 64px;
 }
+
+
+::v-deep .v-btn:focus::before {
+  opacity: 0 !important;
+}
+::v-deep .v-list-item--active:focus::before {
+  opacity: 0 !important;
+}
+
 </style>

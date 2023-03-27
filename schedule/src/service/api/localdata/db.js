@@ -69,14 +69,14 @@ const day_two = [
     time: '08:00',
     doctorone: 'Los Santos',
     doctortwo: '',
-    type: 'Checkup',
+    type: 'Check-up',
     locked: false
   },
   {
     time: '08:30',
     doctorone: '',
     doctortwo: '',
-    type: 'New',
+    type: 'Initial',
     locked: true
   },
   {

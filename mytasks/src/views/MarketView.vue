@@ -22,8 +22,8 @@
         @focus="$event.target.select()"
         :error-messages="requiredQuantity"
       ></v-text-field>
-    </v-flex>    
-    <v-flex xs8 sm3 pl-3 px-sm-3>      
+    </v-flex>
+    <v-flex xs8 sm3 pl-3 px-sm-3>
       <v-text-field
         ref="myinput"
         id="feield-price"
@@ -39,6 +39,7 @@
         class="label-left"
         reverse
         type="tel"
+        @focus="forceBlur()"
       >
 
       </v-text-field>
@@ -61,7 +62,7 @@
     </v-flex>
 
     <v-flex xs12 v-if="!products.length" mt-3>
-      <h1 class="text-center" >Let's go baby</h1>
+      <h2 class="text-center">Add your first product</h2>
     </v-flex>
 
     <v-flex v-else xs12 sm8 mt-3 mb-12>
@@ -91,7 +92,7 @@
               <template v-slot:activator="{on}">
                 <v-icon color="primary" v-on="on">mdi-dots-vertical</v-icon>
               </template>
-              <v-card>
+              <v-card xs2 class="d-flex flex-row flex-nowrap">
                 <v-btn text @click="editProduct(item, index)" color="primary"> <v-icon>mdi-pencil</v-icon></v-btn>
                 <v-btn text @click="deleteItem(index)" color="primary"><v-icon>mdi-delete</v-icon></v-btn>
               </v-card>
@@ -100,14 +101,45 @@
       </v-card>
     </v-flex>
 
+    <v-dialog
+     v-model="showDeleteDialog"
+     width="300px"
+     >
+      <v-card>
+        <v-card-title>
+          Clear list
+        </v-card-title>
+        <v-card-text xs12 class="d-flex justify-center">
+          Are you sure?
+        </v-card-text>
+        <v-card-actions>
+          <v-flex class="d-flex justify-center py-3">
+            <v-btn
+              color="primary"
+              @click="clearList">
+              <v-icon>mdi-check</v-icon> Yes
+            </v-btn>
+            <v-btn
+              class="mx-3"
+              outlined
+              @click="showDeleteDialog = false"
+            >
+            <v-icon>mdi-cancel</v-icon>No
+            </v-btn>
+          </v-flex>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-footer fixed class="d-flex flex-row">
       <v-flex class="d-flex flex-row">
         <v-flex xs6>
           <v-btn
             text
-            @click="clearList"
+            @click="showDeleteDialog = true"
             style="padding-left: 0"
             small
+            :disabled="!products.length"
           >
           <v-icon>mdi-delete-forever-outline</v-icon>
           clear list
@@ -141,6 +173,7 @@ export default {
       requiredPrice: undefined,
       isEditing: false,
       selectedProductIndex: undefined,
+      showDeleteDialog: false
     }
   },
 
@@ -231,6 +264,8 @@ export default {
 
     addItem() {
 
+
+
       if (!this.modelValid()) return;
 
       if (this.isEditing) {
@@ -272,6 +307,11 @@ export default {
 
     clearList() {
       this.products = [];
+      this.showDeleteDialog = false;
+    },
+
+    forceBlur(){
+      this.$refs.productInput.blur();
     }
   }
 }

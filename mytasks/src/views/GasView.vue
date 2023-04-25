@@ -7,6 +7,9 @@
             label="Old Km"
             type="tel"
             v-model="oldkm"
+            append-icon="mdi-refresh"
+            prepend-icon="mdi-road"
+            @click:append="recoveryLastKM"
           >
           </v-text-field>
 
@@ -16,6 +19,7 @@
             label="Current Km"
             type="tel"
             v-model="currentkm"
+            prepend-icon="mdi-road-variant"
           >
           </v-text-field>
 
@@ -25,6 +29,7 @@
             label="Gas in liters"
             type="tel"
             v-model="gasInLiters"
+            prepend-icon="mdi-gas-station"
           >
           </v-text-field>
         </v-flex>
@@ -139,6 +144,10 @@ export default {
       this.currentkm = undefined,
       this.gasInLiters = undefined,
       this.average = undefined
+    },
+
+    recoveryLastKM() {
+      this.oldkm = this.history[this.history.length-1].currentkm;
     }
   },
 

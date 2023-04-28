@@ -1,25 +1,33 @@
 <template>
   <v-container>
+    <h2>{{ selectedPage.title }}</h2>
+
+    <date-order
+      v-if="selectedPage.page == 'date'" 
+      @selected="nextPage" 
+      @detailed="showDetail"
+    />
+
     <products-select 
-      v-if="selectedPage == 'product'" 
+      v-if="selectedPage.page == 'product'" 
       @selected="nextPage" 
       @detailed="showDetail"
     />
 
     <size-products 
-      v-if="selectedPage == 'size'" 
+      v-if="selectedPage.page == 'size'" 
       @selected="nextPage" 
       @detailed="showDetail"
     />
 
     <theme-products 
-      v-if="selectedPage == 'theme'" 
+      v-if="selectedPage.page == 'theme'" 
       @selected="nextPage" 
       @detailed="showDetail"
     />
 
     <resume-order
-      v-if="selectedPage == 'resume'" 
+      v-if="selectedPage.page == 'resume'" 
       @selected="nextPage" 
       @detailed="showDetail"
     />
@@ -33,6 +41,7 @@ import ProductsSelect from '@/components/Products.vue';
 import SizeProducts from '@/components/Sizes.vue';
 import ThemeProducts from '@/components/Themes.vue';
 import ResumeOrder from '@/components/Resume.vue';
+import DateOrder from '@/components/Date.vue';
 import { STAGES } from '@/contants/OrderStage';
 
 export default {
@@ -40,14 +49,15 @@ export default {
     ProductsSelect,
     SizeProducts,
     ThemeProducts,
-    ResumeOrder
+    ResumeOrder,
+    DateOrder
   },
 
   name: 'OrderView',
 
   data() {
     return {
-      selectedPage: STAGES.PRODUCT.page,
+      selectedPage: STAGES.DATE,
     }
   },
 
@@ -58,14 +68,17 @@ export default {
       // this.selectedPage = STAGES.SIZE.page;
 
       switch (this.selectedPage) {
-        case STAGES.PRODUCT.page:
-          this.selectedPage = STAGES.SIZE.page;
+        case STAGES.DATE:
+          this.selectedPage = STAGES.PRODUCT;
           break;
-        case STAGES.SIZE.page:
-          this.selectedPage = STAGES.THEME.page;
+        case STAGES.PRODUCT:
+          this.selectedPage = STAGES.SIZE;
           break;
-        case STAGES.THEME.page:
-          this.selectedPage = STAGES.RESUME.page;
+        case STAGES.SIZE:
+          this.selectedPage = STAGES.THEME;
+          break;
+        case STAGES.THEME:
+          this.selectedPage = STAGES.RESUME;
           break;
       }
     },

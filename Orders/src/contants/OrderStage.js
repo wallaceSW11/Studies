@@ -1,4 +1,8 @@
 const STAGES = {
+  DATE: {
+    title: "Select the date",
+    page: "date"
+  },
   PRODUCT: {
     title: "Select the product",
     page: "product"

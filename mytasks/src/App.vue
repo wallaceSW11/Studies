@@ -104,6 +104,12 @@
           :outlined="this.$route.name == 'gas' "
           @click="() => this.$router.push({ name: 'gas' })"
         >GAS</v-btn>
+        <v-btn
+          class="ml-3"
+          text
+          :outlined="this.$route.name == 'miles' "
+          @click="() => this.$router.push({ name: 'miles' })"
+        >Miles</v-btn>
       </v-flex>
       <v-spacer></v-spacer>
 
@@ -169,6 +175,11 @@ export default {
         icon: 'mdi-gas-station',
         text: 'Gas station',
         router: '/gas'
+      },
+      {
+        icon: 'mdi-airplane',
+        text: 'Miles',
+        router: '/miles'
       },
     ]
   }),

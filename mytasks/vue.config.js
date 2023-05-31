@@ -5,5 +5,6 @@ module.exports = defineConfig({
   ],
   publicPath: process.env.NODE_ENV === 'production'
     ? '/tododone/'
-    : '/'
+    : '/',
+  lintOnSave: false
 })

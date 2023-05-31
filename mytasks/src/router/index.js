@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import MarketView from "../views/MarketView.vue";
 import GasView from "../views/GasView.vue";
+import MilesView from "../views/MilesView.vue"
 
 Vue.use(VueRouter);
 
@@ -21,6 +22,11 @@ const routes = [
         path: "/gas",
         name: "gas",
         component: GasView,
+    },
+    {
+        path: "/miles",
+        name: "miles",
+        component: MilesView,
     },
 ];
 

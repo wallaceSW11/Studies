@@ -3,14 +3,18 @@
 import { IconArrowBigUpLine, IconArrowBigDownLine, IconDotsVertical } from "@tabler/icons-react";
 import { useState } from "react"
 
-export default function Card() {
-  const [title, setTitle] = useState<string>('USD-BTC');
+interface CardProps {
+  quotation: string
+}
+
+export default function Card(props: CardProps) {
+  const [title, setTitle] = useState<string>(props.quotation);
   const [buyValue, setBuyValue] = useState<string>('0,00');
   const [sellValue, setSellValue] = useState<string>('0,00');
   const [buyUp, setBuyUp] = useState<boolean>(true);
   const [sellUp, setSellUp] = useState<boolean>();
 
-  fetch('https://economia.awesomeapi.com.br/last/BTC-USD', {
+  fetch(`https://economia.awesomeapi.com.br/last/${props.quotation}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
@@ -18,10 +22,13 @@ export default function Card() {
   })
   .then((response) => response.json())
   .then((data) => {
-    let quotation = data['BTCUSD'];    
+    if (data && data.status) return;
+
+    let quotation = data[`${props.quotation.replace('-', '')}`];
     setBuyValue(Number(quotation.bid).toLocaleString('en-US', {style:"currency", currency:"USD"}));
     setSellValue(Number(quotation.ask).toLocaleString('en-US', {style:"currency", currency:"USD"}));
   })
+  .catch(erro => console.log(erro))
 
   function openMenu() {
     console.log('open menu')

@@ -48,7 +48,7 @@ export default function Home() {
           <button className="button" onClick={() => setShowModal(true)}><IconPlus />Add quotation</button>
         </div>
       </nav>
-      <main className="p-4 min-h-screen bg-gray-800">
+      <main className="p-4 min-h-[calc(100vh-42px)] bg-gray-800">
         <div className="flex justify-around flex-wrap gap-2">
           {list.map(item => <Card key={item.id} quotation={item.currencyPair}></Card>)}
         </div>

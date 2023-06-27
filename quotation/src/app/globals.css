@@ -25,3 +25,24 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+.button {
+  background-color: rgb(88, 86, 86);
+  border: 1px solid rgb(88, 86, 86);
+  padding: 0px 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: cente;
+  border-radius: 5px;
+}
+
+.button:hover{
+  border: 1px solid #3e3e3e;
+  background-color: rgb(116, 114, 114);
+}
+
+.secondary {
+  background-color: rgb(126, 124, 124);
+  border: 1px solid rgb(88, 86, 86);
+}

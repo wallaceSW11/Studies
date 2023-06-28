@@ -1,20 +1,28 @@
 "use client"
 
-import { IconArrowBigUpLine, IconArrowBigDownLine, IconDotsVertical } from "@tabler/icons-react";
-import { useState } from "react"
+import { Menu, MenuItem } from "@mui/material";
+import { IconDotsVertical, IconEdit, IconTrash } from "@tabler/icons-react";
+import * as React from 'react';
+import { useState } from "react";
 
 interface CardProps {
-  quotation: string
+  quotation: string,
+  onEdit: () => void,
+  onDelete: () => void
 }
 
-export default function Card(props: CardProps) {
-  const [title, setTitle] = useState<string>(props.quotation);
+export default function Card({quotation, onEdit, onDelete}: CardProps) {
+  const [title, setTitle] = useState<string>(quotation);
   const [buyValue, setBuyValue] = useState<string>('0,00');
   const [sellValue, setSellValue] = useState<string>('0,00');
   const [buyUp, setBuyUp] = useState<boolean>(true);
   const [sellUp, setSellUp] = useState<boolean>();
 
-  fetch(`https://economia.awesomeapi.com.br/last/${props.quotation}`, {
+  function formatCurrency(value: string) {
+    return Number(value).toLocaleString(quotation.includes('-BRL') ? 'pt-BR' : 'en-US', {style:"currency", currency: quotation.includes('-BRL') ? "BRL" : "USD"});
+  }
+
+  fetch(`https://economia.awesomeapi.com.br/last/${quotation}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
@@ -24,15 +32,20 @@ export default function Card(props: CardProps) {
   .then((data) => {
     if (data && data.status) return;
 
-    let quotation = data[`${props.quotation.replace('-', '')}`];
-    setBuyValue(Number(quotation.bid).toLocaleString('en-US', {style:"currency", currency:"USD"}));
-    setSellValue(Number(quotation.ask).toLocaleString('en-US', {style:"currency", currency:"USD"}));
+    let quotationFormated = data[`${quotation.replace('-', '')}`];
+    setBuyValue(formatCurrency(quotationFormated.bid));
+    setSellValue(formatCurrency(quotationFormated.ask));
   })
   .catch(erro => console.log(erro))
 
-  function openMenu() {
-    console.log('open menu')
-  }
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
 
   return (
@@ -42,7 +55,25 @@ export default function Card(props: CardProps) {
           <span className="font-bold text-xl">{title}</span>
         </div>
         <div>
-          <button onClick={openMenu}><IconDotsVertical /></button>
+          <button onClick={handleClick}><IconDotsVertical /></button>
+          <Menu
+            id="demo-positioned-menu"
+            aria-labelledby="demo-positioned-button"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            <MenuItem onClick={onEdit}><IconEdit />Edit</MenuItem>
+            <MenuItem onClick={() => {onDelete(); handleClose()}}><IconTrash />Delete</MenuItem>
+          </Menu>
         </div>
       </div>
       <div className="flex flex-grow pt-2">

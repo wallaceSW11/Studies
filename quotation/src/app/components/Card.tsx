@@ -3,7 +3,7 @@
 import { Menu, MenuItem } from "@mui/material";
 import { IconDotsVertical, IconEdit, IconTrash } from "@tabler/icons-react";
 import * as React from 'react';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface CardProps {
   quotation: string,
@@ -12,31 +12,46 @@ interface CardProps {
 }
 
 export default function Card({quotation, onEdit, onDelete}: CardProps) {
-  const [title, setTitle] = useState<string>(quotation);
   const [buyValue, setBuyValue] = useState<string>('0,00');
   const [sellValue, setSellValue] = useState<string>('0,00');
-  const [buyUp, setBuyUp] = useState<boolean>(true);
-  const [sellUp, setSellUp] = useState<boolean>();
 
   function formatCurrency(value: string) {
     return Number(value).toLocaleString(quotation.includes('-BRL') ? 'pt-BR' : 'en-US', {style:"currency", currency: quotation.includes('-BRL') ? "BRL" : "USD"});
   }
 
-  fetch(`https://economia.awesomeapi.com.br/last/${quotation}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-  })
-  .then((response) => response.json())
-  .then((data) => {
-    if (data && data.status) return;
+  // fetch(`https://economia.awesomeapi.com.br/last/${quotation}`, {
+  //   method: 'GET',
+  //   headers: {
+  //     'Content-Type': 'application/json'
+  //   },
+  // })
+  // .then((response) => response.json())
+  // .then((data) => {
+  //   if (data && data.status) return;
 
-    let quotationFormated = data[`${quotation.replace('-', '')}`];
-    setBuyValue(formatCurrency(quotationFormated.bid));
-    setSellValue(formatCurrency(quotationFormated.ask));
-  })
-  .catch(erro => console.log(erro))
+  //   let quotationFormated = data[`${quotation.replace('-', '')}`];
+  //   setBuyValue(formatCurrency(quotationFormated.bid));
+  //   setSellValue(formatCurrency(quotationFormated.ask));
+  // })
+  // .catch(erro => console.log(erro))
+
+  useEffect(() => {
+    fetch(`https://economia.awesomeapi.com.br/last/${quotation}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data && data.status) return;
+  
+      let quotationFormated = data[`${quotation.replace('-', '')}`];
+      setBuyValue(formatCurrency(quotationFormated.bid));
+      setSellValue(formatCurrency(quotationFormated.ask));
+    })
+    .catch(erro => console.log(erro))
+  }, [quotation]);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -52,7 +67,7 @@ export default function Card({quotation, onEdit, onDelete}: CardProps) {
     <div className="flex flex-col bg-gray-900 rounded-md w-64 h-32">
       <div className="flex justify-center py-2">
         <div className="flex flex-grow justify-center">
-          <span className="font-bold text-xl">{title}</span>
+          <p><span className="font-bold text-xl">{quotation}</span></p>
         </div>
         <div>
           <button onClick={handleClick}><IconDotsVertical /></button>
@@ -71,7 +86,7 @@ export default function Card({quotation, onEdit, onDelete}: CardProps) {
               horizontal: 'right',
             }}
           >
-            <MenuItem onClick={onEdit}><IconEdit />Edit</MenuItem>
+            <MenuItem onClick={() => {onEdit(); handleClose()}}><IconEdit />Edit</MenuItem>
             <MenuItem onClick={() => {onDelete(); handleClose()}}><IconTrash />Delete</MenuItem>
           </Menu>
         </div>
@@ -80,15 +95,13 @@ export default function Card({quotation, onEdit, onDelete}: CardProps) {
         <div className="flex flex-col flex-grow">
           <div className="flex justify-center pb-2">Buy</div>
           <div className="flex justify-center items-center">
-            <span>{buyValue}</span>
-            {/* {buyUp ? (<IconArrowBigUpLine color="green" />) : (<IconArrowBigDownLine color="red" />)} */}
+            <p><span>{buyValue}</span></p>
           </div>
         </div>
         <div className="flex flex-col flex-grow">
           <div className="flex justify-center pb-2">Sell</div>
           <div className="flex justify-center items-center">
-            <span>{sellValue}</span>
-            {/* {sellUp ? (<IconArrowBigUpLine color="green" />) : (<IconArrowBigDownLine color="red" />)} */}
+            <p><span>{sellValue}</span></p>
           </div>
         </div>
       </div>

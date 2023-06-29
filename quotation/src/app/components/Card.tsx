@@ -19,22 +19,6 @@ export default function Card({quotation, onEdit, onDelete}: CardProps) {
     return Number(value).toLocaleString(quotation.includes('-BRL') ? 'pt-BR' : 'en-US', {style:"currency", currency: quotation.includes('-BRL') ? "BRL" : "USD"});
   }
 
-  // fetch(`https://economia.awesomeapi.com.br/last/${quotation}`, {
-  //   method: 'GET',
-  //   headers: {
-  //     'Content-Type': 'application/json'
-  //   },
-  // })
-  // .then((response) => response.json())
-  // .then((data) => {
-  //   if (data && data.status) return;
-
-  //   let quotationFormated = data[`${quotation.replace('-', '')}`];
-  //   setBuyValue(formatCurrency(quotationFormated.bid));
-  //   setSellValue(formatCurrency(quotationFormated.ask));
-  // })
-  // .catch(erro => console.log(erro))
-
   useEffect(() => {
     fetch(`https://economia.awesomeapi.com.br/last/${quotation}`, {
       method: 'GET',

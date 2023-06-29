@@ -3,10 +3,11 @@
 import { IconPlus } from "@tabler/icons-react"
 import Card from "./components/Card"
 import Modal from "./components/modal/Modal"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Button from "@mui/material/Button";
 import { MenuItem, Select } from "@mui/material"
 import CurrencyPair from "./models/CurrencyPair";
+import { CURRENCY_PAIR } from "./constants/constants";
 
 export default function Home() {
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -14,23 +15,16 @@ export default function Home() {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [idEditing, setIdEditing] = useState<number>(-1);
 
-  const [list, setList] = useState<CurrencyPair[]>(
-  [
-    {
-      id: 1,
-      currencyPair: "BTC-USD"
-    },
-    {
-      id: 2,
-      currencyPair: "BTC-BRL"
-    },
-    {
-      id: 3,
-      currencyPair: "USD-BRL"
-    }
-  ]);
+  const [list, setList] = useState<CurrencyPair[]>([]);
 
-  const currencies = ["BTC-USD","BTC-BRL","USD-BRL","CAD-BRL","CAD-USD"]
+  useEffect(() => {
+    let quotations = JSON.parse(localStorage.getItem("quotations") || "");
+    if (!!quotations) {
+      setList(quotations);
+    }
+  }, [])
+
+  const currencies = CURRENCY_PAIR;
 
   function addQuotation() {
     if (!currency) {
@@ -47,6 +41,7 @@ export default function Home() {
     setIsEditing(false);
     setShowModal(false);
     setCurrency("");
+    setIdEditing(-1);
   }
 
   function editCurrency(item: CurrencyPair) {
@@ -59,6 +54,10 @@ export default function Home() {
   function deleteCurrency(id: number){
     setList(list.filter(item => item.id != id));
   }
+
+  useEffect(() => {
+    localStorage.setItem('quotations', JSON.stringify(list));
+  }, [list]);
 
   return (
     <div>
@@ -85,7 +84,7 @@ export default function Home() {
               displayEmpty
             >
               <MenuItem value="" disabled>Select the currency pair</MenuItem>
-              {currencies.map((item, index) => <MenuItem key={index} value={item}>{item}</MenuItem>)}
+              {currencies.map((item, index) => <MenuItem key={index} value={item.value}>{item.value}</MenuItem>)}
             </Select>
           </div>
         </Modal>
@@ -94,3 +93,7 @@ export default function Home() {
 
   )
 }
+function componentWillMount() {
+  throw new Error("Function not implemented.")
+}
+

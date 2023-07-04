@@ -38,6 +38,10 @@ export default function Home() {
       setList(current => [...current, {id: list.length+1, currencyPair: currency}]);
     }
 
+    clear();
+  }
+
+  function clear() {
     setIsEditing(false);
     setShowModal(false);
     setCurrency("");
@@ -75,7 +79,7 @@ export default function Home() {
           {list.map(item => <Card key={item.id} quotation={item.currencyPair} onEdit={() => editCurrency(item)} onDelete={() => deleteCurrency(item.id)}></Card>)}
         </div>
 
-        <Modal title={isEditing ? 'Edit quotation' : 'New quotation'} show={showModal} onClose={() => setShowModal(false)} onSave={addQuotation}>
+        <Modal title={isEditing ? 'Edit quotation' : 'New quotation'} show={showModal} onClose={() => clear()} onSave={addQuotation}>
           <div className="flex justify-center">
             <Select
               id="currency-pair"

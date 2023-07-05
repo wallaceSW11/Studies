@@ -8,13 +8,14 @@ import { ReactComponentElement } from 'react';
 
 interface ModalProps {
   show: boolean,
-  onClose: any,
-  title: string,
+  onClose?: any,
+  title?: string,
   children: ReactComponentElement<any>,
-  onSave: any
+  onSave: any,
+  hideSecondaryButton?: boolean
 }
 
-export default function Modal({show, onClose, title, children, onSave}: ModalProps) {
+export default function Modal({show, onClose, title, children, onSave, hideSecondaryButton = false}: ModalProps) {
   if (!show) return null;
 
   return (
@@ -24,6 +25,8 @@ export default function Modal({show, onClose, title, children, onSave}: ModalPro
         onClose={onClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        fullWidth={true}
+        maxWidth="xs"
       >
         <DialogTitle id="alert-dialog-title">
           {title}
@@ -35,7 +38,7 @@ export default function Modal({show, onClose, title, children, onSave}: ModalPro
         </DialogContent>
         <DialogActions>
           <Button onClick={onSave} variant="outlined">OK</Button>
-          <Button onClick={onClose}>Cancel</Button>
+          {!hideSecondaryButton && <Button onClick={onClose}>Cancel</Button>}
         </DialogActions>
       </Dialog>
     </div>

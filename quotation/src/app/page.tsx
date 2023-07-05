@@ -8,6 +8,7 @@ import Button from "@mui/material/Button";
 import { MenuItem, Select } from "@mui/material"
 import CurrencyPair from "./models/CurrencyPair";
 import { CURRENCY_PAIR } from "./constants/constants";
+import Message from "./components/Message"
 
 export default function Home() {
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -17,8 +18,12 @@ export default function Home() {
 
   const [list, setList] = useState<CurrencyPair[]>([]);
 
+  const [showMessageFull, setShowMessageFull] = useState<boolean>(false);
+  const [showMessageRequired, setShowMessageRequired] = useState<boolean>(false);
+
   useEffect(() => {
-    let quotations = JSON.parse(localStorage.getItem("quotations") || "");
+    let quotations = JSON.parse(String(localStorage.getItem("quotations")) || "");
+
     if (!!quotations) {
       setList(quotations);
     }
@@ -26,9 +31,18 @@ export default function Home() {
 
   const currencies = CURRENCY_PAIR;
 
+  function openRegister() {
+    if (list.length == currencies.length) {
+      setShowMessageFull(true);
+      return;
+    }
+    
+    setShowModal(true);
+  }
+
   function addQuotation() {
     if (!currency) {
-      alert("Please, select the currency");
+      setShowMessageRequired(true);      
       return;
     }
 
@@ -59,6 +73,10 @@ export default function Home() {
     setList(list.filter(item => item.id != id));
   }
 
+  function disabled(item: CurrencyPair) {
+    return !!(list.some(cur => cur.currencyPair == item.currencyPair));
+  }
+
   useEffect(() => {
     localStorage.setItem('quotations', JSON.stringify(list));
   }, [list]);
@@ -71,10 +89,11 @@ export default function Home() {
         </div>
 
         <div className="flex flex-row">
-          <Button variant="outlined" startIcon={<IconPlus />} onClick={() => setShowModal(true)}>Add quotation</Button>
+          <Button variant="outlined" startIcon={<IconPlus />} onClick={openRegister}>Add quotation</Button>
         </div>
       </nav>
-      <main className="p-4 min-h-[calc(100vh-53px)] bg-gray-800">
+      
+      <main className="p-4 min-h-[calc(100vh-101px)] bg-gray-800">
         <div className="flex justify-around flex-wrap gap-2">
           {list.map(item => <Card key={item.id} quotation={item.currencyPair} onEdit={() => editCurrency(item)} onDelete={() => deleteCurrency(item.id)}></Card>)}
         </div>
@@ -88,16 +107,28 @@ export default function Home() {
               displayEmpty
             >
               <MenuItem value="" disabled>Select the currency pair</MenuItem>
-              {currencies.map((item, index) => <MenuItem key={index} value={item.value}>{item.value}</MenuItem>)}
+              {currencies.map((item, index) => {
+                return <MenuItem 
+                  key={index} 
+                  value={item.value} 
+                  disabled={list.some(cur => cur.currencyPair == item.value)}
+                  >{item.value}</MenuItem>
+              })}
             </Select>
           </div>
         </Modal>
+
+        <Message title="Ops" text="All available currencies are listed. Please, edit or delete one." show={showMessageFull} onClose={() => setShowMessageFull(false)} />
+        <Message title="Hello" text="Please, select the currency" show={showMessageRequired} onClose={() => setShowMessageRequired(false)} />
+        
       </main>
+
+      <footer>
+        <div className="py-3 px-2">
+          <span>Data from API: <a href="https://economia.awesomeapi.com.br/" target="_blank">https://economia.awesomeapi.com.br</a></span>
+        </div>
+      </footer>
     </div>
 
   )
 }
-function componentWillMount() {
-  throw new Error("Function not implemented.")
-}
-

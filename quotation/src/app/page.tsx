@@ -99,12 +99,12 @@ export default function Home() {
         </div>
 
         <Modal title={isEditing ? 'Edit quotation' : 'New quotation'} show={showModal} onClose={() => clear()} onSave={addQuotation}>
-          <div className="flex justify-center">
             <Select
               id="currency-pair"
               value={currency}
               onChange={(event) => setCurrency(event.target.value as string)}
               displayEmpty
+              fullWidth
             >
               <MenuItem value="" disabled>Select the currency pair</MenuItem>
               {currencies.map((item, index) => {
@@ -115,7 +115,6 @@ export default function Home() {
                   >{item.value}</MenuItem>
               })}
             </Select>
-          </div>
         </Modal>
 
         <Message title="Ops" text="All available currencies are listed. Please, edit or delete one." show={showMessageFull} onClose={() => setShowMessageFull(false)} />

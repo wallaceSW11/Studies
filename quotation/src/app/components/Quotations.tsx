@@ -4,21 +4,35 @@ import { useEffect, useState } from 'react';
 import { CURRENCY_PAIR } from '../constants/constants';
 import Modal from './modal/Modal';
 import { MenuItem, Select } from '@mui/material';
-import Message from './Message';
+import useMessage from '../hooks/useMessage';
 
 interface QuotationsProps {
   onAdd: boolean
 }
 
 export default function Quotations({ onAdd } : QuotationsProps) {
-  
+  type Alert = {
+    title: string,
+    text: string
+  }
+
   const [list, setList] = useState<CurrencyPair[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [currency, setCurrency] = useState<string>("");
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [idEditing, setIdEditing] = useState<number>(-1);
-  const [showMessageFull, setShowMessageFull] = useState<boolean>(false);
-  const [showMessageRequired, setShowMessageRequired] = useState<boolean>(false);
+  const [alert, setAlert] = useState<Alert>();
+  const { Message, show } = useMessage();
+
+  const MESSAGE_ALL_ADDED = {
+    title: "Ops", 
+    text: "All available currencies are listed. Please, edit or delete one."
+  }
+
+  const MESSAGE_REQUIRED = {
+    title: "Hello", 
+    text: "Please, select the currency"
+  }
 
   useEffect(() => {
     let quotations = JSON.parse(String(localStorage.getItem("quotations")) || "");
@@ -32,7 +46,8 @@ export default function Quotations({ onAdd } : QuotationsProps) {
     if (!onAdd) return;
 
     if (list.length == currencies.length) {
-      setShowMessageFull(true);
+      setAlert(MESSAGE_ALL_ADDED);
+      show(); 
       return;
     }
 
@@ -47,7 +62,8 @@ export default function Quotations({ onAdd } : QuotationsProps) {
 
   function addQuotation() {
     if (!currency) {
-      setShowMessageRequired(true);
+      setAlert(MESSAGE_REQUIRED);
+      show(); 
       return;
     }
 
@@ -89,7 +105,7 @@ export default function Quotations({ onAdd } : QuotationsProps) {
             onDelete={() => deleteCurrency(item.id)}
           />})}
       </div>
-      
+
       <Modal 
         title={isEditing ? 'Edit quotation' : 'New quotation'} 
         show={showModal} 
@@ -114,19 +130,7 @@ export default function Quotations({ onAdd } : QuotationsProps) {
         </Select>
       </Modal>
 
-      <Message 
-        title="Ops" 
-        text="All available currencies are listed. Please, edit or delete one." 
-        show={showMessageFull} 
-        onClose={() => setShowMessageFull(false)} 
-      />
-
-      <Message 
-        title="Hello" 
-        text="Please, select the currency" 
-        show={showMessageRequired} 
-        onClose={() => setShowMessageRequired(false)} 
-        />
+      {Message && <Message title={alert?.title || ""} text={alert?.text} /> }
     </>
   )
 }

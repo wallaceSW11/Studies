@@ -1,0 +1,19 @@
+.card-movie {
+  max-width: 200px;
+}
+
+.card-movie {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid red;
+}
+
+.card-image {
+  display: flex;
+  justify-content: center;
+}
+
+.card-image > img {
+  max-width: 150px;
+}

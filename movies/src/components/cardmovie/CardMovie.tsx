@@ -1,5 +1,8 @@
+import { Button } from "@mui/material";
 import Movie from "../../models/MovieModel";
 import "./style.css"
+import { Add } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 
 export default function CardMovie({ movie } : { movie : Movie}) {
   return (
@@ -10,8 +13,10 @@ export default function CardMovie({ movie } : { movie : Movie}) {
         </div>
         <div className="card-content">
           <div className="card-text">
-            <h3>{`${movie.title} (${movie.year})`}</h3>
-            <p>{movie.synopsis}</p>
+            <p>{`${movie.title} (${movie.year})`}</p>
+          </div>
+          <div className="card-action">
+            <Link to={`/movie/${movie.id}`}><Button variant="outlined" startIcon={<Add />}>Details</Button> </Link> 
           </div>
         </div>
       </div>

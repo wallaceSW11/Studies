@@ -4,6 +4,7 @@ import MoviesData from "../services/api";
 import { Link, useParams } from "react-router-dom";
 import { Button } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
+import { MovieDetail } from "../components/moviedetail/MovieDetail";
 
 
 
@@ -24,20 +25,9 @@ export default function Movie() {
   useEffect(() => load, [load]);
 
   return (
-    <div className="container">
-      <Link to="/" ><Button variant="outlined" startIcon={<ArrowBack />}>Go back</Button></Link>
-      <div>
-        <div className="movie-image">
-          <img src={movie?.image} alt="" />
-        </div>
-        <div>
-          <div className="movie-title">{movie?.title}</div>
-          <div className="movie-synpsis">{movie?.synopsis}</div>
-          <div>
-            <div>elenco</div>  
-          </div>
-        </div>
-      </div>
-    </div>
+    <>
+      <Link to="/" ><Button size="small" variant="outlined" startIcon={<ArrowBack />}>Go back</Button></Link>
+      <MovieDetail movie={movie} />
+    </>
   )
 }

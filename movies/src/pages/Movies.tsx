@@ -22,7 +22,7 @@ export default function Movies() {
     <div className='container'>
       <h1>Tendencies</h1>
       <br />
-      <div style={{display: "flex", flexDirection: "row", flexWrap: "wrap", gap: "5px"}}>
+      <div style={{display: "flex", flexDirection: "row", flexWrap: "wrap", gap: "10px"}}>
         {list && list.map(item => <CardMovie key={item.id} movie={item} />) || <p>Ops, no movies found</p>}
       </div>
     </div>

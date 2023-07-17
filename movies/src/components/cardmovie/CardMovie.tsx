@@ -16,7 +16,7 @@ export default function CardMovie({ movie } : { movie : Movie}) {
             <p>{`${movie.title} (${movie.year})`}</p>
           </div>
           <div className="card-action">
-            <Link to={`/movie/${movie.id}`}><Button variant="outlined" startIcon={<Add />}>Details</Button> </Link> 
+            <Link to={`/movie/${movie.id}`}><Button size="small" variant="outlined" startIcon={<Add />}>Details</Button> </Link> 
           </div>
         </div>
       </div>

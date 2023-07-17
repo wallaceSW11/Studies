@@ -2,14 +2,23 @@
 
 import MovieModel from '../models/MovieModel';
 
-const MoviesData: MovieModel[] = [  
+const MoviesData: MovieModel[] = [ 
+  {
+    id: '0',
+    title: 'Fast and Furious',
+    year: 2001,
+    type: 'Action, Crime, Thriller',
+    duration: '1h 44m',
+    synopsis: 'Um investigador da polícia se infiltra em uma turma de rachas suspeita de roubar caminhões, mas acaba apaixonando-se pela irmã do líder.',
+    image: 'https://www.themoviedb.org/t/p/w300_and_h450_bestv2/zIMCfztNwx2rA6XWGaJhcqdG7Wt.jpg'
+  }, 
   {
     id: '1',
-    title: '+Fast +Furios',
-    year: 2012,
-    type: 'Action',
-    duration: '2h 15m',
-    synopsis: 'lorem ipsom adasfasf',
+    title: '+Fast +Furious',
+    year: 2003,
+    type: 'Action, Crime, Thriller',
+    duration: '1h 47m',
+    synopsis: 'O ex-policial Brian comete uma grande traição, juntando-se a um amigo ex-presidiário no transporte de dinheiro sujo para uma importadora-exportadora muito suspeita.',
     image: 'https://www.themoviedb.org/t/p/w300_and_h450_bestv2/tMUnCAgfARTdAu8ylPw4Wjh3e5N.jpg'
   },
   

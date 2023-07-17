@@ -6,4 +6,6 @@ Projects to test:
 
 ## RabbitMQ (running in docker)
 
-## vuetify
+## vue vuetify
+
+## ReactJS with TS, Tailwind, Vite, NextJS.

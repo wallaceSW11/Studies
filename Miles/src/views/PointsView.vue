@@ -22,57 +22,96 @@
     <v-dialog
       v-model="openDialog"
       persistent
-      max-width="80%"
+      max-width="60%"
     >
       <v-card>
         <v-card-title>
-          Points
+        <span style="color: #fb8c00">Points</span>
         </v-card-title>
 
         <v-card-text>
-            <v-container>
-              <v-row>
-                <v-col
-                  cols="12"
-                  md="4"
-                >
-                  <v-text-field
-                    v-model="firstname"
-                    :counter="10"
-                    label="First name"
-                    required
-                  ></v-text-field>
-                </v-col>
-        
-                <v-col
-                  cols="12"
-                  md="4"
-                >
-                  <v-text-field
-                    v-model="lastname"
-                    :counter="10"
-                    label="Last name"
-                    required
-                  ></v-text-field>
-                </v-col>
-        
-                <v-col
-                  cols="12"
-                  md="4"
-                >
-                  <v-text-field
-                    v-model="email"
-                    label="E-mail"
-                    required
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-            </v-container>
+          <v-container class="d-flex flex-wrap">
+            <v-flex xs4 pr-4>
+              <date-picker 
+                label="Date"
+                v-model="point.date"
+              ></date-picker>
+            </v-flex>
+
+            <v-flex xs4 px-4>
+              <v-select
+                :items="types"
+                :item-text="i => i.title"
+                v-model="point.type"
+                label="Type"
+                prepend-inner-icon="mdi-swap-horizontal"
+              ></v-select>
+            </v-flex>
+
+            <v-flex xs4 pl-4>
+              <v-text-field
+                v-model="point.quantity"
+                label="Quantity"
+                append-icon="mdi-numeric"
+                required
+                reverse
+                v-mask="'#######'"
+                class="label-left"
+              ></v-text-field>
+            </v-flex>
+
+            <v-flex xs4 pr-4>
+              <currency-field 
+                label="Total value"
+                v-model="point.totalValue"
+              ></currency-field>
+            </v-flex>
+
+            <v-flex xs4 pl-4>
+              <span>Cost Effective:</span>
+              <p class="text-right mr-2" style="font-size: 18px"> <b>{{point.costEffective() | formatedMoney}}</b></p>
+            </v-flex>
+
+            <v-flex xs4 pl-4>
+              <span>Bonus (100% transfer)</span>
+              <p class="text-right mr-2" style="font-size: 18px"> <b>{{point.costEffective() / 2 | formatedMoney}}</b></p>
+            </v-flex>
+
+            <!-- TODO: Transform into component -->
+            <v-flex class="d-flex" xs12>
+              <v-flex class="d-flex flex-grow-0">
+                <h3 style="color: #fb8c00">Installment</h3>
+              </v-flex>
+              <v-flex>
+                <div style="border-bottom: 1px solid #fb8c00; height: 18px; margin-left: 4px" ></div>                
+              </v-flex>
+            </v-flex>
+
+            <v-flex xs6 pr-4 mt-4>
+              <v-text-field
+                v-model="point.installmentNumber"
+                label="Installment number"
+                v-mask="'##'"
+                required
+                reverse
+                class="label-left"
+              ></v-text-field>
+            </v-flex>
+
+            <v-flex xs6 pl-4 mt-4>
+              <date-picker 
+                label="First installment"
+                v-model="point.firstInstallment"
+              ></date-picker>
+            </v-flex>
+    
+          </v-container>
         </v-card-text>
 
         <v-card-actions>
-          <v-flex>
-            <v-btn color="primary" @click="openDialog = !openDialog">Save</v-btn>
+          <v-flex class="d-flex">
+            <v-spacer></v-spacer>
+            <v-btn class="mr-4" color="primary" @click="openDialog = !openDialog">Save</v-btn>
             <v-btn outlined @click="openDialog = !openDialog">Cancel</v-btn>
           </v-flex>
         </v-card-actions>
@@ -82,16 +121,39 @@
 </template>
 
 <script>
+  import PointModel from '@/models/PointModel';
+  import { TYPES } from '@/constants/point-constants'
+  import DatePicker from '@/components/DatePicker.vue';
+  import CurrencyField from '@/components/CurrencyField.vue';
+
   export default {
+    components: {
+      DatePicker,
+      CurrencyField
+    },
+
+    filters: {
+      formatedMoney(value) {
+        return value.toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: "BRL",
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }) || 0;
+      }
+    },
+
+    watch: {
+      'point.totalValue'(newValue) {
+        console.log('total', newValue);
+      }
+    },
 
     data () {
       return {
-        openDialog: false,
-        firstname: undefined,
-        lastname: undefined,
-        email: undefined,
-        valid: undefined,
-
+        openDialog: true,
+        point: new PointModel(),
+        types: TYPES,
         headers: [
           {
             text: 'Dessert (100g serving)',
@@ -193,9 +255,8 @@
 </script>
 
 <style scoped>
-.opa {
-  background-color: red;
-  display: flex;
-  flex-direction: row;
+::v-deep .label-left .v-label {
+  left: 0 !important;
+  transform-origin: top left !important;
 }
 </style>

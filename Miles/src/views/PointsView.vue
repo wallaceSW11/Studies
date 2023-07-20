@@ -6,19 +6,55 @@
       </v-flex>
       <v-spacer></v-spacer>
       <v-flex flex-grow-0>
-        <v-btn outlined color="primary" @click="openDialog = !openDialog"><v-icon>mdi-plus</v-icon>Add</v-btn>
+        <v-btn outlined color="primary" @click="addItem"><v-icon>mdi-plus</v-icon>Add</v-btn>
       </v-flex>
     </v-flex>
 
     <v-flex mt-5>
       <v-data-table
         :headers="headers"
-        :items="desserts"
-        :items-per-page="5"
+        :items="points"
+        :items-per-page="10"
+        height="400px"
         class="elevation-1"
-      ></v-data-table>
-    </v-flex>  
-    
+      >
+        <template v-slot:[`item.totalValue`]="{ item }">
+          {{ item.totalValue | formatedMoney }}
+        </template>
+
+        <template v-slot:[`item.costEffective`]="{ item }">
+          {{ item.costEffective() | formatedMoney }}
+        </template>
+
+
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-icon
+            small
+            class="mr-2"
+            @click="editItem(item)"
+          >
+            mdi-pencil
+          </v-icon>
+          <v-icon
+            small
+            @click="deleteItem(item)"
+          >
+            mdi-delete
+          </v-icon>
+        </template>
+
+        <!-- <template v-slot:footer>
+          <v-flex xs12 style="border: 1px solid orange">
+            <span>Summary</span>
+            <p>Total value: </p>
+            <p>Total cost ffective: </p>
+            <p>Average cost: </p>
+          </v-flex>
+        </template> -->
+
+      </v-data-table>
+    </v-flex>
+
     <v-dialog
       v-model="openDialog"
       persistent
@@ -30,99 +66,117 @@
         </v-card-title>
 
         <v-card-text>
-          <v-container class="d-flex flex-wrap">
-            <v-flex xs4 pr-4>
-              <date-picker 
-                label="Date"
-                v-model="point.date"
-              ></date-picker>
-            </v-flex>
-
-            <v-flex xs4 px-4>
-              <v-select
-                :items="types"
-                :item-text="i => i.title"
-                v-model="point.type"
-                label="Type"
-                prepend-inner-icon="mdi-swap-horizontal"
-              ></v-select>
-            </v-flex>
-
-            <v-flex xs4 pl-4>
-              <v-text-field
-                v-model="point.quantity"
-                label="Quantity"
-                append-icon="mdi-numeric"
-                required
-                reverse
-                v-mask="'#######'"
-                class="label-left"
-              ></v-text-field>
-            </v-flex>
-
-            <v-flex xs4 pr-4>
-              <currency-field 
-                label="Total value"
-                v-model="point.totalValue"
-              ></currency-field>
-            </v-flex>
-
-            <v-flex xs4 pl-4>
-              <span>Cost Effective:</span>
-              <p class="text-right mr-2" style="font-size: 18px"> <b>{{point.costEffective() | formatedMoney}}</b></p>
-            </v-flex>
-
-            <v-flex xs4 pl-4>
-              <span>Bonus (100% transfer)</span>
-              <p class="text-right mr-2" style="font-size: 18px"> <b>{{point.costEffective() / 2 | formatedMoney}}</b></p>
-            </v-flex>
-
-            <!-- TODO: Transform into component -->
-            <v-flex class="d-flex" xs12>
-              <v-flex class="d-flex flex-grow-0">
-                <h3 style="color: #fb8c00">Installment</h3>
+          <v-form ref="form" v-model="valid" lazy-validation>
+            <v-container class="d-flex flex-wrap">
+              <v-flex xs4 pr-4>
+                <date-picker
+                  label="Date"
+                  v-model="point.date"
+                ></date-picker>
               </v-flex>
-              <v-flex>
-                <div style="border-bottom: 1px solid #fb8c00; height: 18px; margin-left: 4px" ></div>                
+
+              <v-flex xs4 px-4>
+                <v-select
+                  :items="typesOfEntries"
+                  :item-text="i => i.title"
+                  v-model="point.type"
+                  label="Type"
+                  prepend-inner-icon="mdi-swap-horizontal"
+                  :rules="[rules.required]"
+                ></v-select>
               </v-flex>
-            </v-flex>
 
-            <v-flex xs6 pr-4 mt-4>
-              <v-text-field
-                v-model="point.installmentNumber"
-                label="Installment number"
-                v-mask="'##'"
-                required
-                reverse
-                class="label-left"
-              ></v-text-field>
-            </v-flex>
+              <v-flex xs4 pl-4>
+                <v-text-field
+                  v-model="point.quantity"
+                  label="Quantity"
+                  append-icon="mdi-numeric"
+                  required
+                  reverse
+                  v-mask="'#######'"
+                  class="label-left"
+                  :rules="[rules.required]"
+                ></v-text-field>
+              </v-flex>
 
-            <v-flex xs6 pl-4 mt-4>
-              <date-picker 
-                label="First installment"
-                v-model="point.firstInstallment"
-              ></date-picker>
-            </v-flex>
-    
-          </v-container>
+              <v-flex xs4 pr-4>
+                <currency-field
+                  label="Total value"
+                  v-model="point.totalValue"
+                ></currency-field>
+              </v-flex>
+
+              <v-flex xs4 pl-4>
+                <span>Cost Effective:</span>
+                <p class="text-right mr-2" style="font-size: 18px"> <b>{{point.costEffective() | formatedMoney}}</b></p>
+              </v-flex>
+
+              <v-flex xs4 pl-4>
+                <span>Bonus (100% transfer)</span>
+                <p class="text-right mr-2" style="font-size: 18px"> <b>{{point.costEffective() / 2 | formatedMoney}}</b></p>
+              </v-flex>
+
+              <!-- TODO: Transform into component -->
+              <v-flex class="d-flex" xs12>
+                <v-flex class="d-flex flex-grow-0">
+                  <h3 style="color: #fb8c00">Installment</h3>
+                </v-flex>
+                <v-flex>
+                  <div style="border-bottom: 1px solid #fb8c00; height: 18px; margin-left: 4px" ></div>
+                </v-flex>
+              </v-flex>
+
+              <v-flex xs6 pr-4 mt-4>
+                <v-text-field
+                  v-model="point.installmentNumber"
+                  label="Installment number"
+                  v-mask="'##'"
+                  required
+                  reverse
+                  class="label-left"
+                ></v-text-field>
+              </v-flex>
+
+              <v-flex xs6 pl-4 mt-4>
+                <date-picker
+                  label="First installment"
+                  v-model="point.firstInstallment"
+                ></date-picker>
+              </v-flex>
+
+            </v-container>
+          </v-form>
         </v-card-text>
 
         <v-card-actions>
           <v-flex class="d-flex">
             <v-spacer></v-spacer>
-            <v-btn class="mr-4" color="primary" @click="openDialog = !openDialog">Save</v-btn>
+            <v-btn class="mr-4" color="primary" @click="toggleSave">Save</v-btn>
             <v-btn outlined @click="openDialog = !openDialog">Cancel</v-btn>
           </v-flex>
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-footer>
+      <v-flex xs12>
+        <v-flex class="d-flex flex-column">
+          <span><b>Summary</b></span>
+          <span>Total points: {{ totalPoints }}</span>
+          <span>Total value: {{ totalValue | formatedMoney }}</span>
+          <span>Total cost effective: {{ totalCostEffective | formatedMoney }}</span>
+          <span>Average cost: {{ averageCost | formatedMoney }}</span>
+          <span>Average cost bonus: {{ averageCost / 2 | formatedMoney }}</span>
+        </v-flex>
+      </v-flex>
+
+    </v-footer>
   </v-container>
 </template>
 
 <script>
   import PointModel from '@/models/PointModel';
-  import { TYPES } from '@/constants/point-constants'
+  import { TYPES_OF_ENTRIES, HEADERS_POINTS } from '@/constants/point-constants'
   import DatePicker from '@/components/DatePicker.vue';
   import CurrencyField from '@/components/CurrencyField.vue';
 
@@ -130,6 +184,20 @@
     components: {
       DatePicker,
       CurrencyField
+    },
+
+    data () {
+      return {
+        openDialog: false,
+        point: new PointModel(),
+        typesOfEntries: TYPES_OF_ENTRIES,
+        rules: {
+          required: value => !!value || 'Required.'
+        },
+        valid: true,
+        headers: HEADERS_POINTS,
+        points: []
+      }
     },
 
     filters: {
@@ -141,116 +209,91 @@
           maximumFractionDigits: 2
         }) || 0;
       }
+    }, 
+
+    beforeMount () {
+      this.points.push(new PointModel({
+        date: '31/05/2023',
+        type: 'BUY',
+        quantity: 9000,
+        totalValue: 299.90
+      }));
+
+      this.points.push(new PointModel({
+        date: '12/06/2023',
+        type: 'BUY',
+        quantity: 30000,
+        totalValue: 1008
+      }));
+
+      this.points.push(new PointModel({
+        date: '16/06/2023',
+        type: 'BUY',
+        quantity: 11000,
+        totalValue: 346.50
+      }));
+
+      this.points.push(new PointModel({
+        date: '30/06/2023',
+        type: 'BUY',
+        quantity: 10500,
+        totalValue: 299.90
+      }))
     },
 
-    watch: {
-      'point.totalValue'(newValue) {
-        console.log('total', newValue);
+    methods: {
+      toggleSave(e) {
+        e.preventDefault();
+
+        if (!this.$refs.form.validate()) return;
+
+        this.points.push(this.point);
+        this.point = new PointModel();
+        this.valid = true;
+        this.openDialog = false;
+        this.$refs.form.resetValidation();
+      },
+
+      addItem() {
+        this.openDialog = true;
+      },
+
+      editItem(item) {
+        console.log(item);
+      },
+
+      deleteItem(item) {
+        console.log(item);
       }
     },
 
-    data () {
-      return {
-        openDialog: true,
-        point: new PointModel(),
-        types: TYPES,
-        headers: [
-          {
-            text: 'Dessert (100g serving)',
-            align: 'start',
-            sortable: false,
-            value: 'name',
-          },
-          { text: 'Calories', value: 'calories' },
-          { text: 'Fat (g)', value: 'fat' },
-          { text: 'Carbs (g)', value: 'carbs' },
-          { text: 'Protein (g)', value: 'protein' },
-          { text: 'Iron (%)', value: 'iron' },
-        ],
-        desserts: [
-          {
-            name: 'Frozen Yogurt',
-            calories: 159,
-            fat: 6.0,
-            carbs: 24,
-            protein: 4.0,
-            iron: 1,
-          },
-          {
-            name: 'Ice cream sandwich',
-            calories: 237,
-            fat: 9.0,
-            carbs: 37,
-            protein: 4.3,
-            iron: 1,
-          },
-          {
-            name: 'Eclair',
-            calories: 262,
-            fat: 16.0,
-            carbs: 23,
-            protein: 6.0,
-            iron: 7,
-          },
-          {
-            name: 'Cupcake',
-            calories: 305,
-            fat: 3.7,
-            carbs: 67,
-            protein: 4.3,
-            iron: 8,
-          },
-          {
-            name: 'Gingerbread',
-            calories: 356,
-            fat: 16.0,
-            carbs: 49,
-            protein: 3.9,
-            iron: 16,
-          },
-          {
-            name: 'Jelly bean',
-            calories: 375,
-            fat: 0.0,
-            carbs: 94,
-            protein: 0.0,
-            iron: 0,
-          },
-          {
-            name: 'Lollipop',
-            calories: 392,
-            fat: 0.2,
-            carbs: 98,
-            protein: 0,
-            iron: 2,
-          },
-          {
-            name: 'Honeycomb',
-            calories: 408,
-            fat: 3.2,
-            carbs: 87,
-            protein: 6.5,
-            iron: 45,
-          },
-          {
-            name: 'Donut',
-            calories: 452,
-            fat: 25.0,
-            carbs: 51,
-            protein: 4.9,
-            iron: 22,
-          },
-          {
-            name: 'KitKat',
-            calories: 518,
-            fat: 26.0,
-            carbs: 65,
-            protein: 7,
-            iron: 6,
-          },
-        ],
+    computed: {
+      totalPoints() {
+        if (!this.points.length) return 0;
+
+        return this.points.reduce((total, item) => total + item.quantity, 0);
+      },
+
+      totalValue() {
+        if (!this.points.length) return 0;
+
+        return this.points.reduce((total, item) => total + item.totalValue, 0);
+      },
+
+      totalCostEffective() {
+        if (!this.points.length) return 0;
+
+        return this.points.reduce((total, item) => total + item.costEffective(), 0);
+      },
+
+      averageCost() {
+        if (!this.points.length) return 0;
+
+        return Number(((this.totalValue / this.totalPoints)*1000).toFixed(2));
       }
     },
+
+    
   }
 </script>
 

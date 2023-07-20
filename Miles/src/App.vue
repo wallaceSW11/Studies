@@ -4,16 +4,16 @@
       <v-flex d-flex justify-space-between>
         <v-flex>
           <v-app-bar-title>
-          <span style="color: #fb8c00"><b>My</b> Miles</span>  
+          <span><b style="color: #fb8c00">My</b> Miles</span> <v-icon color="primary">mdi-airplane</v-icon>
           </v-app-bar-title>
         </v-flex>
-    
+
         <v-flex xs5 d-flex justify-space-between>
           <v-btn outlined dark to="/">Dashboard</v-btn>
           <v-btn outlined dark to="/points">Points</v-btn>
           <v-btn outlined dark to="/miles">Miles</v-btn>
         </v-flex>
-      </v-flex>      
+      </v-flex>
     </v-app-bar>
 
     <v-main>

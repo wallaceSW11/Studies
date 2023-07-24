@@ -6,7 +6,10 @@
       </v-flex>
       <v-spacer></v-spacer>
       <v-flex flex-grow-0>
-        <v-btn outlined color="primary" @click="addItem"><v-icon>mdi-plus</v-icon>Add</v-btn>
+        <v-btn outlined color="primary" @click="addPoint"><v-icon>mdi-plus</v-icon>Add</v-btn>
+      </v-flex>
+      <v-flex flex-grow-0>
+        <v-btn outlined color="secondary" @click="addTransfer" class="ml-4"><v-icon>mdi-swap-horizontal</v-icon>Transfer</v-btn>
       </v-flex>
     </v-flex>
 
@@ -31,7 +34,7 @@
           <v-icon
             small
             class="mr-2"
-            @click="editItem(item)"
+            @click="editPoint(item)"
           >
             mdi-pencil
           </v-icon>
@@ -158,6 +161,8 @@
       </v-card>
     </v-dialog>
 
+    <dialog-transfer :open="showDialogTransfer" />
+
     <v-footer>
       <v-flex xs12>
         <v-flex class="d-flex flex-column">
@@ -175,20 +180,23 @@
 </template>
 
 <script>
-  import PointModel from '@/models/PointModel';
-  import { TYPES_OF_ENTRIES, HEADERS_POINTS } from '@/constants/point-constants'
-  import DatePicker from '@/components/DatePicker.vue';
-  import CurrencyField from '@/components/CurrencyField.vue';
+import PointModel from '@/models/PointModel';
+import { TYPES_OF_ENTRIES, HEADERS_POINTS } from '@/constants/point-constants'
+import DatePicker from '@/components/DatePicker.vue';
+import CurrencyField from '@/components/CurrencyField.vue';
+import DialogTransfer from '@/components/DialogTransfer.vue';
 
   export default {
     components: {
       DatePicker,
-      CurrencyField
+      CurrencyField,
+      DialogTransfer
     },
 
     data () {
       return {
         openDialog: false,
+        showDialogTransfer: false,
         point: new PointModel(),
         typesOfEntries: TYPES_OF_ENTRIES,
         rules: {
@@ -254,16 +262,20 @@
         this.$refs.form.resetValidation();
       },
 
-      addItem() {
+      addPoint() {
         this.openDialog = true;
       },
 
-      editItem(item) {
+      editPoint(item) {
         console.log(item);
       },
 
       deleteItem(item) {
         console.log(item);
+      },
+
+      addTransfer() {
+        this.showDialogTransfer = true
       }
     },
 

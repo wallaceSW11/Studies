@@ -33,7 +33,7 @@
       <img src="@/assets/nothing-to-do.gif" alt="nothing to do" srcset="">
     </v-flex>
 
-    <v-card v-else v-for="todo in todos" :key="todo.id" :class="'my-3 pa-2 ' + (todo.done ? 'task-done' : 'task-todo')" >
+    <v-card v-for="todo in todos" :key="todo.id" :class="'my-3 pa-2 ' + (todo.done ? 'task-done' : 'task-todo')" >
       <v-layout>
         <v-flex xs8 sm4>
           <div class="caption">Title</div>

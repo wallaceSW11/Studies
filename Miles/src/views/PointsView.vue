@@ -44,7 +44,7 @@
           </v-icon>
           <v-icon
             small
-            @click="deleteItem(item)"
+            @click="toggleDelete(item)"
           >
             mdi-delete
           </v-icon>
@@ -170,13 +170,24 @@
           <v-flex class="d-flex">
             <v-spacer></v-spacer>
             <v-btn class="mr-4" color="primary" @click="toggleSave">Save</v-btn>
-            <v-btn outlined @click="openDialogPoints = !openDialogPoints">Cancel</v-btn>
+            <v-btn outlined @click="toggleCancel">Cancel</v-btn>
           </v-flex>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
     <dialog-transfer :open="openDialogTransfer" />
+
+    <confirm-message
+      v-model="openConfirmMessage"
+      title="Delete point"
+      message="Are you sure?"
+      :confirm-callback="deleteItem"
+      :cancel-callback="onCancelDelete"
+    >
+
+    </confirm-message>
+
 
     <v-footer fixed>
       <v-flex xs12 class="px-md-6">
@@ -204,6 +215,7 @@ import DatePicker from '@/components/DatePicker.vue';
 import CurrencyField from '@/components/CurrencyField.vue';
 import DialogTransfer from '@/components/DialogTransfer.vue';
 import NumberField from '@/components/NumberField.vue';
+import ConfirmMessage from '@/components/ConfirmMessage.vue';
 
 export default {
   name: 'PointsView',
@@ -211,8 +223,9 @@ export default {
     DatePicker,
     CurrencyField,
     DialogTransfer,
-    NumberField
-  },
+    NumberField,
+    ConfirmMessage
+},
   data () {
       return {
         openDialogPoints: false,
@@ -220,6 +233,7 @@ export default {
         showInstallment: true,
         keepAddingPoint: true,
         isEditing: false,
+        openConfirmMessage: false,
         point: new PointModel(),
         typesOfTransaction: TYPES_OF_ENTRIES,
         pointsProgram: POINTS_PROGRAM,
@@ -252,29 +266,37 @@ export default {
 
     beforeMount () {
       this.points.push(new PointModel({
+        id: 0,
         date: '31/05/2023',
         type: 'BUY',
+        program: 'LIVELO',
         quantity: 9000,
         totalValue: 299.90
       }));
 
       this.points.push(new PointModel({
+        id: 1,
         date: '12/06/2023',
         type: 'BUY',
+        program: 'LIVELO',
         quantity: 30000,
         totalValue: 1008
       }));
 
       this.points.push(new PointModel({
+        id: 2,
         date: '16/06/2023',
         type: 'BUY',
+        program: 'ESFERA',
         quantity: 11000,
         totalValue: 346.50
       }));
 
       this.points.push(new PointModel({
+        id: 3,
         date: '30/06/2023',
         type: 'BUY',
+        program: 'LIVELO',
         quantity: 10500,
         totalValue: 299.90
       }))
@@ -287,20 +309,31 @@ export default {
         if (!this.$refs.form.validate()) return;
 
         if (this.isEditing) {
-          // save the editation
-          this.point = new PointModel();
-          this.valid = true;
-          this.openDialogPoints = false;
-          this.$refs.form.resetValidation();
+          let index = this.points.findIndex(item => item.id == this.point.id);
+          this.points.splice(index, 1, this.point);
 
-          return;
+        } else {
+          this.points.push(this.point);
         }
 
-        this.points.push(this.point);
         this.point = new PointModel();
+        this.openDialogPoints = !this.isEditing && this.keepAddingPoint;
+        this.isEditing = false;
         this.valid = true;
-        this.openDialogPoints = this.keepAddingPoint;
         this.$refs.form.resetValidation();
+      },
+
+      toggleCancel() {
+        this.openDialogPoints = false;
+        this.point = new PointModel();
+        this.isEditing = false;
+        this.valid = true;
+        this.$refs.form.resetValidation();
+      },
+
+      toggleDelete(item) {
+        this.point = new PointModel(item);
+        this.openConfirmMessage = true;
       },
 
       addPoint() {
@@ -308,11 +341,17 @@ export default {
       },
 
       editPoint(item) {
-        console.log(item);
+        this.openDialogPoints = true;
+        this.$nextTick(() => this.point = new PointModel(item));
+        this.isEditing = true;
       },
 
-      deleteItem(item) {
-        console.log(item);
+      deleteItem() {
+        this.points = this.points.filter(item => item.id !== this.point.id);
+      },
+
+      onCancelDelete() {
+        this.point = new PointModel();
       },
 
       addTransfer() {
@@ -374,4 +413,12 @@ export default {
   left: 0 !important;
   transform-origin: top left !important;
 }
+
+::v-deep .v-btn:focus::before {
+  opacity: 0 !important;
+}
+::v-deep .v-list-item--active:focus::before {
+  opacity: 0 !important;
+}
+
 </style>

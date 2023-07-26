@@ -15,6 +15,7 @@
       type="tel"
       :append-icon="icon"
       @change="updateValue"
+      :autocomplete="false"
     >
 
     </v-text-field>
@@ -42,7 +43,7 @@ export default {
 
   watch: {
     price(value) {
-      this.$refs.myinput.$el.getElementsByTagName('input')[0].value = value*100;
+      this.$refs.myinput.$el.getElementsByTagName('input')[0].value = value;
       this.internPrice = value;
     }
   },

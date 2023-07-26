@@ -41,8 +41,8 @@ export default {
 
   watch: {
     price(value) {
-      this.$refs.myinput.$el.getElementsByTagName('input')[0].value = value*100;
-      this.internPrice = value;
+      this.$refs.myinput.$el.getElementsByTagName('input')[0].value = value.toFixed(2);
+      this.internPrice = value.toFixed(2);
     }
   },
 

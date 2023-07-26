@@ -5,6 +5,7 @@ export default class PointModel {
   constructor(obj) {
     obj = obj || {}
 
+    this.id = obj.id;
     this.date = obj.date || moment().format('DD/MM/YYYY');
     this.type = obj.type;
     this.quantity = Number(obj.quantity) || 0;
@@ -21,10 +22,4 @@ export default class PointModel {
 
     return Number(((this.totalValue / this.quantity)*1000).toFixed(2));;
   }
-
-  // installmentValue() {
-  //   if (this.totalValue == 0 || this.installmentNumber == 0) return 0;
-
-  //   return Number((this.totalValue / this.installmentNumber).toFixed(2));
-  // }
 }

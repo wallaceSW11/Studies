@@ -7,11 +7,12 @@ export default class PointModel {
 
     this.date = obj.date || moment().format('DD/MM/YYYY');
     this.type = obj.type;
-    this.quantity = obj.quantity;
+    this.quantity = Number(obj.quantity) || 0;
     this.totalValue = Number(obj.totalValue) || 0;
     this.installmentNumber = Number(obj.installmentNumber) || 0;
+    this.installmentValue = Number(obj.installmentValue) || 0;
     this.firstInstallment = obj.firstInstallment;
-    this.price = Number(obj.price) || 0;
+    this.program = obj.program;
 
   }
 
@@ -20,4 +21,10 @@ export default class PointModel {
 
     return Number(((this.totalValue / this.quantity)*1000).toFixed(2));;
   }
+
+  // installmentValue() {
+  //   if (this.totalValue == 0 || this.installmentNumber == 0) return 0;
+
+  //   return Number((this.totalValue / this.installmentNumber).toFixed(2));
+  // }
 }

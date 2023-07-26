@@ -45,23 +45,14 @@
             mdi-delete
           </v-icon>
         </template>
-
-        <!-- <template v-slot:footer>
-          <v-flex xs12 style="border: 1px solid orange">
-            <span>Summary</span>
-            <p>Total value: </p>
-            <p>Total cost ffective: </p>
-            <p>Average cost: </p>
-          </v-flex>
-        </template> -->
-
       </v-data-table>
     </v-flex>
 
     <v-dialog
-      v-model="openDialog"
+      v-model="openDialogPoints"
       persistent
       max-width="60%"
+      :fullscreen="$vuetify.breakpoint.xsOnly"
     >
       <v-card>
         <v-card-title>
@@ -71,16 +62,16 @@
         <v-card-text>
           <v-form ref="form" v-model="valid" lazy-validation>
             <v-container class="d-flex flex-wrap">
-              <v-flex xs4 pr-4>
+              <v-flex xs12 md4 pr-md-4>
                 <date-picker
                   label="Date"
                   v-model="point.date"
                 ></date-picker>
               </v-flex>
 
-              <v-flex xs4 px-4>
+              <v-flex xs12 md4 px-md-4>
                 <v-select
-                  :items="typesOfEntries"
+                  :items="typesOfTransaction"
                   :item-text="i => i.title"
                   v-model="point.type"
                   label="Type"
@@ -89,9 +80,20 @@
                 ></v-select>
               </v-flex>
 
-              <v-flex xs4 pl-4>
+              <v-flex xs12 md4 pl-md-4>
+                <v-select
+                  :items="pointsProgram"
+                  :item-text="i => i.title"
+                  v-model="point.program"
+                  label="Program"
+                  prepend-inner-icon="mdi-star-four-points"
+                  :rules="[rules.required]"
+                ></v-select>
+              </v-flex>
+
+              <v-flex xs12 md4 pr-md-4>
                 <v-text-field
-                  v-model="point.quantity"
+                  v-model.number="point.quantity"
                   label="Quantity"
                   append-icon="mdi-numeric"
                   required
@@ -102,24 +104,23 @@
                 ></v-text-field>
               </v-flex>
 
-              <v-flex xs4 pr-4>
+              <v-flex xs12 md4 px-md-4>
                 <currency-field
                   label="Total value"
                   v-model="point.totalValue"
                 ></currency-field>
               </v-flex>
 
-              <v-flex xs4 pl-4>
-                <span>Cost Effective:</span>
+              <v-flex xs12 md6 pr-md-4 pt-md-4>
+                <span>Cost Effective</span>
                 <p class="text-right mr-2" style="font-size: 18px"> <b>{{point.costEffective() | formatedMoney}}</b></p>
               </v-flex>
 
-              <v-flex xs4 pl-4>
+              <v-flex xs12 md6 pl-md-4 pt-md-4>
                 <span>Bonus (100% transfer)</span>
                 <p class="text-right mr-2" style="font-size: 18px"> <b>{{point.costEffective() / 2 | formatedMoney}}</b></p>
               </v-flex>
 
-              <!-- TODO: Transform into component -->
               <v-flex class="d-flex" xs12>
                 <v-flex class="d-flex flex-grow-0">
                   <h3 style="color: #fb8c00">Installment</h3>
@@ -127,25 +128,36 @@
                 <v-flex>
                   <div style="border-bottom: 1px solid #fb8c00; height: 18px; margin-left: 4px" ></div>
                 </v-flex>
+                <v-flex class="d-flex flex-grow-0">
+                  <v-btn icon @click="showInstallment = !showInstallment"><v-icon color="primary">{{ showInstallment ? 'mdi-minus-circle-outline' : 'mdi-plus-circle-outline'}}</v-icon></v-btn>
+                </v-flex>
               </v-flex>
 
-              <v-flex xs6 pr-4 mt-4>
-                <v-text-field
-                  v-model="point.installmentNumber"
-                  label="Installment number"
-                  v-mask="'##'"
-                  required
-                  reverse
-                  class="label-left"
-                ></v-text-field>
+              <v-flex xs12 v-if="showInstallment" class="d-flex flex-wrap mt-4">
+                <v-flex xs12 md4 pr-md-4>
+                  <date-picker
+                    label="First installment"
+                    v-model="point.firstInstallment"
+                  ></date-picker>
+                </v-flex>
+
+                <v-flex xs12 md4 px-md-4>
+                  <v-text-field
+                    v-model="point.installmentNumber"
+                    label="Number"
+                    v-mask="'##'"
+                    required
+                    reverse
+                    class="label-left"
+                  ></v-text-field>
+                </v-flex>
+
+                <v-flex xs12 md4 pl-md-4>
+                  <span>Value</span>
+                <p class="text-right mr-2" style="font-size: 18px"> <b>{{point.installmentValue | formatedMoney}}</b></p>
+                </v-flex>
               </v-flex>
 
-              <v-flex xs6 pl-4 mt-4>
-                <date-picker
-                  label="First installment"
-                  v-model="point.firstInstallment"
-                ></date-picker>
-              </v-flex>
 
             </v-container>
           </v-form>
@@ -155,23 +167,26 @@
           <v-flex class="d-flex">
             <v-spacer></v-spacer>
             <v-btn class="mr-4" color="primary" @click="toggleSave">Save</v-btn>
-            <v-btn outlined @click="openDialog = !openDialog">Cancel</v-btn>
+            <v-btn outlined @click="openDialogPoints = !openDialogPoints">Cancel</v-btn>
           </v-flex>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
-    <dialog-transfer :open="showDialogTransfer" />
+    <dialog-transfer :open="openDialogTransfer" />
 
-    <v-footer>
-      <v-flex xs12>
+    <v-footer fixed>
+      <v-flex xs12 class="px-md-6">
         <v-flex class="d-flex flex-column">
           <span><b>Summary</b></span>
-          <span>Total points: {{ totalPoints }}</span>
-          <span>Total value: {{ totalValue | formatedMoney }}</span>
-          <span>Total cost effective: {{ totalCostEffective | formatedMoney }}</span>
-          <span>Average cost: {{ averageCost | formatedMoney }}</span>
-          <span>Average cost bonus: {{ averageCost / 2 | formatedMoney }}</span>
+          <v-flex class="d-flex flex-column pl-md-4">
+            <span>Total points: {{ totalPoints }}</span>
+            <span>Total value: {{ totalValue | formatedMoney }}</span>
+            <span>Total cost effective: {{ totalCostEffective | formatedMoney }}</span>
+            <span>Average cost: {{ averageCost | formatedMoney }}</span>
+            <span>Average cost bonus: {{ averageCost / 2 | formatedMoney }}</span>
+          </v-flex>
+
         </v-flex>
       </v-flex>
 
@@ -181,7 +196,7 @@
 
 <script>
 import PointModel from '@/models/PointModel';
-import { TYPES_OF_ENTRIES, HEADERS_POINTS } from '@/constants/point-constants'
+import { TYPES_OF_ENTRIES, HEADERS_POINTS, POINTS_PROGRAM } from '@/constants/point-constants'
 import DatePicker from '@/components/DatePicker.vue';
 import CurrencyField from '@/components/CurrencyField.vue';
 import DialogTransfer from '@/components/DialogTransfer.vue';
@@ -195,10 +210,12 @@ import DialogTransfer from '@/components/DialogTransfer.vue';
 
     data () {
       return {
-        openDialog: false,
-        showDialogTransfer: false,
+        openDialogPoints: false,
+        openDialogTransfer: false,
+        showInstallment: true,
         point: new PointModel(),
-        typesOfEntries: TYPES_OF_ENTRIES,
+        typesOfTransaction: TYPES_OF_ENTRIES,
+        pointsProgram: POINTS_PROGRAM,
         rules: {
           required: value => !!value || 'Required.'
         },
@@ -258,12 +275,12 @@ import DialogTransfer from '@/components/DialogTransfer.vue';
         this.points.push(this.point);
         this.point = new PointModel();
         this.valid = true;
-        this.openDialog = false;
+        this.openDialogPoints = false;
         this.$refs.form.resetValidation();
       },
 
       addPoint() {
-        this.openDialog = true;
+        this.openDialogPoints = true;
       },
 
       editPoint(item) {
@@ -275,7 +292,16 @@ import DialogTransfer from '@/components/DialogTransfer.vue';
       },
 
       addTransfer() {
-        this.showDialogTransfer = true
+        this.openDialogTransfer = true
+      },
+
+      updateInstallmentValue() {
+        if (this.point.totalValue == 0 || this.point.installmentNumber == 0) {
+          this.point.installmentValue = 0;
+          return;
+        }
+
+        this.point.installmentValue = Number((this.point.totalValue / this.point.installmentNumber).toFixed(2));
       }
     },
 
@@ -302,6 +328,16 @@ import DialogTransfer from '@/components/DialogTransfer.vue';
         if (!this.points.length) return 0;
 
         return Number(((this.totalValue / this.totalPoints)*1000).toFixed(2));
+      }
+    },
+
+    watch: {
+      'point.installmentNumber'() {
+        this.updateInstallmentValue();
+      },
+
+      'point.totalValue'() {
+        this.updateInstallmentValue();
       }
     },
 

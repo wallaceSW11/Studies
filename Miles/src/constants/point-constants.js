@@ -1,4 +1,4 @@
-const TYPE_OF_ENTRIES = {
+const TYPE_OF_TRANSACTION = {
   ENTRY: {
     title: 'Entry',
     value: 'ENTRY'
@@ -15,6 +15,21 @@ const TYPE_OF_ENTRIES = {
     title: 'Bonus',
     value: 'BONUS'
   }
+}
+
+const POINT_PROGRAM = {
+  LIVELO: {
+    title: 'Livelo',
+    value: 'LIVELO'
+  },
+  ESFERA: {
+    title: 'Esfera',
+    value: 'ESFERA'
+  },
+  IUPP: {
+    title: 'IUPP',
+    value: 'IUPP'
+  },
 }
 
 const HEADERS_POINTS = 
@@ -70,10 +85,12 @@ const HEADERS_POINTS =
 
 ]
 
-const TYPES_OF_ENTRIES = Object.values(TYPE_OF_ENTRIES);
+const TYPES_OF_ENTRIES = Object.values(TYPE_OF_TRANSACTION);
+const POINTS_PROGRAM = Object.values(POINT_PROGRAM);
 
 export {
-  TYPE_OF_ENTRIES,
+  TYPE_OF_TRANSACTION,
   TYPES_OF_ENTRIES,
-  HEADERS_POINTS
+  HEADERS_POINTS,
+  POINTS_PROGRAM
 }

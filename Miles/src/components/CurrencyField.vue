@@ -14,6 +14,7 @@
       reverse
       type="tel"
       append-icon="mdi-currency-usd"
+      @change="updateValue"
     >
 
     </v-text-field>
@@ -38,11 +39,18 @@ export default {
   },
 
   watch: {
-    internPrice(value) {
-      value = Number(value && value.replace('.', '').replace(',', '.')) || 0
+    price(value) {
+      this.$refs.myinput.$el.getElementsByTagName('input')[0].value = value*100;
+      this.internPrice = value;
+    }
+  },
+
+  methods: {
+    updateValue(value) {
+      value = Number(value && String(value).replace('.', '').replace(',', '.')) || 0
       this.$emit('onChange', value);
     }
-  }
+  },
 }
 </script>
 <style lang="">

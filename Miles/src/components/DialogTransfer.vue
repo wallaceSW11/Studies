@@ -98,6 +98,7 @@ import DatePicker from '@/components/DatePicker.vue';
 import CurrencyField from '@/components/CurrencyField.vue';
 
 export default {
+  name: 'DialogTransfer',
   props: {
     open: { type: Boolean, default: false },
   },

@@ -1,11 +1,11 @@
 const TYPE_OF_TRANSACTION = {
-  ENTRY: {
-    title: 'Entry',
-    value: 'ENTRY'
-  },
   BUY: {
     title: 'Buy',
     value: 'BUY'
+  },
+  ENTRY: {
+    title: 'Entry',
+    value: 'ENTRY'
   },
   TRANSFER: {
     title: 'Transfer',

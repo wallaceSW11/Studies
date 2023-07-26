@@ -6,14 +6,14 @@
       v-model.lazy="internPrice"
       :label="label"
       v-money="{
-        decimal: ',',
+        decimal: '',
         thousands: '.',
-        precision: 2
+        precision: 0
       }"
       class="label-left"
       reverse
       type="tel"
-      append-icon="mdi-currency-usd"
+      :append-icon="icon"
       @change="updateValue"
     >
 
@@ -22,7 +22,7 @@
 </template>
 <script>
 export default {
-  name: 'CurrencyField',
+  name: 'NumberField',
   model: {
     prop: 'price',
     event: 'onChange'
@@ -30,7 +30,8 @@ export default {
 
   props: {
     price: { type: Number, required: true },
-    label: { type: String, required: true }
+    label: { type: String, required: true },
+    icon: { type: String, required: true }
   },
 
   data() {

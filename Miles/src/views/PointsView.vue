@@ -21,6 +21,10 @@
         height="400px"
         class="elevation-1"
       >
+        <template v-slot:[`item.quantity`]="{ item }">
+          {{ item.quantity | formatedThousand }}
+        </template>
+
         <template v-slot:[`item.totalValue`]="{ item }">
           {{ item.totalValue | formatedMoney }}
         </template>
@@ -51,7 +55,7 @@
     <v-dialog
       v-model="openDialogPoints"
       persistent
-      max-width="60%"
+      :max-width="$vuetify.breakpoint.smAndDown ? '80%' : '60%'"
       :fullscreen="$vuetify.breakpoint.xsOnly"
     >
       <v-card>
@@ -92,16 +96,11 @@
               </v-flex>
 
               <v-flex xs12 md4 pr-md-4>
-                <v-text-field
-                  v-model.number="point.quantity"
+                <number-field
                   label="Quantity"
-                  append-icon="mdi-numeric"
-                  required
-                  reverse
-                  v-mask="'#######'"
-                  class="label-left"
-                  :rules="[rules.required]"
-                ></v-text-field>
+                  v-model.number="point.quantity"
+                  icon="mdi-numeric"
+                ></number-field>
               </v-flex>
 
               <v-flex xs12 md4 px-md-4>
@@ -158,6 +157,10 @@
                 </v-flex>
               </v-flex>
 
+              <v-flex v-if="!isEditing">
+                <v-checkbox label="Keep adding" v-model="keepAddingPoint"></v-checkbox>
+              </v-flex>
+
 
             </v-container>
           </v-form>
@@ -180,7 +183,7 @@
         <v-flex class="d-flex flex-column">
           <span><b>Summary</b></span>
           <v-flex class="d-flex flex-column pl-md-4">
-            <span>Total points: {{ totalPoints }}</span>
+            <span>Total points: {{ totalPoints | formatedThousand }}</span>
             <span>Total value: {{ totalValue | formatedMoney }}</span>
             <span>Total cost effective: {{ totalCostEffective | formatedMoney }}</span>
             <span>Average cost: {{ averageCost | formatedMoney }}</span>
@@ -200,19 +203,23 @@ import { TYPES_OF_ENTRIES, HEADERS_POINTS, POINTS_PROGRAM } from '@/constants/po
 import DatePicker from '@/components/DatePicker.vue';
 import CurrencyField from '@/components/CurrencyField.vue';
 import DialogTransfer from '@/components/DialogTransfer.vue';
+import NumberField from '@/components/NumberField.vue';
 
-  export default {
-    components: {
-      DatePicker,
-      CurrencyField,
-      DialogTransfer
-    },
-
-    data () {
+export default {
+  name: 'PointsView',
+  components: {
+    DatePicker,
+    CurrencyField,
+    DialogTransfer,
+    NumberField
+  },
+  data () {
       return {
         openDialogPoints: false,
         openDialogTransfer: false,
         showInstallment: true,
+        keepAddingPoint: true,
+        isEditing: false,
         point: new PointModel(),
         typesOfTransaction: TYPES_OF_ENTRIES,
         pointsProgram: POINTS_PROGRAM,
@@ -233,8 +240,15 @@ import DialogTransfer from '@/components/DialogTransfer.vue';
           minimumFractionDigits: 2,
           maximumFractionDigits: 2
         }) || 0;
+      },
+
+      formatedThousand(value) {
+        return value.toLocaleString({
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0
+        }) || 0;
       }
-    }, 
+    },
 
     beforeMount () {
       this.points.push(new PointModel({
@@ -272,10 +286,20 @@ import DialogTransfer from '@/components/DialogTransfer.vue';
 
         if (!this.$refs.form.validate()) return;
 
+        if (this.isEditing) {
+          // save the editation
+          this.point = new PointModel();
+          this.valid = true;
+          this.openDialogPoints = false;
+          this.$refs.form.resetValidation();
+
+          return;
+        }
+
         this.points.push(this.point);
         this.point = new PointModel();
         this.valid = true;
-        this.openDialogPoints = false;
+        this.openDialogPoints = this.keepAddingPoint;
         this.$refs.form.resetValidation();
       },
 
@@ -341,7 +365,7 @@ import DialogTransfer from '@/components/DialogTransfer.vue';
       }
     },
 
-    
+
   }
 </script>
 

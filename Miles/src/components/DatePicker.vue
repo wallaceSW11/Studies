@@ -29,6 +29,7 @@
 
 <script>
   export default {
+    name: 'DatePricker',
     data: vm => ({
       date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
       dateFormatted: vm.formatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)),

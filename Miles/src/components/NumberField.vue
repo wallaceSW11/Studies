@@ -15,7 +15,7 @@
       type="tel"
       :append-icon="icon"
       @change="updateValue"
-      :autocomplete="false"
+      autocomplete="off"
     >
 
     </v-text-field>

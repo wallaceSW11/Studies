@@ -216,6 +216,7 @@ import CurrencyField from '@/components/CurrencyField.vue';
 import DialogTransfer from '@/components/DialogTransfer.vue';
 import NumberField from '@/components/NumberField.vue';
 import ConfirmMessage from '@/components/ConfirmMessage.vue';
+import storageAPI from '@/service/api/storageAPI'
 
 export default {
   name: 'PointsView',
@@ -264,43 +265,15 @@ export default {
       }
     },
 
-    beforeMount () {
-      this.points.push(new PointModel({
-        id: 0,
-        date: '31/05/2023',
-        type: 'BUY',
-        program: 'LIVELO',
-        quantity: 9000,
-        totalValue: 299.90
-      }));
+    beforeMount() {
+      let pointsStorage = storageAPI.get('points');
 
-      this.points.push(new PointModel({
-        id: 1,
-        date: '12/06/2023',
-        type: 'BUY',
-        program: 'LIVELO',
-        quantity: 30000,
-        totalValue: 1008
-      }));
+      if (!pointsStorage) return;
 
-      this.points.push(new PointModel({
-        id: 2,
-        date: '16/06/2023',
-        type: 'BUY',
-        program: 'ESFERA',
-        quantity: 11000,
-        totalValue: 346.50
-      }));
-
-      this.points.push(new PointModel({
-        id: 3,
-        date: '30/06/2023',
-        type: 'BUY',
-        program: 'LIVELO',
-        quantity: 10500,
-        totalValue: 299.90
-      }))
+      pointsStorage.map(item => this.points.push(new PointModel(item)));
     },
+
+    
 
     methods: {
       toggleSave(e) {
@@ -313,6 +286,7 @@ export default {
           this.points.splice(index, 1, this.point);
 
         } else {
+          this.point.id = this.points.length;
           this.points.push(this.point);
         }
 
@@ -327,8 +301,6 @@ export default {
         this.openDialogPoints = false;
         this.point = new PointModel();
         this.isEditing = false;
-        this.valid = true;
-        this.$refs.form.resetValidation();
       },
 
       toggleDelete(item) {
@@ -348,6 +320,7 @@ export default {
 
       deleteItem() {
         this.points = this.points.filter(item => item.id !== this.point.id);
+        this.point = new PointModel();
       },
 
       onCancelDelete() {
@@ -395,12 +368,23 @@ export default {
     },
 
     watch: {
+      points() {
+        storageAPI.save('points', this.points);
+      },
+      
       'point.installmentNumber'() {
         this.updateInstallmentValue();
       },
 
       'point.totalValue'() {
         this.updateInstallmentValue();
+      },
+
+      openDialogPoints(open) {
+        if (open) {
+          this.valid = true;
+          this.$refs.form.resetValidation();
+        }
       }
     },
 

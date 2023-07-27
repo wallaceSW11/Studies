@@ -1,10 +1,12 @@
 <template>
   <v-app>
-    <v-app-bar app dark>
+    <v-app-bar fixed dark>
       <v-flex xs12 d-flex align-center>
         <v-flex>
           <v-app-bar-title>
-          <span><b style="color: #fb8c00">My</b> Miles</span> <v-icon color="primary">mdi-airplane</v-icon>
+            <v-flex>
+              <span><b style="color: #fb8c00">My</b> Miles</span><v-icon color="primary" class="pl-1">mdi-airplane</v-icon>
+            </v-flex>
           </v-app-bar-title>
         </v-flex>
 
@@ -29,7 +31,7 @@
     </v-app-bar>
 
     <v-main>
-      <router-view class="content"/>
+      <router-view class="content" style="margin-top: 60px"/>
     </v-main>
   </v-app>
 </template>
@@ -55,6 +57,8 @@ export default {
 .content {
   --background-color: #333;
   color: #fff;
-  min-height: calc(100vh - 56px);
+  min-height: calc(100vh - 60px);
 }
+
+html { overflow-y: auto }
 </style>

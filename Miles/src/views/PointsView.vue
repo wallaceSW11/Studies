@@ -21,6 +21,10 @@
         height="400px"
         class="elevation-1"
       >
+        <template v-slot:[`item.date`]="{ item }">
+          {{ item.dateISO() }}
+        </template>
+
         <template v-slot:[`item.quantity`]="{ item }">
           {{ item.quantity | formatedThousand }}
         </template>
@@ -210,13 +214,14 @@
 
 <script>
 import PointModel from '@/models/PointModel';
-import { TYPES_OF_ENTRIES, HEADERS_POINTS, POINTS_PROGRAM } from '@/constants/point-constants'
+import { TYPES_OF_ENTRIES, HEADERS_POINTS, POINTS_PROGRAM, STORAGE_DATA } from '@/constants/point-constants'
 import DatePicker from '@/components/DatePicker.vue';
 import CurrencyField from '@/components/CurrencyField.vue';
 import DialogTransfer from '@/components/DialogTransfer.vue';
 import NumberField from '@/components/NumberField.vue';
 import ConfirmMessage from '@/components/ConfirmMessage.vue';
 import storageAPI from '@/service/api/storageAPI'
+import moment from 'moment';
 
 export default {
   name: 'PointsView',
@@ -293,38 +298,43 @@ export default {
         this.point = new PointModel();
         this.openDialogPoints = !this.isEditing && this.keepAddingPoint;
         this.isEditing = false;
-        this.valid = true;
-        this.$refs.form.resetValidation();
+        this.resetValidation();
       },
 
       toggleCancel() {
         this.openDialogPoints = false;
         this.point = new PointModel();
         this.isEditing = false;
+        this.resetValidation();
       },
 
       toggleDelete(item) {
         this.point = new PointModel(item);
         this.openConfirmMessage = true;
+        this.resetValidation();
       },
 
       addPoint() {
         this.openDialogPoints = true;
+        //this.$nextTick(() => this.point = new PointModel());
+        //this.$nextTick(() => this.point.date = moment().format('YYYY-MM-DD') );
       },
 
       editPoint(item) {
         this.openDialogPoints = true;
-        this.$nextTick(() => this.point = new PointModel(item));
         this.isEditing = true;
+        this.$nextTick(() => this.point = new PointModel(item));
       },
 
       deleteItem() {
         this.points = this.points.filter(item => item.id !== this.point.id);
         this.point = new PointModel();
+        this.resetValidation();
       },
 
       onCancelDelete() {
         this.point = new PointModel();
+        this.resetValidation();
       },
 
       addTransfer() {
@@ -338,6 +348,11 @@ export default {
         }
 
         this.point.installmentValue = Number((this.point.totalValue / this.point.installmentNumber).toFixed(2));
+      },
+
+      resetValidation() {
+        this.valid = true;
+        this.$refs.form.resetValidation();
       }
     },
 
@@ -369,7 +384,7 @@ export default {
 
     watch: {
       points() {
-        storageAPI.save('points', this.points);
+        storageAPI.save(STORAGE_DATA.POINTS.key, this.points);
       },
       
       'point.installmentNumber'() {
@@ -383,8 +398,13 @@ export default {
       openDialogPoints(open) {
         if (open) {
           this.valid = true;
-          this.$refs.form.resetValidation();
+          this.keepAddingPoint = !!storageAPI.get(STORAGE_DATA.KEEP_ADDING.key);
+          this.$nextTick(() => this.point.date = moment().format('YYYY-MM-DD') );
         }
+      },
+
+      keepAddingPoint(value) {
+        storageAPI.save(STORAGE_DATA.KEEP_ADDING.key, !!value);
       }
     },
 

@@ -85,6 +85,15 @@ const HEADERS_POINTS =
 
 ]
 
+const STORAGE_DATA = {
+  POINTS: {
+    key: 'points'
+  },
+  KEEP_ADDING: {
+    key: 'keepAdding'
+  },
+}
+
 const TYPES_OF_ENTRIES = Object.values(TYPE_OF_TRANSACTION);
 const POINTS_PROGRAM = Object.values(POINT_PROGRAM);
 
@@ -92,5 +101,6 @@ export {
   TYPE_OF_TRANSACTION,
   TYPES_OF_ENTRIES,
   HEADERS_POINTS,
-  POINTS_PROGRAM
+  POINTS_PROGRAM,
+  STORAGE_DATA
 }

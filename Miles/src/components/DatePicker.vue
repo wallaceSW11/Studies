@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-menu
-      v-model="menu2"
+      v-model="showCalendar"
       :close-on-content-click="false"
       transition="scale-transition"
       offset-y
@@ -10,7 +10,7 @@
     >
       <template v-slot:activator="{ on, attrs }">
         <v-text-field
-          v-model="date"
+          :value="dateText"
           :label="label"
           prepend-inner-icon="mdi-calendar"
           readonly
@@ -19,59 +19,52 @@
         ></v-text-field>
       </template>
       <v-date-picker
-        v-model="date"
+        v-model="dateValue"
         no-title
-        @input="menu2 = false"
+        @input="showCalendar = false"
       ></v-date-picker>
     </v-menu>
   </div>
 </template>
 
 <script>
+import moment from "moment/moment";
+
   export default {
     name: 'DatePricker',
-    data: vm => ({
-      date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-      dateFormatted: vm.formatDate((new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)),
-      menu1: false,
-      menu2: false,
-    }),
+   data() {
+    return {
+      showCalendar: false,
+      dateValue: undefined
+    }
+   },
 
     model: {
-      prop: 'dates',
+      prop: 'date',
       event: "onChange"
     },
 
     props: {
       label: { type: String, required: true },
-      dates: { type: String }
-    },
-
-    computed: {
-      computedDateFormatted () {
-        return this.formatDate(this.dates)
-      },
+      date: { type: String }
     },
 
     watch: {
-      date (val) {
-        this.dateFormatted = this.formatDate(this.dates)
+      dateValue() {
+        this.$emit('onChange', this.dateValue);
       },
+
+      date(value) {
+        this.dateValue = value && moment(value).format('YYYY-MM-DD') || '';
+      }
     },
 
-    methods: {
-      formatDate (date) {
-        if (!date) return null
-
-        const [year, month, day] = date.split('-')
-        return `${month}/${day}/${year}`
-      },
-      parseDate (date) {
-        if (!date) return null
-
-        const [month, day, year] = date.split('/')
-        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
-      },
+    computed: {
+      dateText() {
+        return this.dateValue && moment(this.dateValue).format('DD/MM/YYYY') || '';
+      }
     },
+
+    
   }
 </script>

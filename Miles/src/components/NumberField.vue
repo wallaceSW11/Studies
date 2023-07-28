@@ -2,8 +2,8 @@
   <div>
     <v-text-field
       ref="myinput"
-      id="feield-price"
-      v-model.lazy="internPrice"
+      id="feield-number"
+      v-model.lazy="internnumber"
       :label="label"
       v-money="{
         decimal: '',
@@ -25,26 +25,26 @@
 export default {
   name: 'NumberField',
   model: {
-    prop: 'price',
+    prop: 'number',
     event: 'onChange'
   },
 
   props: {
-    price: { type: Number, required: true },
+    number: { type: Number, required: true },
     label: { type: String, required: true },
     icon: { type: String, required: true }
   },
 
   data() {
     return {
-      internPrice: undefined
+      internnumber: undefined
     }
   },
 
   watch: {
-    price(value) {
+    number(value) {
       this.$refs.myinput.$el.getElementsByTagName('input')[0].value = value;
-      this.internPrice = value;
+      this.internnumber = value;
     }
   },
 

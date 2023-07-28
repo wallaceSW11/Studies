@@ -180,7 +180,7 @@
       </v-card>
     </v-dialog>
 
-    <dialog-transfer :open="openDialogTransfer" />
+    <dialog-transfer v-model="openDialogTransfer" :totalPoints="totalPoints" :averageCost="averageCost" />
 
     <confirm-message
       v-model="openConfirmMessage"
@@ -316,8 +316,6 @@ export default {
 
       addPoint() {
         this.openDialogPoints = true;
-        //this.$nextTick(() => this.point = new PointModel());
-        //this.$nextTick(() => this.point.date = moment().format('YYYY-MM-DD') );
       },
 
       editPoint(item) {

@@ -1,12 +1,12 @@
 <template>
   <v-dialog
-      v-model="openDialog"
+      v-model="open"
       persistent
       max-width="60%"
     >
       <v-card>
         <v-card-title>
-        <span style="color: #fb8c00">Transfer</span>
+        <span style="color: #fb8c00">Transfer points</span>
         </v-card-title>
 
         <v-card-text>
@@ -15,66 +15,46 @@
               <v-flex xs4 pr-4>
                 <date-picker
                   label="Date"
-                  v-model="point.date"
+                  v-model="date"
                 ></date-picker>
               </v-flex>
 
-              <v-flex xs4 pl-4>
-                <v-text-field
-                  v-model="point.quantity"
+              <v-flex xs4 px-4>
+                <number-field
                   label="Quantity"
-                  append-icon="mdi-numeric"
-                  required
-                  reverse
-                  v-mask="'#######'"
-                  class="label-left"
-                  :rules="[rules.required]"
-                ></v-text-field>
+                  v-model.number="quantity"
+                  icon="mdi-numeric"
+                ></number-field>
+              </v-flex>
+
+              <v-flex xs4 pl-4>
+                <number-field
+                  label="Bonus"
+                  v-model.number="bonusPercent"
+                  icon="mdi-percent"
+                ></number-field>
               </v-flex>
 
               <v-flex xs4 pr-4>
-                <currency-field
-                  label="Total value"
-                  v-model="point.totalValue"
-                ></currency-field>
+                <title-value
+                  title="Miles"
+                  :value="miles"
+                  :formatMoney="false"
+                ></title-value>
               </v-flex>
 
-              <v-flex xs4 pl-4>
-                <span>Cost Effective:</span>
-                <p class="text-right mr-2" style="font-size: 18px"> <b>{{point.costEffective() | formatedMoney}}</b></p>
+              <v-flex xs4 px-4>
+                <title-value
+                  title="Cost"
+                  :value="averageCost"
+                ></title-value>
               </v-flex>
 
-              <v-flex xs4 pl-4>
-                <span>Bonus (100% transfer)</span>
-                <p class="text-right mr-2" style="font-size: 18px"> <b>{{point.costEffective() / 2 | formatedMoney}}</b></p>
-              </v-flex>
-
-              <!-- TODO: Transform into component -->
-              <v-flex class="d-flex" xs12>
-                <v-flex class="d-flex flex-grow-0">
-                  <h3 style="color: #fb8c00">Installment</h3>
-                </v-flex>
-                <v-flex>
-                  <div style="border-bottom: 1px solid #fb8c00; height: 18px; margin-left: 4px" ></div>
-                </v-flex>
-              </v-flex>
-
-              <v-flex xs6 pr-4 mt-4>
-                <v-text-field
-                  v-model="point.installmentNumber"
-                  label="Installment number"
-                  v-mask="'##'"
-                  required
-                  reverse
-                  class="label-left"
-                ></v-text-field>
-              </v-flex>
-
-              <v-flex xs6 pl-4 mt-4>
-                <date-picker
-                  label="First installment"
-                  v-model="point.firstInstallment"
-                ></date-picker>
+              <v-flex xs4 px-4>
+                <title-value
+                  title="Effective cost"
+                  :value="effectiveCost"
+                ></title-value>
               </v-flex>
 
             </v-container>
@@ -85,7 +65,7 @@
           <v-flex class="d-flex">
             <v-spacer></v-spacer>
             <v-btn class="mr-4" color="primary" @click="toggleSave">Save</v-btn>
-            <v-btn outlined @click="openDialog = !openDialog">Cancel</v-btn>
+            <v-btn outlined @click="toggleCancel">Cancel</v-btn>
           </v-flex>
         </v-card-actions>
       </v-card>
@@ -96,23 +76,35 @@
 import PointModel from '@/models/PointModel'
 import DatePicker from '@/components/DatePicker.vue';
 import CurrencyField from '@/components/CurrencyField.vue';
+import NumberField from './NumberField.vue';
+import TitleValue from './TitleValue.vue';
 
 export default {
   name: 'DialogTransfer',
   props: {
     open: { type: Boolean, default: false },
+    totalPoints: { type: Number, required: true },
+    averageCost: { type: Number, required: true }
+  },
+  model: {
+    prop: 'open',
+    event: 'onChange'
   },
 
   components: {
     DatePicker,
-    CurrencyField
-  },
+    CurrencyField,
+    NumberField,
+    TitleValue
+},
 
   data() {
     return {
-      openDialog: false,
       valid: true,
       point: new PointModel(),
+      date: undefined,
+      quantity: 0,
+      bonusPercent: 0,
       rules: {
           required: value => !!value || 'Required.'
         },
@@ -130,15 +122,30 @@ export default {
       }
     }, 
 
-  watch: {
-    open(value) {
-      this.openDialog = value
+  methods: {
+    toggleSave() {
+      //this.openDialog = false;
+
+      // if valid
+      this.$emit('onChange', !open);
+    },
+
+    toggleCancel() {
+      this.$emit('onChange', !open);
     }
   },
 
-  methods: {
-    toggleSave() {
-      this.openDialog = false;
+  computed: {
+    miles() {
+      if (!this.quantity || !this.bonusPercent) return 0;
+
+      return Number((((this.bonusPercent / 100)*this.quantity) + this.quantity).toFixed(2));
+    },
+
+    effectiveCost() {
+      if (!this.averageCost || !this.miles) return 0;
+
+      return 0;
     }
   },
 

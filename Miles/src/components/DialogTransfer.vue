@@ -32,6 +32,7 @@
                   label="Bonus"
                   v-model.number="bonusPercent"
                   icon="mdi-percent"
+                  :maxWidth="3"
                 ></number-field>
               </v-flex>
 
@@ -45,15 +46,15 @@
 
               <v-flex xs4 px-4>
                 <title-value
-                  title="Cost"
+                  title="Average cost"
                   :value="averageCost"
                 ></title-value>
               </v-flex>
 
               <v-flex xs4 px-4>
                 <title-value
-                  title="Effective cost"
-                  :value="effectiveCost"
+                  title="Bonus cost"
+                  :value="bonusCost"
                 ></title-value>
               </v-flex>
 
@@ -78,6 +79,8 @@ import DatePicker from '@/components/DatePicker.vue';
 import CurrencyField from '@/components/CurrencyField.vue';
 import NumberField from './NumberField.vue';
 import TitleValue from './TitleValue.vue';
+import moment from 'moment';
+
 
 export default {
   name: 'DialogTransfer',
@@ -123,11 +126,19 @@ export default {
     }, 
 
   methods: {
-    toggleSave() {
-      //this.openDialog = false;
+    toggleSave(e) {
+      e.preventDefault();
 
-      // if valid
+      if (!this.$refs.form.validate()) return;
+
+      let transfer = {
+        date: this.date,
+        quantity: this.quantity*-1,
+        totalValue: this.totalValuePoint
+      }
+
       this.$emit('onChange', !open);
+      this.$emit('transfer', transfer);
     },
 
     toggleCancel() {
@@ -140,12 +151,27 @@ export default {
       if (!this.quantity || !this.bonusPercent) return 0;
 
       return Number((((this.bonusPercent / 100)*this.quantity) + this.quantity).toFixed(2));
+      
     },
 
-    effectiveCost() {
-      if (!this.averageCost || !this.miles) return 0;
+    bonusCost() {
+      if (!this.averageCost || !this.bonusPercent) return 0;
 
-      return 0;
+      return Number((this.averageCost / ((100 + this.bonusPercent) / 100)).toFixed(2));
+    },
+
+    totalValuePoint() {
+      if (!this.quantity || !this.averageCost) return 0;
+
+      return Number((((this.quantity/1000)*this.averageCost)*-1).toFixed(2));
+    }
+  },
+
+  watch: {
+    open(newValue) {
+      if (newValue) {
+        this.$nextTick(() => this.date = moment().format('YYYY-MM-DD')) ;
+      }
     }
   },
 

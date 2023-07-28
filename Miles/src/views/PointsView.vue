@@ -5,11 +5,11 @@
         <h2>Points</h2>
       </v-flex>
       <v-spacer></v-spacer>
-      <v-flex flex-grow-0>
-        <v-btn outlined color="primary" @click="addPoint"><v-icon>mdi-plus</v-icon>Add</v-btn>
+      <v-flex flex-grow-0 class="d-flex align-center">
+        <v-btn outlined color="primary" small @click="addPoint"><v-icon>mdi-plus</v-icon>Add</v-btn>
       </v-flex>
-      <v-flex flex-grow-0>
-        <v-btn outlined color="secondary" @click="addTransfer" class="ml-4"><v-icon>mdi-swap-horizontal</v-icon>Transfer</v-btn>
+      <v-flex flex-grow-0 class="d-flex align-center">
+        <v-btn outlined color="secondary" small @click="addTransfer" class="ml-4"><v-icon>mdi-swap-horizontal</v-icon>Transfer</v-btn>
       </v-flex>
     </v-flex>
 
@@ -180,7 +180,7 @@
       </v-card>
     </v-dialog>
 
-    <dialog-transfer v-model="openDialogTransfer" :totalPoints="totalPoints" :averageCost="averageCost" />
+    <dialog-transfer v-model="openDialogTransfer" :totalPoints="totalPoints" :averageCost="averageCost" @transfer="applyTransfer" />
 
     <confirm-message
       v-model="openConfirmMessage"
@@ -214,7 +214,7 @@
 
 <script>
 import PointModel from '@/models/PointModel';
-import { TYPES_OF_ENTRIES, HEADERS_POINTS, POINTS_PROGRAM, STORAGE_DATA } from '@/constants/point-constants'
+import { TYPE_OF_TRANSACTION, TYPES_OF_ENTRIES, HEADERS_POINTS, POINTS_PROGRAM, STORAGE_DATA } from '@/constants/point-constants'
 import DatePicker from '@/components/DatePicker.vue';
 import CurrencyField from '@/components/CurrencyField.vue';
 import DialogTransfer from '@/components/DialogTransfer.vue';
@@ -311,7 +311,6 @@ export default {
       toggleDelete(item) {
         this.point = new PointModel(item);
         this.openConfirmMessage = true;
-        this.resetValidation();
       },
 
       addPoint() {
@@ -327,12 +326,11 @@ export default {
       deleteItem() {
         this.points = this.points.filter(item => item.id !== this.point.id);
         this.point = new PointModel();
-        this.resetValidation();
+        //this.resetValidation();
       },
 
       onCancelDelete() {
         this.point = new PointModel();
-        this.resetValidation();
       },
 
       addTransfer() {
@@ -351,6 +349,40 @@ export default {
       resetValidation() {
         this.valid = true;
         this.$refs.form.resetValidation();
+      },
+
+      applyTransfer(transfer) {
+        // this.points.push(new PointModel({
+        //   id: this.points.length,
+        //   date: transfer.date,
+        //   type: TYPE_OF_TRANSACTION.TRANSFER.value,
+        //   quantity: transfer.quantity*-1,
+        //   totalValue: (this.averageCost * transfer.quantity)*-1
+        // }))
+
+        this.points.push(new PointModel(
+          {
+            id: this.points.length,
+            date: transfer.date,
+            type: TYPE_OF_TRANSACTION.TRANSFER.value,
+            quantity: transfer.quantity,
+            totalValue: transfer.totalValue
+          }));
+
+          let opa = this.totalValue;
+
+          this.points.push(new PointModel(
+          {
+            id: this.points.length,
+            date: transfer.date,
+            type: TYPE_OF_TRANSACTION.OUT.value,
+            quantity: this.totalPoints*-1,
+            totalValue: Number((this.totalValue*-1).toFixed(2)),
+            outCost: 126.98
+          }));
+
+          //TODO: adicionar uma nova entrada dos pontos que sobraram -- 16,30 / 0,500;
+
       }
     },
 
@@ -364,13 +396,18 @@ export default {
       totalValue() {
         if (!this.points.length) return 0;
 
-        return this.points.reduce((total, item) => total + item.totalValue, 0);
+        return this.points
+          //.filter(item => item.type != TYPE_OF_TRANSACTION.TRANSFER.value)
+          .reduce((total, item) => total + item.totalValue, 0);
       },
 
       totalCostEffective() {
         if (!this.points.length) return 0;
 
-        return this.points.reduce((total, item) => total + item.costEffective(), 0);
+        //return this.points.reduce((total, item) => total + item.costEffective(), 0);
+        return this.points
+          .filter(item => item.type != TYPE_OF_TRANSACTION.TRANSFER.value)
+          .reduce((total, item) => total + item.costEffective(), 0);
       },
 
       averageCost() {

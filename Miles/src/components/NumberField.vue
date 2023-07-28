@@ -2,7 +2,7 @@
   <div>
     <v-text-field
       ref="myinput"
-      id="feield-number"
+      id="field-number"
       v-model.lazy="internnumber"
       :label="label"
       v-money="{
@@ -32,7 +32,8 @@ export default {
   props: {
     number: { type: Number, required: true },
     label: { type: String, required: true },
-    icon: { type: String, required: true }
+    icon: { type: String, required: true },
+    maxWidth: { type: Number, default: 10 }
   },
 
   data() {
@@ -56,6 +57,7 @@ export default {
   },
 }
 </script>
-<style lang="">
+<style lang="scss">
+
 
 </style>

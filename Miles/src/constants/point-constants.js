@@ -14,6 +14,10 @@ const TYPE_OF_TRANSACTION = {
   BONUS: {
     title: 'Bonus',
     value: 'BONUS'
+  },
+  OUT: {
+    title: 'Out',
+    value: 'OUT'
   }
 }
 

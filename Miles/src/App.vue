@@ -61,4 +61,9 @@ export default {
 }
 
 html { overflow-y: auto }
+
+.label-left {
+  left: 0 !important;
+  transform-origin: top left !important;
+}
 </style>

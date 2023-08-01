@@ -30,6 +30,8 @@
       </v-flex>
     </v-app-bar>
 
+    
+
     <v-main>
       <router-view class="content" style="margin-top: 60px"/>
     </v-main>
@@ -37,6 +39,8 @@
 </template>
 
 <script>
+
+import '@/styles/_global.scss';
 
 export default {
   name: 'App',
@@ -53,7 +57,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 .content {
   --background-color: #333;
   color: #fff;
@@ -66,4 +70,5 @@ html { overflow-y: auto }
   left: 0 !important;
   transform-origin: top left !important;
 }
+
 </style>

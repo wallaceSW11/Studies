@@ -85,6 +85,53 @@ const HEADERS_POINTS =
     align: 'center',
     sortable: false,
     value: 'actions',
+  }
+]
+
+const HEADERS_MILES = 
+ [
+  {
+    text: 'Id',
+    align: 'start',
+    sortable: false,
+    value: 'id',
+    width: 0
+  },
+  {
+    text: 'Date',
+    align: 'start',
+    sortable: false,
+    value: 'date',
+  },
+  {
+    text: 'Type',
+    align: 'start',
+    sortable: false,
+    value: 'type',
+  },
+  {
+    text: 'Quantity',
+    align: 'right',
+    sortable: false,
+    value: 'quantity',
+  },
+  {
+    text: 'Airline',
+    align: 'right',
+    sortable: false,
+    value: 'airline',
+  },
+  {
+    text: 'Price',
+    align: 'right',
+    sortable: false,
+    value: 'price',
+  },
+  {
+    text: 'Actions',
+    align: 'center',
+    sortable: false,
+    value: 'actions',
   },
 
 ]
@@ -92,6 +139,9 @@ const HEADERS_POINTS =
 const STORAGE_DATA = {
   POINTS: {
     key: 'points'
+  },
+  MILES: {
+    key: 'miles'
   },
   KEEP_ADDING: {
     key: 'keepAdding'
@@ -105,6 +155,7 @@ export {
   TYPE_OF_TRANSACTION,
   TYPES_OF_ENTRIES,
   HEADERS_POINTS,
+  HEADERS_MILES,
   POINTS_PROGRAM,
   STORAGE_DATA
 }

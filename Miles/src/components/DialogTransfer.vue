@@ -133,8 +133,9 @@ export default {
 
       let transfer = {
         date: this.date,
-        quantity: this.quantity*-1,
-        totalValue: this.totalValuePoint
+        quantity: this.quantity,
+        totalValue: this.totalValuePoint,
+        bonusCost: this.bonusCost
       }
 
       this.$emit('onChange', !open);

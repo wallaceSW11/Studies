@@ -18,7 +18,7 @@
         :headers="headers"
         :items="points"
         :items-per-page="10"
-        height="400px"
+        height="500px"
         class="elevation-1"
       >
         <template v-slot:[`item.date`]="{ item }">
@@ -180,7 +180,7 @@
       </v-card>
     </v-dialog>
 
-    <dialog-transfer v-model="openDialogTransfer" :totalPoints="totalPoints" :averageCost="0" @transfer="applyTransfer" />
+    <dialog-transfer v-model="openDialogTransfer" :totalPoints="totalPoints" :averageCost="averageCostPerThousand" @transfer="applyTransfer" />
 
     <confirm-message
       v-model="openConfirmMessage"
@@ -226,6 +226,7 @@ import NumberField from '@/components/NumberField.vue';
 import ConfirmMessage from '@/components/ConfirmMessage.vue';
 import storageAPI from '@/service/api/storageAPI'
 import moment from 'moment';
+import MileModel from '@/models/MileModel';
 
 export default {
   name: 'PointsView',
@@ -252,7 +253,8 @@ export default {
         },
         valid: true,
         headers: HEADERS_POINTS,
-        points: []
+        points: [],
+        miles: []
       }
     },
 
@@ -275,16 +277,27 @@ export default {
     },
 
     beforeMount() {
-      let pointsStorage = storageAPI.get('points');
-
-      if (!pointsStorage) return;
-
-      pointsStorage.map(item => this.points.push(new PointModel(item)));
+      this.loadPoints();
+      this.loadMiles();
     },
 
-    
-
     methods: {
+      loadPoints() {
+        let pointsStorage = storageAPI.get(STORAGE_DATA.POINTS.key);
+
+        if (!pointsStorage) return;
+
+        pointsStorage.map(item => this.points.push(new PointModel(item)));
+      },
+
+      loadMiles() {
+        let milesStorage = storageAPI.get(STORAGE_DATA.MILES.key);
+
+        if (!milesStorage) return;
+
+        milesStorage.map(item => this.miles.push(new MileModel(item)));
+      },
+
       toggleSave(e) {
         e.preventDefault();
 
@@ -330,7 +343,6 @@ export default {
       deleteItem() {
         this.points = this.points.filter(item => item.id !== this.point.id);
         this.point = new PointModel();
-        //this.resetValidation();
       },
 
       onCancelDelete() {
@@ -356,37 +368,27 @@ export default {
       },
 
       applyTransfer(transfer) {
-        // this.points.push(new PointModel({
-        //   id: this.points.length,
-        //   date: transfer.date,
-        //   type: TYPE_OF_TRANSACTION.TRANSFER.value,
-        //   quantity: transfer.quantity*-1,
-        //   totalValue: (this.averageCost * transfer.quantity)*-1
-        // }))
-
         this.points.push(new PointModel(
           {
             id: this.points.length,
             date: transfer.date,
             type: TYPE_OF_TRANSACTION.TRANSFER.value,
-            quantity: transfer.quantity,
+            quantity: transfer.quantity*-1,
             totalValue: transfer.totalValue
           }));
 
-          let opa = this.totalValue;
-
-          this.points.push(new PointModel(
+        this.miles.push(new MileModel(
           {
-            id: this.points.length,
+            id: this.miles.length,
             date: transfer.date,
-            type: TYPE_OF_TRANSACTION.OUT.value,
-            quantity: this.totalPoints*-1,
-            totalValue: Number((this.totalValue*-1).toFixed(2)),
-            outCost: 126.98
-          }));
+            type: TYPE_OF_TRANSACTION.ENTRY.value,
+            quantity: transfer.quantity,
+            airline: 'LATAM',
+            price: transfer.bonusCost
+          }
+        ));
 
-          //TODO: adicionar uma nova entrada dos pontos que sobraram -- 16,30 / 0,500;
-
+        storageAPI.save(STORAGE_DATA.MILES.key, this.miles);
       }
     },
 
@@ -400,17 +402,13 @@ export default {
       totalValue() {
         if (!this.points.length) return 0;
 
-        return this.points
-          //.filter(item => item.type != TYPE_OF_TRANSACTION.TRANSFER.value)
-          .reduce((total, item) => total + item.totalValue, 0);
+        return this.points.reduce((total, item) => total + item.totalValue, 0);
       },
 
       totalcostPerThousand() {
         if (!this.points.length) return 0;
 
-        return this.points
-          // .filter(item => item.type != TYPE_OF_TRANSACTION.TRANSFER.value)
-          .reduce((total, item) => total + item.costPerThousand(), 0);
+        return this.points.reduce((total, item) => total + item.costPerThousand(), 0);
       },
 
       averageCostPerThousand() {
@@ -426,9 +424,9 @@ export default {
 
     watch: {
       points() {
-        storageAPI.save(STORAGE_DATA.POINTS.key, this.points);
+        //storageAPI.save(STORAGE_DATA.POINTS.key, this.points);
       },
-      
+
       'point.installmentNumber'() {
         this.updateInstallmentValue();
       },

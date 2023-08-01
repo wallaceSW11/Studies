@@ -6,17 +6,10 @@ export default class MileModel {
 
     this.id = obj.id;
     this.date = obj.date ? moment(obj.date).format('YYYY-MM-DD') : '';
+    this.type = obj.type;
     this.quantity = Number(obj.quantity) || 0;
-    this.program = obj.program;
-    this.averageCost = Number(obj.averageCost) || 0;
-    this.bonusPercent = Number(obj.bonusPercent) || 0;
-
-  }
-
-  costPerThousand() {
-    if (!this.quantity || !this.averageCost) return 0;
-
-    return 0
+    this.airline = obj.airline;
+    this.price = Number(obj.price) || 0;
   }
 
   dateISO() {

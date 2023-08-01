@@ -18,18 +18,18 @@ export default class PointModel {
 
   }
 
-  costEffective() {
+  costPerThousand() {
     if (!this.quantity || !this.totalValue) return 0;
 
-    if (this.type == TYPE_OF_TRANSACTION.TRANSFER.value) {
-      return Number((((this.totalValue / this.quantity)*1000)*-1).toFixed(2))
-    }
+    // if (this.type == TYPE_OF_TRANSACTION.TRANSFER.value) {
+    //   return Number(((this.totalValue / this.quantity)*-1).toFixed(2))
+    // }
 
-    if (this.type == TYPE_OF_TRANSACTION.OUT.value) {
-      return this.outCost*-1
-    }
-    
-    return Number(((this.totalValue / this.quantity)*1000).toFixed(2));
+    // if (this.type == TYPE_OF_TRANSACTION.OUT.value) {
+    //   return this.outCost*-1
+    // }
+        
+    return Number(((this.totalValue / (this.quantity/1000).toFixed(2)).toFixed(2)));
   }
 
   dateISO() {

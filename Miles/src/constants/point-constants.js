@@ -75,10 +75,10 @@ const HEADERS_POINTS =
   //   value: 'firstInstallment',
   // },
   {
-    text: 'Cost effective',
+    text: 'Cost per thousand',
     align: 'right',
     sortable: false,
-    value: 'costEffective',
+    value: 'costPerThousand',
   },
   {
     text: 'Actions',

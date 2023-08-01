@@ -33,8 +33,8 @@
           {{ item.totalValue | formatedMoney }}
         </template>
 
-        <template v-slot:[`item.costEffective`]="{ item }">
-          {{ item.costEffective() | formatedMoney }}
+        <template v-slot:[`item.costPerThousand`]="{ item }">
+          {{ item.costPerThousand() | formatedMoney }}
         </template>
 
 
@@ -116,12 +116,12 @@
 
               <v-flex xs12 md6 pr-md-4 pt-md-4>
                 <span>Cost Effective</span>
-                <p class="text-right mr-2" style="font-size: 18px"> <b>{{point.costEffective() | formatedMoney}}</b></p>
+                <p class="text-right mr-2" style="font-size: 18px"> <b>{{point.costPerThousand() | formatedMoney}}</b></p>
               </v-flex>
 
               <v-flex xs12 md6 pl-md-4 pt-md-4>
                 <span>Bonus (100% transfer)</span>
-                <p class="text-right mr-2" style="font-size: 18px"> <b>{{point.costEffective() / 2 | formatedMoney}}</b></p>
+                <p class="text-right mr-2" style="font-size: 18px"> <b>{{point.costPerThousand() / 2 | formatedMoney}}</b></p>
               </v-flex>
 
               <v-flex class="d-flex" xs12>
@@ -180,7 +180,7 @@
       </v-card>
     </v-dialog>
 
-    <dialog-transfer v-model="openDialogTransfer" :totalPoints="totalPoints" :averageCost="averageCost" @transfer="applyTransfer" />
+    <dialog-transfer v-model="openDialogTransfer" :totalPoints="totalPoints" :averageCost="0" @transfer="applyTransfer" />
 
     <confirm-message
       v-model="openConfirmMessage"
@@ -197,12 +197,16 @@
       <v-flex xs12 class="px-md-6">
         <v-flex class="d-flex flex-column">
           <span><b>Summary</b></span>
-          <v-flex class="d-flex flex-column pl-md-4">
-            <span>Total points: {{ totalPoints | formatedThousand }}</span>
-            <span>Total value: {{ totalValue | formatedMoney }}</span>
-            <span>Total cost effective: {{ totalCostEffective | formatedMoney }}</span>
-            <span>Average cost: {{ averageCost | formatedMoney }}</span>
-            <span>Average cost bonus: {{ averageCost / 2 | formatedMoney }}</span>
+          <v-flex class="d-flex pl-md-4">
+            <v-flex class="d-flex flex-column">
+              <span>Total points: {{ totalPoints | formatedThousand }}</span>
+              <span>Total value: {{ totalValue | formatedMoney }}</span>
+            </v-flex>
+
+            <v-flex class="d-flex flex-column">
+              <span>Average cost per thousand: {{ averageCostPerThousand | formatedMoney }}</span>
+              <span color="primary">Average cost per thousand (bonus): <span class="highlighted-text"> {{ averageCostPerThousandBonus | formatedMoney }}</span></span>
+            </v-flex>
           </v-flex>
 
         </v-flex>
@@ -401,19 +405,22 @@ export default {
           .reduce((total, item) => total + item.totalValue, 0);
       },
 
-      totalCostEffective() {
+      totalcostPerThousand() {
         if (!this.points.length) return 0;
 
-        //return this.points.reduce((total, item) => total + item.costEffective(), 0);
         return this.points
-          .filter(item => item.type != TYPE_OF_TRANSACTION.TRANSFER.value)
-          .reduce((total, item) => total + item.costEffective(), 0);
+          // .filter(item => item.type != TYPE_OF_TRANSACTION.TRANSFER.value)
+          .reduce((total, item) => total + item.costPerThousand(), 0);
       },
 
-      averageCost() {
+      averageCostPerThousand() {
         if (!this.points.length) return 0;
 
         return Number(((this.totalValue / this.totalPoints)*1000).toFixed(2));
+      },
+
+      averageCostPerThousandBonus() {
+        return this.averageCostPerThousand / 2;
       }
     },
 
@@ -447,7 +454,7 @@ export default {
   }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 ::v-deep .label-left .v-label {
   left: 0 !important;
   transform-origin: top left !important;
@@ -458,6 +465,11 @@ export default {
 }
 ::v-deep .v-list-item--active:focus::before {
   opacity: 0 !important;
+}
+
+.highlighted-text {
+  color: #fb8c00;
+  text-decoration: underline;
 }
 
 </style>

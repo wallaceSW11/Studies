@@ -13,7 +13,7 @@ export default class MileModel {
 
   }
 
-  costEffective() {
+  costPerThousand() {
     if (!this.quantity || !this.averageCost) return 0;
 
     return 0

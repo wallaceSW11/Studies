@@ -25,6 +25,10 @@
           {{ item.dateISO() }}
         </template>
 
+        <template v-slot:[`item.type`]="{ item }">
+          {{ typeOfTransaction[item.type].title }}
+        </template>
+
         <template v-slot:[`item.quantity`]="{ item }">
           {{ item.quantity | formatedThousand }}
         </template>
@@ -36,7 +40,6 @@
         <template v-slot:[`item.costPerThousand`]="{ item }">
           {{ item.costPerThousand() | formatedMoney }}
         </template>
-
 
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon
@@ -182,23 +185,45 @@
       </v-card>
     </v-dialog>
 
-    <dialog-transfer v-model="openDialogTransfer" :totalPoints="totalPoints" :averageCost="averageCostPerThousand" @transfer="applyTransfer" />
+    <dialog-transfer 
+      v-model="openDialogTransfer" 
+      :totalPoints="totalPoints" 
+      :averageCost="averageCostPerThousand" 
+      @transfer="applyTransfer" 
+    />
 
-    <confirm-message
-      v-model="openConfirmMessage"
+    <message
+      v-model="openMessageDelete"
       title="Delete point"
+      icon="mdi-help-circle-outline"
       message="Are you sure?"
       :confirm-callback="deleteItem"
       :cancel-callback="onCancelDelete"
-    >
+    ></message>
 
-    </confirm-message>
+    <message
+      v-model="openMessageNotEnoughPoint"
+      title="Ops, no points avaliable..."
+      message="There are no points avaliable to transfer!"
+      :confirm-callback="() => {}"
+      descriptonPrimaryBotton="ok"
+      hideSecondaryBotton
+    ></message>
+
+    <message
+      v-model="openMessageDeleteTransfer"
+      title="Sorry, you can't edit a transfer"
+      message="Please, delete and create a new."
+      :confirm-callback="() => {}"
+      descriptonPrimaryBotton="ok"
+      hideSecondaryBotton
+    ></message>
 
 
     <v-footer fixed>
       <v-flex xs12 class="px-md-6">
         <v-flex class="d-flex flex-column">
-          <span><b>Summary</b></span>
+          <span><b class="primary-color">Summary</b></span>
           <v-flex class="d-flex pl-md-4">
             <v-flex class="d-flex flex-column">
               <span>Total points: {{ totalPoints | formatedThousand }}</span>
@@ -225,11 +250,10 @@ import DatePicker from '@/components/DatePicker.vue';
 import CurrencyField from '@/components/CurrencyField.vue';
 import DialogTransfer from '@/components/DialogTransfer.vue';
 import NumberField from '@/components/NumberField.vue';
-import ConfirmMessage from '@/components/ConfirmMessage.vue';
+import Message from '@/components/Message.vue';
 import storageAPI from '@/service/api/storageAPI'
 import moment from 'moment';
 import MileModel from '@/models/MileModel';
-import { newGuid } from '@/utils/guid';
 
 export default {
   name: 'PointsView',
@@ -238,18 +262,21 @@ export default {
     CurrencyField,
     DialogTransfer,
     NumberField,
-    ConfirmMessage
+    Message
 },
   data () {
       return {
         openDialogPoints: false,
         openDialogTransfer: false,
+        openMessageNotEnoughPoint: false,
+        openMessageDeleteTransfer: false,
         showInstallment: true,
         keepAddingPoint: true,
         isEditing: false,
-        openConfirmMessage: false,
+        openMessageDelete: false,
         point: new PointModel(),
         typesOfTransaction: TYPES_OF_ENTRIES,
+        typeOfTransaction: TYPE_OF_TRANSACTION,
         pointsProgram: POINTS_PROGRAM,
         rules: {
           required: value => !!value || 'Required.'
@@ -257,7 +284,8 @@ export default {
         valid: true,
         headers: HEADERS_POINTS,
         points: [],
-        miles: []
+        miles: [],
+        
       }
     },
 
@@ -329,15 +357,20 @@ export default {
 
       toggleDelete(item) {
         this.point = new PointModel(item);
-        this.openConfirmMessage = true;
+        this.openMessageDelete = true;
       },
 
       addPoint() {
-        this.point.id = newGuid();
+        this.point = new PointModel();
         this.openDialogPoints = true;
       },
 
       editPoint(item) {
+        if (item.type == TYPE_OF_TRANSACTION.TRANSFER.value) {
+          this.openMessageDeleteTransfer = true;
+          return;
+        }
+
         this.openDialogPoints = true;
         this.isEditing = true;
         this.$nextTick(() => this.point = new PointModel(item));
@@ -345,6 +378,11 @@ export default {
 
       deleteItem() {
         this.points = this.points.filter(item => item.id !== this.point.id);
+        let index = this.miles.findIndex(item => item.pointId == this.point.id);
+        if (index > -1) {
+          this.miles.splice(index, 1);
+        }
+        storageAPI.save(STORAGE_DATA.MILES.key, this.miles);
         this.point = new PointModel();
       },
 
@@ -353,6 +391,11 @@ export default {
       },
 
       addTransfer() {
+        if (this.totalPoints == 0) {
+          this.openMessageNotEnoughPoint = true;
+          return;
+        }
+
         this.openDialogTransfer = true
       },
 
@@ -371,28 +414,29 @@ export default {
       },
 
       applyTransfer(transfer) {
-        this.points.push(new PointModel(
+        let newPoint = new PointModel(
           {
-            id: this.points.length,
             date: transfer.date,
             type: TYPE_OF_TRANSACTION.TRANSFER.value,
             quantity: transfer.quantity*-1,
-            totalValue: transfer.totalValue*-1
-          }));
+            totalValue: (this.totalPoints == transfer.quantity) ? this.totalValue*-1 : transfer.totalValue*-1
+          });
+
+        this.points.push(newPoint);
 
         this.miles.push(new MileModel(
           {
-            id: this.miles.length,
+            pointId: newPoint.id,
             date: transfer.date,
-            type: TYPE_OF_TRANSACTION.ENTRY.value,
+            type: TYPE_OF_TRANSACTION.ENTRY_POINTS.value,
             quantity: transfer.miles,
             airline: 'LATAM',
             price: transfer.totalValue
-            
           }
         ));
 
         storageAPI.save(STORAGE_DATA.MILES.key, this.miles);
+
       }
     },
 
@@ -418,11 +462,12 @@ export default {
       averageCostPerThousand() {
         if (!this.points.length) return 0;
 
-        return Number(((this.totalValue / this.totalPoints)*1000).toFixed(2));
+        let average = Number(((this.totalValue / this.totalPoints)*1000).toFixed(2));
+        return isFinite(average) ? average : 0;
       },
 
       averageCostPerThousandBonus() {
-        return this.averageCostPerThousand / 2;
+        return Number((this.averageCostPerThousand / 2).toFixed(2));
       },
 
       tableHeight() {

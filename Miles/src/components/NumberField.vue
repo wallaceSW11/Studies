@@ -16,6 +16,7 @@
       :append-icon="icon"
       @change="updateValue"
       autocomplete="off"
+      :autofocus="autofocus"
     >
 
     </v-text-field>
@@ -33,7 +34,8 @@ export default {
     number: { type: Number, required: true },
     label: { type: String, required: true },
     icon: { type: String, required: true },
-    maxWidth: { type: Number, default: 10 }
+    maxWidth: { type: Number, default: 10 },
+    autofocus: { type: Boolean, default: false }
   },
 
   data() {

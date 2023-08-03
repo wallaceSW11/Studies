@@ -1,11 +1,12 @@
 import moment from "moment/moment";
 import { TYPE_OF_TRANSACTION } from "@/constants/point-constants";
+import { newGuid } from '@/utils/guid';
 
 export default class PointModel {
   constructor(obj) {
     obj = obj || {}
 
-    this.id = obj.id;
+    this.id = obj.id || newGuid();
     this.date = obj.date ? moment(obj.date).format('YYYY-MM-DD') : '';
     this.type = obj.type;
     this.quantity = Number(obj.quantity) || 0;
@@ -23,7 +24,9 @@ export default class PointModel {
 
     if (this.type == TYPE_OF_TRANSACTION.TRANSFER.value) return 0;
 
-    return Number(((this.totalValue / (this.quantity/1000).toFixed(2)).toFixed(2)));
+    let costPerThousand = Number(((this.totalValue / (this.quantity/1000).toFixed(2)).toFixed(2)));
+
+    return isFinite(costPerThousand) ? costPerThousand : 0;
   }
 
   dateISO() {

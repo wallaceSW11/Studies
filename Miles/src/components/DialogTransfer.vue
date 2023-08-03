@@ -2,7 +2,8 @@
   <v-dialog
       v-model="open"
       persistent
-      max-width="60%"
+      :max-width="$vuetify.breakpoint.smAndDown ? '80%' : '60%'"
+      :fullscreen="$vuetify.breakpoint.xsOnly"
     >
       <v-card>
         <v-card-title>
@@ -12,31 +13,70 @@
         <v-card-text>
           <v-form ref="form" v-model="valid" lazy-validation>
             <v-container class="d-flex flex-wrap">
-              <v-flex xs4 pr-4>
+              <v-flex xs12 sm4 pr-sm-4>
                 <date-picker
                   label="Date"
                   v-model="date"
                 ></date-picker>
               </v-flex>
 
-              <v-flex xs4 px-4>
+              <v-flex xs12 sm4 px-sm-4>
                 <number-field
                   label="Quantity"
                   v-model.number="quantity"
                   icon="mdi-numeric"
+                  autofocus
                 ></number-field>
               </v-flex>
 
-              <v-flex xs4 pl-4>
-                <number-field
+              <v-flex xs12 sm4 pl-sm-4>
+                <v-text-field
                   label="Bonus"
                   v-model.number="bonusPercent"
-                  icon="mdi-percent"
-                  :maxWidth="3"
-                ></number-field>
+                  append-icon="mdi-percent"
+                  v-mask="'###'"
+                  reverse
+                  class="label-left"
+                ></v-text-field>
               </v-flex>
 
-              <v-flex xs4 pr-4>
+              <v-flex xs12 sm4 pr-sm-4>
+                <v-select
+                  :items="airlinesProgram"
+                  :item-text="i => i.title"
+                  v-model="airlineProgram"
+                  label="Airline"
+                  prepend-inner-icon="mdi-airplane"
+                  :rules="[rules.required]"
+                ></v-select>
+              </v-flex>
+
+              <v-flex xs12 flex-row flex-sm-column d-flex mt-4>
+                <v-flex xs12 sm4 pr-sm-4>
+                  <title-value
+                    title="Miles"
+                    :value="miles"
+                    :formatMoney="false"
+                  ></title-value>
+                </v-flex>
+  
+                <v-flex xs12 sm4 px-sm-4>
+                  <title-value
+                    title="Average cost"
+                    :value="averageCost"
+                  ></title-value>
+                </v-flex>
+  
+                <v-flex xs12 sm4 pl-4>
+                  <title-value
+                    title="Bonus cost"
+                    :value="bonusCost"
+                  ></title-value>
+                </v-flex>
+
+              </v-flex>
+
+              <!-- <v-flex xs4 pr-4>
                 <title-value
                   title="Miles"
                   :value="miles"
@@ -56,7 +96,7 @@
                   title="Bonus cost"
                   :value="bonusCost"
                 ></title-value>
-              </v-flex>
+              </v-flex> -->
 
             </v-container>
           </v-form>
@@ -74,12 +114,12 @@
 </template>
 
 <script>
-import PointModel from '@/models/PointModel'
 import DatePicker from '@/components/DatePicker.vue';
 import CurrencyField from '@/components/CurrencyField.vue';
 import NumberField from './NumberField.vue';
 import TitleValue from './TitleValue.vue';
 import moment from 'moment';
+import { AIRLINES_PROGRAM } from '@/constants/point-constants';
 
 
 export default {
@@ -104,13 +144,14 @@ export default {
   data() {
     return {
       valid: true,
-      point: new PointModel(),
       date: undefined,
       quantity: 0,
       bonusPercent: 0,
       rules: {
-          required: value => !!value || 'Required.'
-        },
+        required: value => !!value || 'Required.'
+      },
+      airlineProgram: undefined,
+      airlinesProgram: AIRLINES_PROGRAM
     }
   },
 
@@ -141,10 +182,12 @@ export default {
 
       this.$emit('onChange', !open);
       this.$emit('transfer', transfer);
+      this.$refs.form.reset();
     },
 
     toggleCancel() {
       this.$emit('onChange', !open);
+      this.$refs.form.reset();
     }
   },
 

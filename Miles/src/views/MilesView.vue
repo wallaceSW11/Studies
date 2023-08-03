@@ -25,6 +25,10 @@
           {{ item.dateISO() }}
         </template>
 
+        <template v-slot:[`item.type`]="{ item }">
+          {{ typeOfTransaction[item.type].title }}
+        </template>
+
         <template v-slot:[`item.quantity`]="{ item }">
           {{ item.quantity | formatedThousand }}
         </template>
@@ -224,7 +228,7 @@ import DatePicker from '@/components/DatePicker.vue';
 import CurrencyField from '@/components/CurrencyField.vue';
 import DialogTransfer from '@/components/DialogTransfer.vue';
 import NumberField from '@/components/NumberField.vue';
-import ConfirmMessage from '@/components/ConfirmMessage.vue';
+import ConfirmMessage from '@/components/Message.vue';
 import storageAPI from '@/service/api/storageAPI'
 import moment from 'moment';
 
@@ -247,6 +251,7 @@ export default {
         openConfirmMessage: false,
         mile: new MileModel(),
         typesOfTransaction: TYPES_OF_ENTRIES,
+        typeOfTransaction: TYPE_OF_TRANSACTION,
         airlines: POINTS_PROGRAM,
         rules: {
           required: value => !!value || 'Required.'

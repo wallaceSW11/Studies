@@ -1,10 +1,12 @@
 import moment from "moment/moment";
+import { newGuid } from '@/utils/guid';
 
 export default class MileModel {
   constructor(obj) {
     obj = obj || {}
 
-    this.id = obj.id;
+    this.id = obj.id || newGuid();
+    this.pointId = obj.pointId;
     this.date = obj.date ? moment(obj.date).format('YYYY-MM-DD') : '';
     this.type = obj.type;
     this.quantity = Number(obj.quantity) || 0;

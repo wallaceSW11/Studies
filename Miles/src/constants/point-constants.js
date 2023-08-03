@@ -7,6 +7,10 @@ const TYPE_OF_TRANSACTION = {
     title: 'Entry',
     value: 'ENTRY'
   },
+  ENTRY_POINTS: {
+    title: 'Entry points',
+    value: 'ENTRY_POINTS'
+  },
   TRANSFER: {
     title: 'Transfer',
     value: 'TRANSFER'
@@ -33,6 +37,21 @@ const POINT_PROGRAM = {
   IUPP: {
     title: 'IUPP',
     value: 'IUPP'
+  },
+}
+
+const AIRLINE_PROGRAM = {
+  SMILE: {
+    title: 'Smile',
+    value: 'SMILE'
+  },
+  LATAM: {
+    title: 'Latam',
+    value: 'LATAM'
+  },
+  TUDO_AZUL: {
+    title: 'Tudo Azul',
+    value: 'TUDO_AZUL'
   },
 }
 
@@ -148,6 +167,7 @@ const STORAGE_DATA = {
 
 const TYPES_OF_ENTRIES = Object.values(TYPE_OF_TRANSACTION);
 const POINTS_PROGRAM = Object.values(POINT_PROGRAM);
+const AIRLINES_PROGRAM = Object.values(AIRLINE_PROGRAM);
 
 export {
   TYPE_OF_TRANSACTION,
@@ -155,5 +175,6 @@ export {
   HEADERS_POINTS,
   HEADERS_MILES,
   POINTS_PROGRAM,
-  STORAGE_DATA
+  STORAGE_DATA,
+  AIRLINES_PROGRAM
 }

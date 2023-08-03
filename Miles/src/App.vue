@@ -40,8 +40,6 @@
 
 <script>
 
-import '@/styles/_global.scss';
-
 export default {
   name: 'App',
 
@@ -69,6 +67,14 @@ html { overflow-y: auto }
 .label-left {
   left: 0 !important;
   transform-origin: top left !important;
+}
+
+.primary-color {
+  color: $primary_color;
+}
+
+::v-deep .v-icon {
+  color: $primary-color;
 }
 
 </style>

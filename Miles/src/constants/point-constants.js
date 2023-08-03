@@ -62,18 +62,6 @@ const HEADERS_POINTS =
     sortable: false,
     value: 'totalValue',
   },
-  // {
-  //   text: 'Installment number',
-  //   align: 'start',
-  //   sortable: false,
-  //   value: 'installmentNumber',
-  // },
-  // {
-  //   text: 'First installment',
-  //   align: 'start',
-  //   sortable: false,
-  //   value: 'firstInstallment',
-  // },
   {
     text: 'Cost per thousand',
     align: 'right',
@@ -92,10 +80,9 @@ const HEADERS_MILES =
  [
   {
     text: 'Id',
-    align: 'start',
+    align: ' d-none',
     sortable: false,
-    value: 'id',
-    width: 0
+    value: 'id'
   },
   {
     text: 'Date',
@@ -128,6 +115,12 @@ const HEADERS_MILES =
     value: 'price',
   },
   {
+    text: 'Cost per mile',
+    align: 'right',
+    sortable: false,
+    value: 'costPerMile',
+  },
+  {
     text: 'Actions',
     align: 'center',
     sortable: false,
@@ -144,7 +137,12 @@ const STORAGE_DATA = {
     key: 'miles'
   },
   KEEP_ADDING: {
-    key: 'keepAdding'
+   POINTS: {
+    key: 'keepAddingPoints'
+   },
+   MILES: {
+    key: 'keepAddingMiles'
+   }
   },
 }
 

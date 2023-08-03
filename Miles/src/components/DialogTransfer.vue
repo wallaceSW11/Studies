@@ -135,7 +135,8 @@ export default {
         date: this.date,
         quantity: this.quantity,
         totalValue: this.totalValuePoint,
-        bonusCost: this.bonusCost
+        bonusCost: this.bonusCost,
+        miles: this.miles
       }
 
       this.$emit('onChange', !open);
@@ -164,7 +165,7 @@ export default {
     totalValuePoint() {
       if (!this.quantity || !this.averageCost) return 0;
 
-      return Number((((this.quantity/1000)*this.averageCost)*-1).toFixed(2));
+      return Number(((this.quantity/1000)*this.averageCost).toFixed(2));
     }
   },
 

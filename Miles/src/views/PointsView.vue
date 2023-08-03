@@ -2,7 +2,7 @@
   <v-container class="d-flex flex-column">
     <v-flex xs12 class="d-flex flex-row flex-grow-0 ustify-space-between">
       <v-flex xs2>
-        <h2>Points</h2>
+        <h2 class="primary-color">Points</h2>
       </v-flex>
       <v-spacer></v-spacer>
       <v-flex flex-grow-0 class="d-flex align-center">
@@ -18,7 +18,7 @@
         :headers="headers"
         :items="points"
         :items-per-page="10"
-        height="500px"
+        height="calc(100vh - 300px)"
         class="elevation-1"
       >
         <template v-slot:[`item.date`]="{ item }">
@@ -42,12 +42,14 @@
           <v-icon
             small
             class="mr-2"
+            color="primary"
             @click="editPoint(item)"
           >
             mdi-pencil
           </v-icon>
           <v-icon
             small
+            color="primary"
             @click="toggleDelete(item)"
           >
             mdi-delete
@@ -227,6 +229,7 @@ import ConfirmMessage from '@/components/ConfirmMessage.vue';
 import storageAPI from '@/service/api/storageAPI'
 import moment from 'moment';
 import MileModel from '@/models/MileModel';
+import { newGuid } from '@/utils/guid';
 
 export default {
   name: 'PointsView',
@@ -308,7 +311,6 @@ export default {
           this.points.splice(index, 1, this.point);
 
         } else {
-          this.point.id = this.points.length;
           this.points.push(this.point);
         }
 
@@ -331,6 +333,7 @@ export default {
       },
 
       addPoint() {
+        this.point.id = newGuid();
         this.openDialogPoints = true;
       },
 
@@ -374,7 +377,7 @@ export default {
             date: transfer.date,
             type: TYPE_OF_TRANSACTION.TRANSFER.value,
             quantity: transfer.quantity*-1,
-            totalValue: transfer.totalValue
+            totalValue: transfer.totalValue*-1
           }));
 
         this.miles.push(new MileModel(
@@ -382,9 +385,10 @@ export default {
             id: this.miles.length,
             date: transfer.date,
             type: TYPE_OF_TRANSACTION.ENTRY.value,
-            quantity: transfer.quantity,
+            quantity: transfer.miles,
             airline: 'LATAM',
-            price: transfer.bonusCost
+            price: transfer.totalValue
+            
           }
         ));
 
@@ -419,12 +423,16 @@ export default {
 
       averageCostPerThousandBonus() {
         return this.averageCostPerThousand / 2;
+      },
+
+      tableHeight() {
+        return '500px';
       }
     },
 
     watch: {
       points() {
-        //storageAPI.save(STORAGE_DATA.POINTS.key, this.points);
+        storageAPI.save(STORAGE_DATA.POINTS.key, this.points);
       },
 
       'point.installmentNumber'() {
@@ -438,13 +446,13 @@ export default {
       openDialogPoints(open) {
         if (open) {
           this.valid = true;
-          this.keepAddingPoint = !!storageAPI.get(STORAGE_DATA.KEEP_ADDING.key);
+          this.keepAddingPoint = !!storageAPI.get(STORAGE_DATA.KEEP_ADDING.POINTS.key);
           this.$nextTick(() => this.point.date = moment().format('YYYY-MM-DD') );
         }
       },
 
       keepAddingPoint(value) {
-        storageAPI.save(STORAGE_DATA.KEEP_ADDING.key, !!value);
+        storageAPI.save(STORAGE_DATA.KEEP_ADDING.POINTS.key, !!value);
       }
     },
 

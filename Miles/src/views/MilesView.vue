@@ -2,7 +2,7 @@
   <v-container class="d-flex flex-column">
     <v-flex xs12 class="d-flex flex-row flex-grow-0 ustify-space-between">
       <v-flex xs2>
-        <h2>Miles</h2>
+        <h2 class="primary-color">Miles</h2>
       </v-flex>
       <v-spacer></v-spacer>
       <v-flex flex-grow-0 class="d-flex align-center">
@@ -18,7 +18,7 @@
         :headers="headers"
         :items="miles"
         :items-per-page="10"
-        height="400px"
+        height="calc(100vh - 300px)"
         class="elevation-1"
       >
         <template v-slot:[`item.date`]="{ item }">
@@ -33,16 +33,22 @@
           {{ item.price | formatedMoney }}
         </template>
 
+        <template v-slot:[`item.costPerMile`]="{ item }">
+          {{ item.costPerMile() | formatedMoney }}
+        </template>
+
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon
             small
             class="mr-2"
+            color="primary"
             @click="editMile(item)"
           >
             mdi-pencil
           </v-icon>
           <v-icon
             small
+            color="primary"
             @click="toggleDelete(item)"
           >
             mdi-delete
@@ -270,11 +276,11 @@ export default {
     },
 
     beforeMount() {
-      let pointsStorage = storageAPI.get(STORAGE_DATA.MILES.key);
+      let milesStorage = storageAPI.get(STORAGE_DATA.MILES.key);
 
-      if (!pointsStorage) return;
+      if (!milesStorage) return;
 
-      pointsStorage.map(item => this.miles.push(new MileModel(item)));
+      milesStorage.map(item => this.miles.push(new MileModel(item)));
     },
 
     methods: {
@@ -393,7 +399,7 @@ export default {
 
     watch: {
       miles() {
-        storageAPI.save(STORAGE_DATA.POINTS.key, this.miles);
+        storageAPI.save(STORAGE_DATA.MILES.key, this.miles);
       },
 
       'mile.installmentNumber'() {
@@ -407,13 +413,13 @@ export default {
       openDialogPoints(open) {
         if (open) {
           this.valid = true;
-          this.keepAddingPoint = !!storageAPI.get(STORAGE_DATA.KEEP_ADDING.key);
+          this.keepAddingPoint = !!storageAPI.get(STORAGE_DATA.KEEP_ADDING.MILES.key);
           this.$nextTick(() => this.mile.date = moment().format('YYYY-MM-DD') );
         }
       },
 
       keepAddingPoint(value) {
-        storageAPI.save(STORAGE_DATA.KEEP_ADDING.key, !!value);
+        storageAPI.save(STORAGE_DATA.KEEP_ADDING.MILES.key, !!value);
       }
     },
 

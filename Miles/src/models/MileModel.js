@@ -15,4 +15,10 @@ export default class MileModel {
   dateISO() {
     return this.date ? moment(this.date).format('DD/MM/YYYY') : '';
   }
+
+  costPerMile() {
+    if (!this.quantity || !this.price) return 0;
+
+    return Number(((this.price / this.quantity)*1000).toFixed(2))
+  }
 }

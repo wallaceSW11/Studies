@@ -67,7 +67,7 @@ export default {
   name: 'App',
 
   data: () => ({
-    menuMobile: true,
+    menuMobile: false,
   }),
 
   computed: {

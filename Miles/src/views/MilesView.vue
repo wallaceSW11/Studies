@@ -33,6 +33,10 @@
           {{ item.quantity | formatedThousand }}
         </template>
 
+        <template v-slot:[`item.airline`]="{ item }">
+          {{ airline[item.airline].title }}
+        </template>
+
         <template v-slot:[`item.price`]="{ item }">
           {{ item.price | formatedMoney }}
         </template>
@@ -119,52 +123,10 @@
                 ></currency-field>
               </v-flex>
 
-              <!-- <v-flex xs12 md6 pr-md-4 pt-md-4>
-                <span>Cost Effective</span>
-                <p class="text-right mr-2" style="font-size: 18px"> <b>{{mile.costPerThousand() | formatedMoney}}</b></p>
+              <v-flex xs12 md4 pl-md-4>
+                <span>Cost per mile</span>
+                <p class="text-right mr-2" style="font-size: 18px"> <b>{{ mile.costPerMile() | formatedMoney }}</b></p>
               </v-flex>
-
-              <v-flex xs12 md6 pl-md-4 pt-md-4>
-                <span>Bonus (100% transfer)</span>
-                <p class="text-right mr-2" style="font-size: 18px"> <b>{{mile.costPerThousand() / 2 | formatedMoney}}</b></p>
-              </v-flex> -->
-
-              <!-- <v-flex class="d-flex" xs12>
-                <v-flex class="d-flex flex-grow-0">
-                  <h3 style="color: #fb8c00">Installment</h3>
-                </v-flex>
-                <v-flex>
-                  <div style="border-bottom: 1px solid #fb8c00; height: 18px; margin-left: 4px" ></div>
-                </v-flex>
-                <v-flex class="d-flex flex-grow-0">
-                  <v-btn icon @click="showInstallment = !showInstallment"><v-icon color="primary">{{ showInstallment ? 'mdi-minus-circle-outline' : 'mdi-plus-circle-outline'}}</v-icon></v-btn>
-                </v-flex>
-              </v-flex>
-
-              <v-flex xs12 v-if="showInstallment" class="d-flex flex-wrap mt-4">
-                <v-flex xs12 md4 pr-md-4>
-                  <date-picker
-                    label="First installment"
-                    v-model="mile.firstInstallment"
-                  ></date-picker>
-                </v-flex>
-
-                <v-flex xs12 md4 px-md-4>
-                  <v-text-field
-                    v-model="mile.installmentNumber"
-                    label="Number"
-                    v-mask="'##'"
-                    required
-                    reverse
-                    class="label-left"
-                  ></v-text-field>
-                </v-flex>
-
-                <v-flex xs12 md4 pl-md-4>
-                  <span>Value</span>
-                <p class="text-right mr-2" style="font-size: 18px"> <b>{{mile.installmentValue | formatedMoney}}</b></p>
-                </v-flex>
-              </v-flex> -->
 
               <v-flex v-if="!isEditing">
                 <v-checkbox label="Keep adding" v-model="keepAddingPoint"></v-checkbox>
@@ -185,20 +147,16 @@
       </v-card>
     </v-dialog>
 
-    <!-- <dialog-transfer v-model="openDialogTransfer" :totalMiles="totalMiles" :averageCost="averageCostPerThousand" @transfer="applyTransfer" /> -->
+    <message
+      v-model="openMessage"
+      :title="titleMessage"
+      :message="descriptionMessage"
+      :confirm-callback="actionConfirmMessage"
+      :hide-secondary-button="hideSecondaryButton"
+      :descripton-primary-button="descriptionPrimaryButton"
+    ></message>
 
-    <confirm-message
-      v-model="openConfirmMessage"
-      title="Delete mile"
-      message="Are you sure?"
-      :confirm-callback="deleteItem"
-      :cancel-callback="onCancelDelete"
-    >
-
-    </confirm-message>
-
-
-    <!-- <v-footer fixed>
+    <v-footer fixed>
       <v-flex xs12 class="px-md-6">
         <v-flex class="d-flex flex-column">
           <span><b>Summary</b></span>
@@ -206,29 +164,24 @@
             <v-flex class="d-flex flex-column">
               <span>Total miles: {{ totalMiles | formatedThousand }}</span>
               <span>Total value: {{ totalPrice | formatedMoney }}</span>
-            </v-flex>
-
-            <v-flex class="d-flex flex-column">
-              <span>Average cost per thousand: {{ averageCostPerThousand | formatedMoney }}</span>
-              <span color="primary">Average cost per thousand (bonus): <span class="highlighted-text"> {{ averageCostPerThousandBonus | formatedMoney }}</span></span>
+              <span>Average cost per mile: {{ totalcostPerMile | formatedMoney }}</span>
             </v-flex>
           </v-flex>
-
         </v-flex>
       </v-flex>
 
-    </v-footer> -->
+    </v-footer>
   </v-container>
 </template>
 
 <script>
 import MileModel from '@/models/MileModel';
-import { TYPE_OF_TRANSACTION, TYPES_OF_ENTRIES, HEADERS_MILES, POINTS_PROGRAM, STORAGE_DATA } from '@/constants/point-constants'
+import { TYPE_OF_TRANSACTION, TYPES_OF_ENTRIES, HEADERS_MILES, STORAGE_DATA, AIRLINES_PROGRAM, AIRLINE_PROGRAM } from '@/constants/point-constants'
 import DatePicker from '@/components/DatePicker.vue';
 import CurrencyField from '@/components/CurrencyField.vue';
 import DialogTransfer from '@/components/DialogTransfer.vue';
 import NumberField from '@/components/NumberField.vue';
-import ConfirmMessage from '@/components/Message.vue';
+import Message from '@/components/Message.vue';
 import storageAPI from '@/service/api/storageAPI'
 import moment from 'moment';
 
@@ -239,7 +192,7 @@ export default {
     CurrencyField,
     DialogTransfer,
     NumberField,
-    ConfirmMessage
+    Message
 },
   data () {
       return {
@@ -252,13 +205,21 @@ export default {
         mile: new MileModel(),
         typesOfTransaction: TYPES_OF_ENTRIES,
         typeOfTransaction: TYPE_OF_TRANSACTION,
-        airlines: POINTS_PROGRAM,
+        airlines: AIRLINES_PROGRAM,
+        airline: AIRLINE_PROGRAM,
         rules: {
           required: value => !!value || 'Required.'
         },
         valid: true,
         headers: HEADERS_MILES,
-        miles: []
+        miles: [],
+        titleMessage: undefined,
+        descriptionMessage: undefined,
+        openMessage: false,
+        actionConfirmMessage: undefined,
+        actionCancelMessage: undefined,
+        hideSecondaryButton: false,
+        descriptionPrimaryButton: undefined
       }
     },
 
@@ -317,6 +278,16 @@ export default {
       },
 
       toggleDelete(item) {
+        if (item.type == TYPE_OF_TRANSACTION.ENTRY_POINTS.value) {
+          this.titleMessage = "Sorry, you can't delete miles from points.";
+          this.descriptionMessage = "Please, delete by points' page.";
+          this.hideSecondaryButton = true;
+          this.descriptionPrimaryButton = 'OK';
+          this.openMessage = true;
+          this.actionConfirmMessage = this.clearMessage;
+          return;
+        }
+
         this.mile = new MileModel(item);
         this.openConfirmMessage = true;
       },
@@ -326,6 +297,16 @@ export default {
       },
 
       editMile(item) {
+        if (item.type == TYPE_OF_TRANSACTION.ENTRY_POINTS.value) {
+          this.titleMessage = "Sorry, you can't edit miles from points.";
+          this.descriptionMessage = "Please, delete by points' page.";
+          this.hideSecondaryButton = true;
+          this.descriptionPrimaryButton = 'OK';
+          this.openMessage = true;
+          this.actionConfirmMessage = this.clearMessage;
+          return;
+        }
+
         this.openDialogPoints = true;
         this.isEditing = true;
         this.$nextTick(() => this.mile = new MileModel(item));
@@ -369,6 +350,13 @@ export default {
           }));
 
           // adicionar no miles
+      },
+
+      clearMessage() {
+        this.titleMessage = undefined;
+        this.descriptionMessage = undefined;
+        this.hideSecondaryButton = false;
+        this.descriptionPrimaryButton = undefined;
       }
     },
 
@@ -382,13 +370,13 @@ export default {
       totalPrice() {
         if (!this.miles.length) return 0;
 
-        return this.miles.reduce((total, item) => total + item.totalPrice, 0);
+        return this.miles.reduce((total, item) => total + item.price, 0);
       },
 
-      totalcostPerThousand() {
+      totalcostPerMile() {
         if (!this.miles.length) return 0;
 
-        return this.miles.reduce((total, item) => total + item.costPerThousand(), 0);
+        return this.miles.reduce((total, item) => total + item.costPerMile(), 0);
       },
 
       averageCostPerThousand() {

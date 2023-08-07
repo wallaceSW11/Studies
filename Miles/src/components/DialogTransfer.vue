@@ -51,7 +51,7 @@
                 ></v-select>
               </v-flex>
 
-              <v-flex xs12 flex-row flex-sm-column d-flex mt-4>
+              <v-flex xs12 flex-column flex-sm-row d-flex mt-4>
                 <v-flex xs12 sm4 pr-sm-4>
                   <title-value
                     title="Miles"
@@ -67,37 +67,13 @@
                   ></title-value>
                 </v-flex>
   
-                <v-flex xs12 sm4 pl-4>
+                <v-flex xs12 sm4 pl-sm-4>
                   <title-value
                     title="Bonus cost"
                     :value="bonusCost"
                   ></title-value>
                 </v-flex>
-
               </v-flex>
-
-              <!-- <v-flex xs4 pr-4>
-                <title-value
-                  title="Miles"
-                  :value="miles"
-                  :formatMoney="false"
-                ></title-value>
-              </v-flex>
-
-              <v-flex xs4 px-4>
-                <title-value
-                  title="Average cost"
-                  :value="averageCost"
-                ></title-value>
-              </v-flex>
-
-              <v-flex xs4 px-4>
-                <title-value
-                  title="Bonus cost"
-                  :value="bonusCost"
-                ></title-value>
-              </v-flex> -->
-
             </v-container>
           </v-form>
         </v-card-text>
@@ -177,6 +153,7 @@ export default {
         quantity: this.quantity,
         totalValue: this.totalValuePoint,
         bonusCost: this.bonusCost,
+        airline: this.airlineProgram,
         miles: this.miles
       }
 

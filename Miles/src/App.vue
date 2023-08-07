@@ -100,4 +100,8 @@ html { overflow-y: auto }
   color: $primary-color;
 }
 
+.text-right {
+  text-align: right !important;
+}
+
 </style>

@@ -206,8 +206,8 @@
       title="Ops, no points avaliable..."
       message="There are no points avaliable to transfer!"
       :confirm-callback="() => {}"
-      descriptonPrimaryBotton="ok"
-      hideSecondaryBotton
+      descriptonPrimaryButton="ok"
+      hideSecondaryButton
     ></message>
 
     <message
@@ -215,8 +215,8 @@
       title="Sorry, you can't edit a transfer"
       message="Please, delete and create a new."
       :confirm-callback="() => {}"
-      descriptonPrimaryBotton="ok"
-      hideSecondaryBotton
+      descriptonPrimaryButton="ok"
+      hideSecondaryButton
     ></message>
 
 
@@ -377,11 +377,18 @@ export default {
       },
 
       deleteItem() {
-        this.points = this.points.filter(item => item.id !== this.point.id);
-        let index = this.miles.findIndex(item => item.pointId == this.point.id);
-        if (index > -1) {
-          this.miles.splice(index, 1);
+        let pointIndex = this.points.findIndex(item => item.id == this.point.id);
+
+        if (pointIndex > -1) {
+          this.points.splice(pointIndex, 1);
         }
+
+        let mileIndex = this.miles.findIndex(item => item.pointId == this.point.id);
+
+        if (mileIndex > -1) {
+          this.miles.splice(mileIndex, 1);
+        }
+        
         storageAPI.save(STORAGE_DATA.MILES.key, this.miles);
         this.point = new PointModel();
       },
@@ -430,7 +437,7 @@ export default {
             date: transfer.date,
             type: TYPE_OF_TRANSACTION.ENTRY_POINTS.value,
             quantity: transfer.miles,
-            airline: 'LATAM',
+            airline: transfer.airline,
             price: transfer.totalValue
           }
         ));

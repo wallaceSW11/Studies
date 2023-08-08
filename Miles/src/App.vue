@@ -33,6 +33,7 @@
     <v-navigation-drawer
       v-model="menuMobile"
       app
+      disable-resize-watcher
     >
       <v-container d-flex flex-column>
         <v-flex xs12 d-flex justify-center pa-5>

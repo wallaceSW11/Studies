@@ -34,11 +34,17 @@ export default {
 <style lang="scss" scoped>
 .summary-card {
   border-left: 2px solid $primary-color;
-  min-width: 150px;
+  width: 200px;
   max-width: 200px;
   max-height: 150px;
   margin: 16px;
   background-color: $card-background;
+}
+
+@media only screen and (max-width: 400px) {
+  .summary-card {
+    max-width: 100%;
+  }
 }
 
 </style>

@@ -28,30 +28,36 @@ const TYPE_OF_TRANSACTION = {
 const POINT_PROGRAM = {
   LIVELO: {
     title: 'Livelo',
-    value: 'LIVELO'
+    value: 'LIVELO',
+    image: 'https://www.livelo.com.br/file/general/pt_logo-v1.svg'
   },
   ESFERA: {
     title: 'Esfera',
-    value: 'ESFERA'
+    value: 'ESFERA',
+    image: 'https://www.esfera.com.vc/file/v2921935191691134188/general/Logo_Esfera_300dpi.png'
   },
   IUPP: {
     title: 'IUPP',
-    value: 'IUPP'
+    value: 'IUPP',
+    image: 'https://milheirodeprimeira.com.br/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGbWlsaGVpcm9kZXByaW1laXJhLmNvbS5iciUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGaXVwcC1pdGF1LTkwMHg1MDAucG5nJmNhY2hlTWFya2VyPTE2NjA0MTUzMjQtMTgxOTQmdG9rZW49MGY0ZjM3ZDc2MzMzMGI5NQ.q.png'
   },
 }
 
 const AIRLINE_PROGRAM = {
   SMILE: {
     title: 'Smile',
-    value: 'SMILE'
+    value: 'SMILE',
+    image: 'https://logodownload.org/wp-content/uploads/2017/09/smiles-logo.png'
   },
   LATAM: {
     title: 'Latam',
-    value: 'LATAM'
+    value: 'LATAM',
+    image: 'https://logospng.org/wp-content/uploads/latam.jpg'
   },
   TUDO_AZUL: {
     title: 'Tudo Azul',
-    value: 'TUDO_AZUL'
+    value: 'TUDO_AZUL',
+    image: 'https://tudoazul.azulviagens.com.br/handlers/ImageRequest.ashx?path=%2fimg%2flogo-tudoazul.png&mediaSize=lg&imgSize=original'
   },
 }
 

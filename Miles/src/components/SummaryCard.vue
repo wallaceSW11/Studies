@@ -1,10 +1,15 @@
 <template>
-  <v-flex class="summary-card">
-    <v-flex d-flex px-2 py-3>
-      <v-icon>{{ icon }}</v-icon>
-      <h2>{{ title }}</h2>
+  <v-flex d-flex flex-column class="summary-card">
+    <v-flex>
+      <v-flex d-flex justify-center pa-2 v-if="!!image">
+        <img :src="image" :alt="title" srcset="">
+      </v-flex>
+      <v-flex d-flex justify-center v-else>
+        <h2>{{ title }}</h2>
+      </v-flex>
     </v-flex>
-    <v-flex d-flex flex-row-reverse mr-3>
+
+    <v-flex d-flex justify-center>
       <h3>{{ value | formatedThousand }}</h3>
     </v-flex>
   </v-flex>  
@@ -16,7 +21,7 @@ export default {
   props: {
     title: { type: String, required: true },
     value: { type: Number, required: true },
-    icon: { type: String, required: true }
+    image: { type: String, required: true, default: '' }
   },
 
   filters: {
@@ -39,6 +44,10 @@ export default {
   max-height: 150px;
   margin: 16px;
   background-color: $card-background;
+}
+
+img {
+  max-height: 42px;
 }
 
 @media only screen and (max-width: 400px) {

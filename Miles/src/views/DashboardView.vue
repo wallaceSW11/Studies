@@ -9,12 +9,13 @@
         <h3>Points</h3>
         <hr/>
       </v-flex>
-      <v-flex class="d-flex flex-wrap">
+      <v-flex class="d-flex justify-center flex-wrap">
         <summary-card
           v-for="program in pointsProgram"
           :key="program.title"
           :title="program.title"
           :value="points.filter(item => item.program == program.value && item.type != 'TRASNFER').reduce((total, point) => total + point.quantity, 0)"
+          :image="program.image"
           icon="mdi-numeric-10-circle-outline"
         ></summary-card>
       </v-flex>
@@ -25,12 +26,13 @@
         <h3>Miles</h3>
         <hr/>
       </v-flex>
-      <v-flex class="d-flex flex-wrap">
+      <v-flex class="d-flex justify-center flex-wrap">
         <summary-card
           v-for="airline in airlines"
           :key="airline.title"
           :title="airline.title"
           :value="miles.filter(item => item.airline == airline.value).reduce((total, airline) => total + airline.quantity, 0)"
+          :image="airline.image"
           icon="mdi-numeric-10-circle-outline"
         ></summary-card>
       </v-flex>
@@ -80,19 +82,8 @@ export default {
         if (!milesStorage) return;
 
         milesStorage.map(item => this.miles.push(new MileModel(item)));
-      },
-  },
-
-  // computed: {
-  //   pointsAvaliable() {
-  //     if (this.points && !this.points.length) return [new PointModel()];
-
-  //     return this.points
-  //       .filter(item => item.program == program.value && item.type != 'TRASNFER')
-  //       .reduce((total, point) => total + point.quantity, 0)
-  //   }
-  // },
-
+      }
+  }
 }
 </script>
 

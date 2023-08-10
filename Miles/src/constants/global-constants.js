@@ -1,27 +1,50 @@
-const TYPE_OF_TRANSACTION = {
+import language from "@/utils/language";
+import { TEXT } from "./text";
+
+const STORAGE_DATA = {
+  POINTS: {
+    key: 'points'
+  },
+  MILES: {
+    key: 'miles'
+  },
+  CONFIGURATIONS: {
+    KEEP_ADDING: {
+      POINTS: {
+       key: 'keepAddingPoints'
+      },
+      MILES: {
+       key: 'keepAddingMiles'
+      }
+     },
+     LANG: {
+       key: 'Language'
+     }
+  }
+}
+
+const lang = language();
+
+const TRANSACTION_TYPE = {
   BUY: {
-    title: 'Buy',
+    title: TEXT.BUY[lang],
     value: 'BUY'
   },
   ENTRY: {
-    title: 'Entry',
+    title: TEXT.ENTRY[lang],
     value: 'ENTRY'
   },
-  ENTRY_POINTS: {
-    title: 'Entry points',
-    value: 'ENTRY_POINTS'
+  ENTRY_BY_TRANSFER: {
+    title: TEXT.ENTRY_PER_TRANSFER[lang],
+    value: 'ENTRY_BY_TRANSFER'
   },
   TRANSFER: {
-    title: 'Transfer',
+    title: TEXT.TRANSFER[lang],
     value: 'TRANSFER'
   },
   BONUS: {
-    title: 'Bonus',
+    title: TEXT.BONUS[lang],
     value: 'BONUS'
-  },
-  OUT: {
-    title: 'Out',
-    value: 'OUT'
   }
 }
 
@@ -64,37 +87,43 @@ const AIRLINE_PROGRAM = {
 const HEADERS_POINTS = 
  [
   {
-    text: 'Date',
+    text: 'Id',
+    align: ' d-none',
+    sortable: false,
+    value: 'id'
+  },
+  {
+    text: TEXT.DATE[lang],
     align: 'start',
     sortable: false,
     value: 'date',
   },
   {
-    text: 'Type',
+    text: TEXT.TRANSACTION[lang],
     align: 'start',
     sortable: false,
     value: 'type',
   },
   {
-    text: 'Quantity',
+    text: TEXT.QUANTITY[lang],
     align: 'right',
     sortable: false,
     value: 'quantity',
   },
   {
-    text: 'Total value',
+    text: TEXT.TOTAL_VALUE[lang],
     align: 'right',
     sortable: false,
     value: 'totalValue',
   },
   {
-    text: 'Cost per thousand',
+    text: TEXT.COST_PER_THOUSAND[lang],
     align: 'right',
     sortable: false,
     value: 'costPerThousand',
   },
   {
-    text: 'Actions',
+    text: TEXT.ACTIONS[lang],
     align: 'center',
     sortable: false,
     value: 'actions',
@@ -110,74 +139,56 @@ const HEADERS_MILES =
     value: 'id'
   },
   {
-    text: 'Date',
+    text: TEXT.DATE[lang],
     align: 'start',
     sortable: false,
     value: 'date',
   },
   {
-    text: 'Type',
+    text: TEXT.TRANSACTION[lang],
     align: 'start',
     sortable: false,
     value: 'type',
   },
   {
-    text: 'Quantity',
+    text: TEXT.QUANTITY[lang],
     align: 'right',
     sortable: false,
     value: 'quantity',
   },
   {
-    text: 'Airline',
+    text: TEXT.AIRLINE[lang],
     align: 'right',
     sortable: false,
     value: 'airline',
   },
   {
-    text: 'Price',
+    text: TEXT.PRICE[lang],
     align: 'right',
     sortable: false,
     value: 'price',
   },
   {
-    text: 'Cost per mile',
+    text: TEXT.COST_PER_THOUSAND[lang],
     align: 'right',
     sortable: false,
-    value: 'costPerMile',
+    value: 'costPerThousand',
   },
   {
-    text: 'Actions',
+    text: TEXT.ACTIONS[lang],
     align: 'center',
     sortable: false,
     value: 'actions',
-  },
-
+  }
 ]
 
-const STORAGE_DATA = {
-  POINTS: {
-    key: 'points'
-  },
-  MILES: {
-    key: 'miles'
-  },
-  KEEP_ADDING: {
-   POINTS: {
-    key: 'keepAddingPoints'
-   },
-   MILES: {
-    key: 'keepAddingMiles'
-   }
-  },
-}
-
-const TYPES_OF_ENTRIES = Object.values(TYPE_OF_TRANSACTION);
+const TRANSACTION_TYPES = Object.values(TRANSACTION_TYPE);
 const POINTS_PROGRAM = Object.values(POINT_PROGRAM);
 const AIRLINES_PROGRAM = Object.values(AIRLINE_PROGRAM);
 
 export {
-  TYPE_OF_TRANSACTION,
-  TYPES_OF_ENTRIES,
+  TRANSACTION_TYPE,
+  TRANSACTION_TYPES,
   HEADERS_POINTS,
   HEADERS_MILES,
   POINTS_PROGRAM,

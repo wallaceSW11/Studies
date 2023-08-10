@@ -7,7 +7,7 @@
     >
       <v-card>
         <v-card-title>
-        <span style="color: #fb8c00">Transfer points</span>
+        <span style="color: #fb8c00">{{ text.POINTS_TRANSFER[lang] }}</span>
         </v-card-title>
 
         <v-card-text>
@@ -15,14 +15,14 @@
             <v-container class="d-flex flex-wrap">
               <v-flex xs12 sm4 pr-sm-4>
                 <date-picker
-                  label="Date"
+                  :label="text.DATE[lang]"
                   v-model="date"
                 ></date-picker>
               </v-flex>
 
               <v-flex xs12 sm4 px-sm-4>
                 <number-field
-                  label="Quantity"
+                  :label="text.QUANTITY[lang]"
                   v-model.number="quantity"
                   icon="mdi-numeric"
                   autofocus
@@ -31,7 +31,7 @@
 
               <v-flex xs12 sm4 pl-sm-4>
                 <v-text-field
-                  label="Bonus"
+                  :label="text.BONUS[lang]"
                   v-model.number="bonusPercent"
                   append-icon="mdi-percent"
                   v-mask="'###'"
@@ -45,7 +45,7 @@
                   :items="airlinesProgram"
                   :item-text="i => i.title"
                   v-model="airlineProgram"
-                  label="Airline"
+                  :label="text.AIRLINE[lang]"
                   prepend-inner-icon="mdi-airplane"
                   :rules="[rules.required]"
                 ></v-select>
@@ -54,7 +54,7 @@
               <v-flex xs12 flex-column flex-sm-row d-flex mt-4>
                 <v-flex xs12 sm4 pr-sm-4>
                   <title-value
-                    title="Miles"
+                    :title="text.MILES[lang]"
                     :value="miles"
                     :formatMoney="false"
                   ></title-value>
@@ -62,14 +62,14 @@
   
                 <v-flex xs12 sm4 px-sm-4>
                   <title-value
-                    title="Average cost"
+                    :title="text.COST_PER_THOUSAND[lang]"
                     :value="averageCost"
                   ></title-value>
                 </v-flex>
   
                 <v-flex xs12 sm4 pl-sm-4>
                   <title-value
-                    title="Bonus cost"
+                    :title="text.BONUS_COST[lang]"
                     :value="bonusCost"
                   ></title-value>
                 </v-flex>
@@ -81,8 +81,8 @@
         <v-card-actions>
           <v-flex class="d-flex">
             <v-spacer></v-spacer>
-            <v-btn class="mr-4" color="primary" @click="toggleSave">Save</v-btn>
-            <v-btn outlined @click="toggleCancel">Cancel</v-btn>
+            <v-btn class="mr-4" color="primary" @click="toggleSave">{{ text.SAVE[lang] }}</v-btn>
+            <v-btn outlined @click="toggleCancel">{{ text.CANCEL[lang] }}</v-btn>
           </v-flex>
         </v-card-actions>
       </v-card>
@@ -95,7 +95,9 @@ import CurrencyField from '@/components/CurrencyField.vue';
 import NumberField from './NumberField.vue';
 import TitleValue from './TitleValue.vue';
 import moment from 'moment';
-import { AIRLINES_PROGRAM } from '@/constants/point-constants';
+import { AIRLINES_PROGRAM } from '@/constants/global-constants';
+import { TEXT } from '@/constants/text';
+import language from '@/utils/language';
 
 
 export default {
@@ -127,7 +129,9 @@ export default {
         required: value => !!value || 'Required.'
       },
       airlineProgram: undefined,
-      airlinesProgram: AIRLINES_PROGRAM
+      airlinesProgram: AIRLINES_PROGRAM,
+      text: TEXT,
+      lang: language()
     }
   },
 

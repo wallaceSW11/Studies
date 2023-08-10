@@ -2,14 +2,14 @@
   <v-container class="d-flex flex-column">
     <v-flex xs12 class="d-flex flex-row flex-grow-0 ustify-space-between">
       <v-flex xs2>
-        <h2 class="primary-color">Points</h2>
+        <h2 class="primary-color">{{ text.POINTS[lang] }}</h2>
       </v-flex>
       <v-spacer></v-spacer>
       <v-flex flex-grow-0 class="d-flex align-center">
-        <v-btn outlined color="primary" small @click="addPoint"><v-icon>mdi-plus</v-icon>Add</v-btn>
+        <v-btn outlined color="primary" small @click="addPoint"><v-icon>mdi-plus</v-icon>{{ text.ADD[lang] }}</v-btn>
       </v-flex>
       <v-flex flex-grow-0 class="d-flex align-center">
-        <v-btn outlined color="secondary" small @click="addTransfer" class="ml-4"><v-icon>mdi-swap-horizontal</v-icon>Transfer</v-btn>
+        <v-btn outlined color="secondary" small @click="addTransfer" class="ml-4"><v-icon>mdi-swap-horizontal</v-icon>{{text.TO_TRANSFER[lang]}}</v-btn>
       </v-flex>
     </v-flex>
 
@@ -69,7 +69,7 @@
     >
       <v-card>
         <v-card-title>
-        <span style="color: #fb8c00">Points</span>
+        <span style="color: #fb8c00">{{ text.POINTS[lang] }}</span>
         </v-card-title>
 
         <v-card-text>
@@ -77,7 +77,7 @@
             <v-container class="d-flex flex-wrap">
               <v-flex xs12 md4 pr-md-4>
                 <date-picker
-                  label="Date"
+                  :label="text.DATE[lang]"
                   v-model="point.date"
                 ></date-picker>
               </v-flex>
@@ -87,7 +87,7 @@
                   :items="typesOfTransaction"
                   :item-text="i => i.title"
                   v-model="point.type"
-                  label="Type"
+                  :label="text.TRANSACTION[lang]"
                   prepend-inner-icon="mdi-swap-horizontal"
                   :rules="[rules.required]"
                 ></v-select>
@@ -98,7 +98,7 @@
                   :items="pointsProgram"
                   :item-text="i => i.title"
                   v-model="point.program"
-                  label="Program"
+                  :label="text.POINTS_PROGRAM[lang]"
                   prepend-inner-icon="mdi-star-four-points"
                   :rules="[rules.required]"
                 ></v-select>
@@ -106,7 +106,7 @@
 
               <v-flex xs12 md4 pr-md-4>
                 <number-field
-                  label="Quantity"
+                  :label="text.QUANTITY[lang]"
                   v-model.number="point.quantity"
                   icon="mdi-numeric"
                 ></number-field>
@@ -114,24 +114,24 @@
 
               <v-flex xs12 md4 px-md-4>
                 <currency-field
-                  label="Total value"
+                  :label="text.TOTAL_VALUE[lang]"
                   v-model="point.totalValue"
                 ></currency-field>
               </v-flex>
 
               <v-flex xs12 md6 pr-md-4 pt-md-4>
-                <span>Cost Effective</span>
+                <span>{{ text.COST_EFFECTIVE[lang] }}</span>
                 <p class="text-right mr-2" style="font-size: 18px"> <b>{{point.costPerThousand() | formatedMoney}}</b></p>
               </v-flex>
 
               <v-flex xs12 md6 pl-md-4 pt-md-4>
-                <span>Bonus (100% transfer)</span>
+                <span>{{ `${text.BONUS[lang]} (100% ${text.TRANSFER[lang]})` }}</span>
                 <p class="text-right mr-2" style="font-size: 18px"> <b>{{point.costPerThousand() / 2 | formatedMoney}}</b></p>
               </v-flex>
 
               <v-flex class="d-flex" xs12>
                 <v-flex class="d-flex flex-grow-0">
-                  <h3 style="color: #fb8c00">Installment</h3>
+                  <h3 style="color: #fb8c00">{{ text.INSTALLMENT[lang] }}</h3>
                 </v-flex>
                 <v-flex>
                   <div style="border-bottom: 1px solid #fb8c00; height: 18px; margin-left: 4px" ></div>
@@ -144,7 +144,7 @@
               <v-flex xs12 v-if="showInstallment" class="d-flex flex-wrap mt-4">
                 <v-flex xs12 md4 pr-md-4>
                   <date-picker
-                    label="First installment"
+                    :label="text.FIRST_INSTALLMENT[lang]"
                     v-model="point.firstInstallment"
                   ></date-picker>
                 </v-flex>
@@ -152,7 +152,7 @@
                 <v-flex xs12 md4 px-md-4>
                   <v-text-field
                     v-model="point.installmentNumber"
-                    label="Number"
+                    :label="text.NUMBER_INSTALLMENT[lang]"
                     v-mask="'##'"
                     required
                     reverse
@@ -161,16 +161,17 @@
                 </v-flex>
 
                 <v-flex xs12 md4 pl-md-4>
-                  <span>Value</span>
+                  <span>{{ text.VALUE_PER_INSTALLMENT[lang] }}</span>
                 <p class="text-right mr-2" style="font-size: 18px"> <b>{{point.installmentValue | formatedMoney}}</b></p>
                 </v-flex>
               </v-flex>
 
               <v-flex v-if="!isEditing">
-                <v-checkbox label="Keep adding" v-model="keepAddingPoint"></v-checkbox>
+                <v-checkbox 
+                  :label="text.KEEP_ADDING[lang]" 
+                  v-model="keepAddingPoint"
+                ></v-checkbox>
               </v-flex>
-
-
             </v-container>
           </v-form>
         </v-card-text>
@@ -178,8 +179,8 @@
         <v-card-actions>
           <v-flex class="d-flex">
             <v-spacer></v-spacer>
-            <v-btn class="mr-4" color="primary" @click="toggleSave">Save</v-btn>
-            <v-btn outlined @click="toggleCancel">Cancel</v-btn>
+            <v-btn class="mr-4" color="primary" @click="toggleSave">{{ text.SAVE[lang] }}</v-btn>
+            <v-btn outlined @click="toggleCancel">{{ text.CANCEL[lang] }}</v-btn>
           </v-flex>
         </v-card-actions>
       </v-card>
@@ -194,17 +195,17 @@
 
     <message
       v-model="openMessageDelete"
-      title="Delete point"
+      :title="text.DETELE_POINT[lang]"
       icon="mdi-help-circle-outline"
-      message="Are you sure?"
+      :message="text.ARE_YOU_SURE[lang]"
       :confirm-callback="deleteItem"
       :cancel-callback="onCancelDelete"
     ></message>
 
     <message
       v-model="openMessageNotEnoughPoint"
-      title="Ops, no points avaliable..."
-      message="There are no points avaliable to transfer!"
+      :title="text.NO_POINTS_AVALIABLE[lang]"
+      :message="text.THERE_ARE_NO_POINTS[lang]"
       :confirm-callback="() => {}"
       descriptonPrimaryButton="ok"
       hideSecondaryButton
@@ -212,8 +213,8 @@
 
     <message
       v-model="openMessageDeleteTransfer"
-      title="Sorry, you can't edit a transfer"
-      message="Please, delete and create a new."
+      :title="text.CANT_EDIT_TRANSFER[lang]"
+      :message="text.DETELE_AND_CREATE_TRANSFER[lang]"
       :confirm-callback="() => {}"
       descriptonPrimaryButton="ok"
       hideSecondaryButton
@@ -223,16 +224,16 @@
     <v-footer fixed>
       <v-flex xs12 class="px-md-6">
         <v-flex class="d-flex flex-column">
-          <span><b class="primary-color">Summary</b></span>
+          <span><b class="primary-color">{{ text.SUMMARY[lang] }}</b></span>
           <v-flex class="d-flex pl-md-4">
             <v-flex class="d-flex flex-column">
-              <span>Total points: {{ totalPoints | formatedThousand }}</span>
-              <span>Total value: {{ totalValue | formatedMoney }}</span>
+              <span>{{ text.TOTAL_POINTS[lang] + ':' }} {{ totalPoints | formatedThousand }}</span>
+              <span>{{ text.TOTAL_VALUE[lang] + ':' }} {{ totalValue | formatedMoney }}</span>
             </v-flex>
 
             <v-flex class="d-flex flex-column">
-              <span>Average cost per thousand: {{ averageCostPerThousand | formatedMoney }}</span>
-              <span color="primary">Average cost per thousand (bonus): <span class="highlighted-text"> {{ averageCostPerThousandBonus | formatedMoney }}</span></span>
+              <span>{{ text.AVERAGE_COST_PER_THOUSAND[lang] + ':' }} {{ averageCostPerThousand | formatedMoney }}</span>
+              <span color="primary">{{ text.AVERAGE_COST_PER_THOUSAND_BONUS[lang] + ':' }} <span class="highlighted-text"> {{ averageCostPerThousandBonus | formatedMoney }}</span></span>
             </v-flex>
           </v-flex>
 
@@ -245,7 +246,7 @@
 
 <script>
 import PointModel from '@/models/PointModel';
-import { TYPE_OF_TRANSACTION, TYPES_OF_ENTRIES, HEADERS_POINTS, POINTS_PROGRAM, STORAGE_DATA } from '@/constants/point-constants'
+import { TRANSACTION_TYPE, TRANSACTION_TYPES, HEADERS_POINTS, POINTS_PROGRAM, STORAGE_DATA } from '@/constants/global-constants'
 import DatePicker from '@/components/DatePicker.vue';
 import CurrencyField from '@/components/CurrencyField.vue';
 import DialogTransfer from '@/components/DialogTransfer.vue';
@@ -254,16 +255,18 @@ import Message from '@/components/Message.vue';
 import storageAPI from '@/service/api/storageAPI'
 import moment from 'moment';
 import MileModel from '@/models/MileModel';
+import { TEXT } from '@/constants/text.js'
+import language from '@/utils/language';
 
 export default {
   name: 'PointsView',
   components: {
-    DatePicker,
-    CurrencyField,
-    DialogTransfer,
-    NumberField,
-    Message
-},
+      DatePicker,
+      CurrencyField,
+      DialogTransfer,
+      NumberField,
+      Message
+  },
   data () {
       return {
         openDialogPoints: false,
@@ -275,8 +278,8 @@ export default {
         isEditing: false,
         openMessageDelete: false,
         point: new PointModel(),
-        typesOfTransaction: TYPES_OF_ENTRIES,
-        typeOfTransaction: TYPE_OF_TRANSACTION,
+        typesOfTransaction: TRANSACTION_TYPES,
+        typeOfTransaction: TRANSACTION_TYPE,
         pointsProgram: POINTS_PROGRAM,
         rules: {
           required: value => !!value || 'Required.'
@@ -285,6 +288,8 @@ export default {
         headers: HEADERS_POINTS,
         points: [],
         miles: [],
+        text: TEXT,
+        lang: language()
         
       }
     },
@@ -366,7 +371,7 @@ export default {
       },
 
       editPoint(item) {
-        if (item.type == TYPE_OF_TRANSACTION.TRANSFER.value) {
+        if (item.type == TRANSACTION_TYPE.TRANSFER.value) {
           this.openMessageDeleteTransfer = true;
           return;
         }
@@ -424,7 +429,7 @@ export default {
         let newPoint = new PointModel(
           {
             date: transfer.date,
-            type: TYPE_OF_TRANSACTION.TRANSFER.value,
+            type: TRANSACTION_TYPE.TRANSFER.value,
             quantity: transfer.quantity*-1,
             totalValue: (this.totalPoints == transfer.quantity) ? this.totalValue*-1 : transfer.totalValue*-1
           });
@@ -435,7 +440,7 @@ export default {
           {
             pointId: newPoint.id,
             date: transfer.date,
-            type: TYPE_OF_TRANSACTION.ENTRY_POINTS.value,
+            type: TRANSACTION_TYPE.ENTRY_BY_TRANSFER.value,
             quantity: transfer.miles,
             airline: transfer.airline,
             price: transfer.totalValue
@@ -498,13 +503,13 @@ export default {
       openDialogPoints(open) {
         if (open) {
           this.valid = true;
-          this.keepAddingPoint = !!storageAPI.get(STORAGE_DATA.KEEP_ADDING.POINTS.key);
+          this.keepAddingPoint = storageAPI.get(STORAGE_DATA.CONFIGURATIONS.KEEP_ADDING.POINTS.key);
           this.$nextTick(() => this.point.date = moment().format('YYYY-MM-DD') );
         }
       },
 
       keepAddingPoint(value) {
-        storageAPI.save(STORAGE_DATA.KEEP_ADDING.POINTS.key, !!value);
+        storageAPI.save(STORAGE_DATA.CONFIGURATIONS.KEEP_ADDING.POINTS.key, !!value);
       }
     },
 

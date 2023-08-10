@@ -11,9 +11,8 @@
         </v-flex>
 
         <v-flex v-if="!mobileSize" class="d-flex flex-grow-0">
-          <v-btn small outlined dark to="/">Dashboard</v-btn>
-          <v-btn class="mx-4" small outlined dark to="/points">Points</v-btn>
-          <v-btn small outlined dark to="/miles">Miles</v-btn>
+          <menu-buttons>
+          </menu-buttons>
         </v-flex>
 
         <v-flex v-if="!mobileSize" d-flex flex-row-reverse>
@@ -24,7 +23,7 @@
           </v-avatar>
         </v-flex>
 
-        <v-flex v-if="mobileSize" class="d-flex flex-grow-0">
+        <v-flex v-if="mobileSize" class="d-flex  flex-grow-0">
           <v-btn icon @click="() => menuMobile = !menuMobile"><v-icon large>mdi-menu</v-icon></v-btn>
         </v-flex>
       </v-flex>
@@ -45,10 +44,7 @@
         </v-flex>
 
         <v-flex xs12 d-flex flex-column>
-          <v-btn small outlined dark to="/">Dashboard</v-btn>
-          <v-btn class="my-4" small outlined dark to="/points">Points</v-btn>
-          <v-btn small outlined dark to="/miles">Miles</v-btn>
-
+          <menu-buttons />
         </v-flex>
 
       </v-container>
@@ -63,9 +59,14 @@
 </template>
 
 <script>
+import MenuButtons from '@/components/MenuButtons.vue';
 
 export default {
   name: 'App',
+
+  components: {
+    MenuButtons,
+  },
 
   data: () => ({
     menuMobile: false,

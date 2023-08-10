@@ -42,7 +42,7 @@
 
 <script>
 import SummaryCard from '@/components/SummaryCard.vue';
-import { AIRLINES_PROGRAM, POINTS_PROGRAM, STORAGE_DATA } from '@/constants/point-constants';
+import { AIRLINES_PROGRAM, POINTS_PROGRAM, STORAGE_DATA } from '@/constants/global-constants';
 import storageAPI from '@/service/api/storageAPI';
 import PointModel from '@/models/PointModel';
 import MileModel from '@/models/MileModel';

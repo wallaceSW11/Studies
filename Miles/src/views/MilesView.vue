@@ -2,14 +2,14 @@
   <v-container class="d-flex flex-column">
     <v-flex xs12 class="d-flex flex-row flex-grow-0 ustify-space-between">
       <v-flex xs2>
-        <h2 class="primary-color">Miles</h2>
+        <h2 class="primary-color">{{ text.MILES[lang] }}</h2>
       </v-flex>
       <v-spacer></v-spacer>
       <v-flex flex-grow-0 class="d-flex align-center">
-        <v-btn outlined color="primary" small @click="addMile"><v-icon>mdi-plus</v-icon>Add</v-btn>
+        <v-btn outlined color="primary" small @click="addMile"><v-icon>mdi-plus</v-icon>{{ text.ADD[lang] }}</v-btn>
       </v-flex>
       <v-flex flex-grow-0 class="d-flex align-center">
-        <v-btn outlined color="secondary" small @click="addSell" class="ml-4"><v-icon>mdi-currency-usd</v-icon>Sell</v-btn>
+        <v-btn outlined color="secondary" small @click="addSell" class="ml-4"><v-icon>mdi-currency-usd</v-icon>{{ text.SELL[lang] }}</v-btn>
       </v-flex>
     </v-flex>
 
@@ -26,7 +26,7 @@
         </template>
 
         <template v-slot:[`item.type`]="{ item }">
-          {{ typeOfTransaction[item.type].title }}
+          {{ transactionType[item.type].title || item.title }}
         </template>
 
         <template v-slot:[`item.quantity`]="{ item }">
@@ -41,8 +41,8 @@
           {{ item.price | formatedMoney }}
         </template>
 
-        <template v-slot:[`item.costPerMile`]="{ item }">
-          {{ item.costPerMile() | formatedMoney }}
+        <template v-slot:[`item.costPerThousand`]="{ item }">
+          {{ item.costPerThousand() | formatedMoney }}
         </template>
 
         <template v-slot:[`item.actions`]="{ item }">
@@ -88,7 +88,7 @@
 
               <v-flex xs12 md4 px-md-4>
                 <v-select
-                  :items="typesOfTransaction"
+                  :items="transactionTypes"
                   :item-text="i => i.title"
                   v-model="mile.type"
                   label="Type"
@@ -125,7 +125,7 @@
 
               <v-flex xs12 md4 pl-md-4>
                 <span>Cost per mile</span>
-                <p class="text-right mr-2" style="font-size: 18px"> <b>{{ mile.costPerMile() | formatedMoney }}</b></p>
+                <p class="text-right mr-2" style="font-size: 18px"> <b>{{ mile.costPerThousand() | formatedMoney }}</b></p>
               </v-flex>
 
               <v-flex v-if="!isEditing">
@@ -159,12 +159,12 @@
     <v-footer fixed>
       <v-flex xs12 class="px-md-6">
         <v-flex class="d-flex flex-column">
-          <span><b>Summary</b></span>
+          <span><b class="primary-color">{{ text.SUMMARY[lang] }}</b></span>
           <v-flex class="d-flex pl-md-4">
             <v-flex class="d-flex flex-column">
-              <span>Total miles: {{ totalMiles | formatedThousand }}</span>
-              <span>Total value: {{ totalPrice | formatedMoney }}</span>
-              <span>Average cost per mile: {{ totalcostPerMile | formatedMoney }}</span>
+              <span>{{ text.TOTAL_MILES[lang] + ':' }} {{ totalMiles | formatedThousand }}</span>
+              <span>{{ text.TOTAL_VALUE[lang] + ':' }} {{ totalPrice | formatedMoney }}</span>
+              <span>{{ text.AVERAGE_COST_PER_MILES[lang] + ':' }} {{ totalCostPerThousand | formatedMoney }}</span>
             </v-flex>
           </v-flex>
         </v-flex>
@@ -176,7 +176,7 @@
 
 <script>
 import MileModel from '@/models/MileModel';
-import { TYPE_OF_TRANSACTION, TYPES_OF_ENTRIES, HEADERS_MILES, STORAGE_DATA, AIRLINES_PROGRAM, AIRLINE_PROGRAM } from '@/constants/point-constants'
+import { TRANSACTION_TYPE, TRANSACTION_TYPES, HEADERS_MILES, STORAGE_DATA, AIRLINES_PROGRAM, AIRLINE_PROGRAM } from '@/constants/global-constants'
 import DatePicker from '@/components/DatePicker.vue';
 import CurrencyField from '@/components/CurrencyField.vue';
 import DialogTransfer from '@/components/DialogTransfer.vue';
@@ -184,6 +184,8 @@ import NumberField from '@/components/NumberField.vue';
 import Message from '@/components/Message.vue';
 import storageAPI from '@/service/api/storageAPI'
 import moment from 'moment';
+import { TEXT } from '@/constants/text';
+import language from '@/utils/language';
 
 export default {
   name: 'MilesView',
@@ -201,10 +203,9 @@ export default {
         showInstallment: true,
         keepAddingPoint: true,
         isEditing: false,
-        openConfirmMessage: false,
         mile: new MileModel(),
-        typesOfTransaction: TYPES_OF_ENTRIES,
-        typeOfTransaction: TYPE_OF_TRANSACTION,
+        transactionTypes: TRANSACTION_TYPES,
+        transactionType: TRANSACTION_TYPE,
         airlines: AIRLINES_PROGRAM,
         airline: AIRLINE_PROGRAM,
         rules: {
@@ -219,7 +220,9 @@ export default {
         actionConfirmMessage: undefined,
         actionCancelMessage: undefined,
         hideSecondaryButton: false,
-        descriptionPrimaryButton: undefined
+        descriptionPrimaryButton: undefined,
+        text: TEXT,
+        lang: language()
       }
     },
 
@@ -278,7 +281,7 @@ export default {
       },
 
       toggleDelete(item) {
-        if (item.type == TYPE_OF_TRANSACTION.ENTRY_POINTS.value) {
+        if (item.type == TRANSACTION_TYPE.ENTRY_BY_TRANSFER.value) {
           this.titleMessage = "Sorry, you can't delete miles from points.";
           this.descriptionMessage = "Please, delete by points' page.";
           this.hideSecondaryButton = true;
@@ -289,7 +292,10 @@ export default {
         }
 
         this.mile = new MileModel(item);
-        this.openConfirmMessage = true;
+        this.titleMessage = "Delete miles.";
+        this.descriptionMessage = "Are you sure?";
+        this.openMessage = true;
+        this.actionConfirmMessage = this.deleteItem;
       },
 
       addMile() {
@@ -297,7 +303,7 @@ export default {
       },
 
       editMile(item) {
-        if (item.type == TYPE_OF_TRANSACTION.ENTRY_POINTS.value) {
+        if (item.type == TRANSACTION_TYPE.ENTRY_BY_TRANSFER.value) {
           this.titleMessage = "Sorry, you can't edit miles from points.";
           this.descriptionMessage = "Please, delete by points' page.";
           this.hideSecondaryButton = true;
@@ -344,7 +350,7 @@ export default {
           {
             id: this.miles.length,
             date: transfer.date,
-            type: TYPE_OF_TRANSACTION.TRANSFER.value,
+            type: TRANSACTION_TYPE.TRANSFER.value,
             quantity: transfer.quantity,
             totalPrice: transfer.totalPrice
           }));
@@ -373,10 +379,10 @@ export default {
         return this.miles.reduce((total, item) => total + item.price, 0);
       },
 
-      totalcostPerMile() {
+      totalCostPerThousand() {
         if (!this.miles.length) return 0;
 
-        return this.miles.reduce((total, item) => total + item.costPerMile(), 0);
+        return this.miles.reduce((total, item) => total + item.costPerThousand(), 0);
       },
 
       averageCostPerThousand() {
@@ -406,13 +412,13 @@ export default {
       openDialogPoints(open) {
         if (open) {
           this.valid = true;
-          this.keepAddingPoint = !!storageAPI.get(STORAGE_DATA.KEEP_ADDING.MILES.key);
+          this.keepAddingPoint = !!storageAPI.get(STORAGE_DATA.CONFIGURATIONS.KEEP_ADDING.MILES.key);
           this.$nextTick(() => this.mile.date = moment().format('YYYY-MM-DD') );
         }
       },
 
       keepAddingPoint(value) {
-        storageAPI.save(STORAGE_DATA.KEEP_ADDING.MILES.key, !!value);
+        storageAPI.save(STORAGE_DATA.CONFIGURATIONS.KEEP_ADDING.MILES.key, !!value);
       }
     },
 

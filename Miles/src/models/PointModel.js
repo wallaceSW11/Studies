@@ -1,5 +1,5 @@
 import moment from "moment/moment";
-import { TYPE_OF_TRANSACTION } from "@/constants/point-constants";
+import { TRANSACTION_TYPE } from "@/constants/global-constants";
 import { newGuid } from '@/utils/guid';
 
 export default class PointModel {
@@ -22,7 +22,7 @@ export default class PointModel {
   costPerThousand() {
     if (!this.quantity || !this.totalValue) return 0;
 
-    if (this.type == TYPE_OF_TRANSACTION.TRANSFER.value) return 0;
+    if (this.type == TRANSACTION_TYPE.TRANSFER.value) return 0;
 
     let costPerThousand = Number(((this.totalValue / (this.quantity/1000).toFixed(2)).toFixed(2)));
 

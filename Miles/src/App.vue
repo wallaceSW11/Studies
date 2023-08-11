@@ -15,12 +15,9 @@
           </menu-buttons>
         </v-flex>
 
-        <v-flex v-if="!mobileSize" d-flex flex-row-reverse>
-          <v-avatar color="primary" size="34">
-            <v-icon dark >
-              mdi-account-circle
-            </v-icon>
-          </v-avatar>
+        <v-flex v-if="!mobileSize" d-flex>
+          <v-spacer></v-spacer>
+          <language-buttons></language-buttons>
         </v-flex>
 
         <v-flex v-if="mobileSize" class="d-flex  flex-grow-0">
@@ -43,7 +40,11 @@
           </v-avatar>
         </v-flex>
 
-        <v-flex xs12 d-flex flex-column>
+        <v-flex xs12 d-flex justify-center mb-3>
+          <language-buttons></language-buttons>
+        </v-flex>
+
+        <v-flex xs12 d-flex justify-center>
           <menu-buttons />
         </v-flex>
 
@@ -60,16 +61,19 @@
 
 <script>
 import MenuButtons from '@/components/MenuButtons.vue';
+import LanguageButtons from './components/LanguageButtons.vue';
 
 export default {
   name: 'App',
 
   components: {
     MenuButtons,
+    LanguageButtons,
   },
 
   data: () => ({
     menuMobile: false,
+    
   }),
 
   computed: {
@@ -77,7 +81,7 @@ export default {
       return this.$vuetify.breakpoint.xsOnly;
     }
   },
-};
+}
 </script>
 
 <style lang="scss">

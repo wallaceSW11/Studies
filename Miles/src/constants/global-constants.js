@@ -1,6 +1,11 @@
 import language from "@/utils/language";
 import { TEXT } from "./text";
 
+const LANGUAGE = {
+  BR: 'br',
+  EN: 'en'
+}
+
 const lang = language();
 
 const TRANSACTION_TYPE = {
@@ -171,5 +176,6 @@ export {
   HEADERS_MILES,
   POINTS_PROGRAM,
   AIRLINES_PROGRAM,
-  AIRLINE_PROGRAM
+  AIRLINE_PROGRAM,
+  LANGUAGE
 }

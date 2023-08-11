@@ -1,5 +1,5 @@
 
-import { STORAGE_DATA } from "@/constants/global-constants";
+import STORAGE_DATA from "@/constants/storage-constants";
 import storageAPI from "@/service/api/storageAPI";
 
 function language() {

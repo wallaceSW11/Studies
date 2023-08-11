@@ -6,7 +6,7 @@
 
     <v-flex xs12 d-flex flex-column>
       <v-flex>
-        <h3>Points</h3>
+        <h3>{{ text.POINTS[lang] }}</h3>
         <hr/>
       </v-flex>
       <v-flex class="d-flex justify-center flex-wrap">
@@ -23,7 +23,7 @@
 
     <v-flex xs12 d-flex flex-column>
       <v-flex>
-        <h3>Miles</h3>
+        <h3>{{ text.MILES[lang] }}</h3>
         <hr/>
       </v-flex>
       <v-flex class="d-flex justify-center flex-wrap">
@@ -42,10 +42,13 @@
 
 <script>
 import SummaryCard from '@/components/SummaryCard.vue';
-import { AIRLINES_PROGRAM, POINTS_PROGRAM, STORAGE_DATA } from '@/constants/global-constants';
+import { AIRLINES_PROGRAM, POINTS_PROGRAM } from '@/constants/global-constants';
 import storageAPI from '@/service/api/storageAPI';
 import PointModel from '@/models/PointModel';
 import MileModel from '@/models/MileModel';
+import { TEXT } from '@/constants/text';
+import language from '@/utils/language';
+import STORAGE_DATA from '@/constants/storage-constants';
 
 export default {
   name: 'DashboarView',
@@ -58,7 +61,9 @@ export default {
       miles: [],
       points: [],
       pointsProgram: POINTS_PROGRAM,
-      airlines: AIRLINES_PROGRAM
+      airlines: AIRLINES_PROGRAM,
+      text: TEXT,
+      lang: language()
     }
   },
 

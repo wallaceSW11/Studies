@@ -246,7 +246,7 @@
 
 <script>
 import PointModel from '@/models/PointModel';
-import { TRANSACTION_TYPE, TRANSACTION_TYPES, HEADERS_POINTS, POINTS_PROGRAM, STORAGE_DATA } from '@/constants/global-constants'
+import { TRANSACTION_TYPE, TRANSACTION_TYPES, HEADERS_POINTS, POINTS_PROGRAM } from '@/constants/global-constants'
 import DatePicker from '@/components/DatePicker.vue';
 import CurrencyField from '@/components/CurrencyField.vue';
 import DialogTransfer from '@/components/DialogTransfer.vue';
@@ -254,9 +254,10 @@ import NumberField from '@/components/NumberField.vue';
 import Message from '@/components/Message.vue';
 import storageAPI from '@/service/api/storageAPI'
 import moment from 'moment';
-import MileModel from '@/models/MileModel';
+import MileModel from '@/models/MileModel'; 
 import { TEXT } from '@/constants/text.js'
 import language from '@/utils/language';
+import STORAGE_DATA from '@/constants/storage-constants';
 
 export default {
   name: 'PointsView',

@@ -176,7 +176,7 @@
 
 <script>
 import MileModel from '@/models/MileModel';
-import { TRANSACTION_TYPE, TRANSACTION_TYPES, HEADERS_MILES, STORAGE_DATA, AIRLINES_PROGRAM, AIRLINE_PROGRAM } from '@/constants/global-constants'
+import { TRANSACTION_TYPE, TRANSACTION_TYPES, HEADERS_MILES, AIRLINES_PROGRAM, AIRLINE_PROGRAM } from '@/constants/global-constants'
 import DatePicker from '@/components/DatePicker.vue';
 import CurrencyField from '@/components/CurrencyField.vue';
 import DialogTransfer from '@/components/DialogTransfer.vue';
@@ -186,6 +186,7 @@ import storageAPI from '@/service/api/storageAPI'
 import moment from 'moment';
 import { TEXT } from '@/constants/text';
 import language from '@/utils/language';
+import STORAGE_DATA from '@/constants/storage-constants';
 
 export default {
   name: 'MilesView',

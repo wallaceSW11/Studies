@@ -1,28 +1,6 @@
 import language from "@/utils/language";
 import { TEXT } from "./text";
 
-const STORAGE_DATA = {
-  POINTS: {
-    key: 'points'
-  },
-  MILES: {
-    key: 'miles'
-  },
-  CONFIGURATIONS: {
-    KEEP_ADDING: {
-      POINTS: {
-       key: 'keepAddingPoints'
-      },
-      MILES: {
-       key: 'keepAddingMiles'
-      }
-     },
-     LANG: {
-       key: 'Language'
-     }
-  }
-}
-
 const lang = language();
 
 const TRANSACTION_TYPE = {
@@ -192,7 +170,6 @@ export {
   HEADERS_POINTS,
   HEADERS_MILES,
   POINTS_PROGRAM,
-  STORAGE_DATA,
   AIRLINES_PROGRAM,
   AIRLINE_PROGRAM
 }

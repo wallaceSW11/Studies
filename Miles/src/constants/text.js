@@ -187,6 +187,10 @@ const TEXT = {
     br: 'Exclusão de pontos',
     en: "Delete points"
   },
+  DETELE_MILES: {
+    br: 'Exclusão de milhas',
+    en: "Delete miles"
+  },
   ARE_YOU_SURE: {
     br: 'Você tem certeza?',
     en: "Are you sure?"
@@ -198,7 +202,15 @@ const TEXT = {
   THERE_ARE_NO_POINTS: {
     br: 'Nenhum ponto disponível para transferir',
     en: 'There are no points avaliable to transfer!'
-  }
+  },
+  CANT_DELETE_MILES_FROM_POINTS: {
+    br: 'Ops, você não pode excluir milhas dos pontos.',
+    en: "Ops, you can't delete miles from points."
+  },
+  DELETE_BY_POINTS_PAGE: {
+    br: 'Por favor, exclua pela página de pontos.',
+    en: "Please, delete by points page."
+  },
 }
 
 export { TEXT }

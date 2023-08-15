@@ -66,14 +66,14 @@
     </v-flex>
 
     <v-dialog
-      v-model="openDialogPoints"
+      v-model="openDialogMiles"
       persistent
       :max-width="$vuetify.breakpoint.smAndDown ? '80%' : '60%'"
       :fullscreen="$vuetify.breakpoint.xsOnly"
     >
       <v-card>
         <v-card-title>
-        <span style="color: #fb8c00">Miles</span>
+        <span style="color: #fb8c00">{{ text.MILES[lang] }}</span>
         </v-card-title>
 
         <v-card-text>
@@ -81,7 +81,7 @@
             <v-container class="d-flex flex-wrap">
               <v-flex xs12 md4 pr-md-4>
                 <date-picker
-                  label="Date"
+                  :label="text.DATE[lang]"
                   v-model="mile.date"
                 ></date-picker>
               </v-flex>
@@ -91,7 +91,7 @@
                   :items="transactionTypes"
                   :item-text="i => i.title"
                   v-model="mile.type"
-                  label="Type"
+                  :label="text.TRANSACTION[lang]"
                   prepend-inner-icon="mdi-swap-horizontal"
                   :rules="[rules.required]"
                 ></v-select>
@@ -102,7 +102,7 @@
                   :items="airlines"
                   :item-text="i => i.title"
                   v-model="mile.airline"
-                  label="Airline"
+                  :label="text.AIRLINE[lang]"
                   prepend-inner-icon="mdi-airplane"
                   :rules="[rules.required]"
                 ></v-select>
@@ -110,7 +110,7 @@
 
               <v-flex xs12 md4 pr-md-4>
                 <number-field
-                  label="Quantity"
+                  :label="text.QUANTITY[lang]"
                   v-model.number="mile.quantity"
                   icon="mdi-numeric"
                 ></number-field>
@@ -118,18 +118,18 @@
 
               <v-flex xs12 md4 px-md-4>
                 <currency-field
-                  label="Price"
+                  :label="text.PRICE[lang]"
                   v-model="mile.price"
                 ></currency-field>
               </v-flex>
 
               <v-flex xs12 md4 pl-md-4>
-                <span>Cost per mile</span>
+                <span>{{ text.COST_PER_THOUSAND[lang] }}</span>
                 <p class="text-right mr-2" style="font-size: 18px"> <b>{{ mile.costPerThousand() | formatedMoney }}</b></p>
               </v-flex>
 
               <v-flex v-if="!isEditing">
-                <v-checkbox label="Keep adding" v-model="keepAddingPoint"></v-checkbox>
+                <v-checkbox :label="text.KEEP_ADDING[lang]" v-model="keepAddingPoint"></v-checkbox>
               </v-flex>
 
 
@@ -140,8 +140,8 @@
         <v-card-actions>
           <v-flex class="d-flex">
             <v-spacer></v-spacer>
-            <v-btn class="mr-4" color="primary" @click="toggleSave">Save</v-btn>
-            <v-btn outlined @click="toggleCancel">Cancel</v-btn>
+            <v-btn class="mr-4" color="primary" @click="toggleSave">{{ text.SAVE[lang] }}</v-btn>
+            <v-btn outlined @click="toggleCancel">{{ text.CANCEL[lang] }}</v-btn>
           </v-flex>
         </v-card-actions>
       </v-card>
@@ -199,7 +199,7 @@ export default {
 },
   data () {
       return {
-        openDialogPoints: false,
+        openDialogMiles: true,
         openDialogTransfer: false,
         showInstallment: true,
         keepAddingPoint: true,
@@ -269,13 +269,13 @@ export default {
         }
 
         this.mile = new MileModel();
-        this.openDialogPoints = !this.isEditing && this.keepAddingPoint;
+        this.openDialogMiles = !this.isEditing && this.keepAddingPoint;
         this.isEditing = false;
         this.resetValidation();
       },
 
       toggleCancel() {
-        this.openDialogPoints = false;
+        this.openDialogMiles = false;
         this.mile = new MileModel();
         this.isEditing = false;
         this.resetValidation();
@@ -283,8 +283,8 @@ export default {
 
       toggleDelete(item) {
         if (item.type == TRANSACTION_TYPE.ENTRY_BY_TRANSFER.value) {
-          this.titleMessage = "Sorry, you can't delete miles from points.";
-          this.descriptionMessage = "Please, delete by points' page.";
+          this.titleMessage = this.text.CANT_DELETE_MILES_FROM_POINTS[this.lang];
+          this.descriptionMessage = this.text.DELETE_BY_POINTS_PAGE[this.lang];
           this.hideSecondaryButton = true;
           this.descriptionPrimaryButton = 'OK';
           this.openMessage = true;
@@ -293,20 +293,20 @@ export default {
         }
 
         this.mile = new MileModel(item);
-        this.titleMessage = "Delete miles.";
-        this.descriptionMessage = "Are you sure?";
+        this.titleMessage = this.text.DETELE_MILES[this.lang];
+        this.descriptionMessage = this.text.ARE_YOU_SURE[this.lang];
         this.openMessage = true;
         this.actionConfirmMessage = this.deleteItem;
       },
 
       addMile() {
-        this.openDialogPoints = true;
+        this.openDialogMiles = true;
       },
 
       editMile(item) {
         if (item.type == TRANSACTION_TYPE.ENTRY_BY_TRANSFER.value) {
-          this.titleMessage = "Sorry, you can't edit miles from points.";
-          this.descriptionMessage = "Please, delete by points' page.";
+          this.titleMessage = this.text.CANT_EDIT_TRANSFER_FROM_POINTS[this.lang];
+          this.descriptionMessage = this.text.DELETE_BY_POINTS_PAGE[this.lang];
           this.hideSecondaryButton = true;
           this.descriptionPrimaryButton = 'OK';
           this.openMessage = true;
@@ -314,7 +314,7 @@ export default {
           return;
         }
 
-        this.openDialogPoints = true;
+        this.openDialogMiles = true;
         this.isEditing = true;
         this.$nextTick(() => this.mile = new MileModel(item));
       },
@@ -410,7 +410,7 @@ export default {
         this.updateInstallmentValue();
       },
 
-      openDialogPoints(open) {
+      openDialogMiles(open) {
         if (open) {
           this.valid = true;
           this.keepAddingPoint = !!storageAPI.get(STORAGE_DATA.CONFIGURATIONS.KEEP_ADDING.MILES.key);

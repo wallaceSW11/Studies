@@ -199,7 +199,7 @@ export default {
 },
   data () {
       return {
-        openDialogMiles: true,
+        openDialogMiles: false,
         openDialogTransfer: false,
         showInstallment: true,
         keepAddingPoint: true,

@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar fixed dark>
+    <v-app-bar fixed dark v-if="!hideMenu()">
       <v-flex xs12 d-flex align-center>
         <v-flex>
           <v-app-bar-title>
@@ -51,8 +51,6 @@
       </v-container>
     </v-navigation-drawer>
 
-    
-
     <v-main>
       <router-view class="content" style="margin-top: 60px"/>
     </v-main>
@@ -73,12 +71,18 @@ export default {
 
   data: () => ({
     menuMobile: false,
-    
   }),
 
   computed: {
     mobileSize() {
       return this.$vuetify.breakpoint.xsOnly;
+    },
+  },
+
+  methods: {
+    hideMenu() {
+      const HIDE_MENU = ['login', 'register'];
+      return HIDE_MENU.includes(this.$route.name);
     }
   },
 }

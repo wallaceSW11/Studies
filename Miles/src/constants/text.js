@@ -211,6 +211,47 @@ const TEXT = {
     br: 'Por favor, exclua pela página de pontos.',
     en: "Please, delete by points page."
   },
+  EMAIL: {
+    br: 'E-mail',
+    en: 'E-mail'
+  },
+  PASSWORD: {
+    br: 'Senha',
+    en: 'Password'
+  },
+  CONFIRM_PASSWORD: {
+    br: 'Confirme a senha',
+    en: 'Confirm password'
+  },
+  LOG_IN: {
+    br: 'Entrar',
+    en: 'Log in'
+  },
+  REGISTER: {
+    br: 'Registrar',
+    en: 'Register'
+  },
+  SIGN_IN: {
+    br: 'Entrar',
+    en: 'Sign In'
+  },
+  SIGN_UP: {
+    br: 'Registrar',
+    en: 'Sign Up'
+  },
+  SIGN_IN_WITH: {
+    br: 'Entre com',
+    en: 'Sign In with'
+  },
+  SIGN_UP_WITH: {
+    br: 'Cadastre-se com',
+    en: 'Sign Un with'
+  },
+  OR: {
+    br: 'Ou',
+    en: 'Or'
+  },
+  
 }
 
 export { TEXT }

@@ -40,9 +40,18 @@ const vuetify = createVuetify({
       class: 'text-none',
       variant: 'outlined' 
     },
+    VTextField: {
+      variant: 'underlined'
+    },
+    VTextarea: {
+      variant: 'underlined'
+    },
     VSheet: {
       elevation: 4,
     },
+    VIcon: {
+      color: 'primary'
+    }
   },
   components,
   directives,
@@ -56,9 +65,9 @@ const vuetify = createVuetify({
       dark: {
         dark: true,
         colors: {
-          background: '#070c1e',
-          surface: '#262235',
-          'secondary-background': '#00ff00',
+          background: '#1b1b24',
+          surface: '#242232',
+          'secondary-background': '#6d7184',
           primary: '#b76bef',
           text: '#2ec247'
         }

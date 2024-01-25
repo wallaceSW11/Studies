@@ -1,52 +1,56 @@
 <script setup>
-import { reactive, ref, toRaw } from "vue";
+import { reactive, ref, watch } from "vue";
 import Task from "@/models/Task.js";
 
 let task = reactive(new Task());
-
-let taskInDetail = reactive(new Task());
+let taskInDetail = reactive({});
 let tasks = reactive([]);
-
 let isEditing = ref(false);
 
-// temporary
-//tasks.push(new Task({ title: 'study vue3', description: 'using vite and vuetify' }));
+const clearTask = (task) => {
+  Object.assign(task, new Task())
+}
 
+const toggleDone = (item) => {
+  item.updateDone();
+}
+
+let titleRequired = ref('');
 
 const saveTask = () => {
-  // if (!task.valid()) return;
+  if (!task.valid()) {
+    titleRequired.value = 'Required';
+    return;
+  }
 
   if (isEditing.value) {
     let index = tasks.findIndex(t => t.id == task.id);
-    tasks.splice(index, 1, task);
-    task = reactive(new Task());
+    tasks.splice(index, 1, new Task(task));
+    clearTask(task);
+    isEditing.value = false;
     return;
   }
 
   tasks.push(new Task(task));
-  task = reactive(new Task());
+  clearTask(task);
 }
 
 const editTask = (item) => {
-  let outro = toRaw(item);
-  console.log('outro:', outro.id);
-
-  task = new Task(outro);
-
-  
-  
+  Object.assign(task, item);
   isEditing.value = true;
 }
+
+
+watch(() => task.title, () => {
+  titleRequired.value = undefined;
+})
 
 let openDialog = ref(false);
 
 const showDetail = (item) => {
-  console.log('aqui');
-  taskInDetail = new Task(item);
+  Object.assign(taskInDetail, item);
   openDialog.value = true;
 }
-
-
 </script>
 
 <template>
@@ -66,6 +70,7 @@ const showDetail = (item) => {
               prepend-inner-icon="mdi-calendar-check-outline"
               maxlength="50"
               counter
+              :error-messages="titleRequired"
             ></v-text-field>
           </div>
 
@@ -95,8 +100,8 @@ const showDetail = (item) => {
 
             <div class="d-flex pt-4">
               <v-btn color="primary" @click="saveTask">
-                <v-icon>mdi-plus</v-icon>
-                Add
+                <v-icon>{{ isEditing ? 'mdi-check' : 'mdi-plus' }}</v-icon>
+                {{ isEditing ? 'Save' : 'Add' }}
               </v-btn>
             </div>
           </div>
@@ -109,7 +114,12 @@ const showDetail = (item) => {
             </div>
 
             <div class="d-flex flex-column pb-2">
-              <v-card class="mb-2 bg-secondary-background d-flex" v-for="(item, index) in tasks" :key="index">
+              <v-card 
+                class="mb-2 bg-secondary-background d-flex"
+                :class="item.priority ? 'task-priority' : item.done ? 'task-done' : 'task-undone' "
+                v-for="(item, index) in tasks" 
+                :key="index"
+              >
                 <v-card-text class="d-flex">
                   <div class="d-flex w-100">
                     <span>{{ item.title }}</span>
@@ -134,8 +144,13 @@ const showDetail = (item) => {
                     <div class="d-flex">
                       <v-tooltip :text="item.done ? 'Undone' : 'Done'" location="top">
                         <template #activator="{ props }">
-                          <v-icon v-bind="props" @click="toggleDone(item)">{{ item.done ? 'mdi-timer-alert-outline' :
-                            'mdi-check' }}</v-icon>
+                          <v-icon 
+                            v-bind="props" 
+                            @click="toggleDone(item)"
+                            :color="item.done ? 'primary' : 'red'"
+                          >
+                            {{ item.done ? 'mdi-check' : 'mdi-timer-alert-outline' }}
+                          </v-icon>
                         </template>
                       </v-tooltip>
 
@@ -165,21 +180,21 @@ const showDetail = (item) => {
   <v-dialog v-model="openDialog" width="50%">
     <v-card class="pa-3">
       <v-card-title>
+        <v-icon :color="taskInDetail.priority ? 'red' : 'green'">mdi-flag</v-icon>
         <span>{{ taskInDetail.title }}</span>
       </v-card-title>
 
-      <v-card-text>
-        <v-row>
-          <v-col cols="10">
-            <span>Created at: {{ taskInDetail.createdAt }}</span>
-          </v-col>
-          <v-col cols="2">
-            <span>{{ taskInDetail.priority }}</span>
-          </v-col>
-          <v-col cols="12">
-            <span>{{ taskInDetail.description }}</span>
-          </v-col>
-        </v-row>
+      <v-card-text style="min-height: 120px;" class="d-flex flex-column justify-space-between">
+        <div class="d-flex">
+          <span>{{ taskInDetail.description || '-no description' }}</span>
+        </div>
+
+        <div class="d-flex justify-space-between align-baseline">
+            <span class="text-small">Created At: {{ taskInDetail.createdAt }}</span>
+            <span :style="taskInDetail.doneAt ? 'color: green; font-weight: bold' : ''">
+              {{ taskInDetail.doneAt ? `Done at: ${taskInDetail.doneAt}` : 'Pending...' }}
+            </span>
+        </div>
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
         <v-btn @click="openDialog = false" variant="outlined" color="secondary">
@@ -191,5 +206,32 @@ const showDetail = (item) => {
   </v-dialog>
 </template>
 
-<script scoped>
-</script>
+<style scoped>
+.text-small {
+  font-size: .8rem;
+  color: lightblue;
+}
+
+:deep(.v-row) {
+  margin: 0;
+}
+
+:deep(.v-col) {
+  padding: 0;
+}
+
+:deep(.v-messages) {
+  text-align: right;
+}
+
+.task-done {
+  border-left: 5px solid green;
+}
+.task-undone {
+  border-left: 5px solid #B76BEF;
+}
+.task-priority {
+  border-left: 5px solid red;
+}
+
+</style>

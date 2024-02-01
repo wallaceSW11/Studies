@@ -33,6 +33,11 @@ const saveTask = () => {
   clearTask(model.value)
 }
 
+const cancelTask = () => {
+  clearTask(model.value);
+  emit('editing', false);
+}
+
 watch(() => model.value.title, () => {
   titleRequired.value = undefined
 })
@@ -81,6 +86,11 @@ watch(() => model.value.title, () => {
         <v-btn color="primary" @click="saveTask">
           <v-icon>{{ props.isEditing ? 'mdi-check' : 'mdi-plus' }}</v-icon>
           {{ props.isEditing ? 'Save' : 'Add' }}
+        </v-btn>
+
+        <v-btn v-if="props.isEditing" color="secondary" @click="cancelTask" class="ml-2">
+          <v-icon color="secondary">mdi-cancel</v-icon>
+          cancel
         </v-btn>
       </div>
     </div>

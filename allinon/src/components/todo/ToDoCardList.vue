@@ -22,10 +22,11 @@ const showDetail = (item) => {
 </script>
 
 <template>
-  <div class="d-flex flex-column pt-2">
-    <div class="d-flex justify-center py-2">
-      <h2>{{ !!todoList.length ? `You're so busy!!!` : 'Nothing to do!' }}</h2>
-    </div>
+  <div class="d-flex justify-center py-2">
+    <h2>{{ !!todoList.length ? `You're so busy!!!` : 'Nothing to do!' }}</h2>
+  </div>
+
+  <div class="d-flex flex-column card-list">
 
     <div class="d-flex flex-column pb-2">
       <v-card 
@@ -97,4 +98,25 @@ const showDetail = (item) => {
   border-left: 5px solid red
 }
 
+.card-list {
+  max-height: calc(100dvh - 460px);
+  overflow-y: auto;
+  padding-right: 3px;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1b1b24; 
+}
+ 
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
 </style>

@@ -11,13 +11,16 @@ const properties = defineProps({
 <template>
   <v-tooltip location="top">
     <template #activator="{ props }">
-      <v-btn 
-        density="default" 
-        variant="text" 
-        :icon="properties.icon" 
+      <v-btn
+        density="default"
+        variant="text"
+        :icon="properties.icon"
         v-bind="props"
         @click="properties.callback"
         :disabled="disabled"
+        size="small"
+        width="18px"
+        height="18px"
       ></v-btn>
     </template>
     <span>{{ properties.tooltip }}</span>

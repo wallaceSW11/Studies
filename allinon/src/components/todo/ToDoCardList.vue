@@ -71,6 +71,7 @@ const showDetail = (item) => {
 
             <div class="d-flex pl-2">
               <ButtonTooltip
+                id="btn-detail"
                 tooltip="Detail"
                 icon="mdi-eye"
                 :callback="() => showDetail(item)"

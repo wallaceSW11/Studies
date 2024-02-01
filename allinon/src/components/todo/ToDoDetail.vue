@@ -17,7 +17,7 @@ const openDialog = defineModel(false)
 
       <v-card-text style="min-height: 120px" class="d-flex flex-column justify-space-between">
         <div class="d-flex">
-          <span>{{ props.task.description || '-no description' }}</span>
+          <span id="detail">{{ props.task.description || '-no description' }}</span>
         </div>
 
         <div class="d-flex justify-space-between align-baseline">
@@ -28,7 +28,7 @@ const openDialog = defineModel(false)
         </div>
       </v-card-text>
       <v-card-actions class="d-flex justify-end">
-        <v-btn @click="openDialog = false" variant="outlined" color="secondary">
+        <v-btn id="btn-close" @click="openDialog = false" variant="outlined" color="secondary">
           Close
         </v-btn>
       </v-card-actions>

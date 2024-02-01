@@ -48,6 +48,7 @@ watch(() => model.value.title, () => {
   <div class="d-flex flex-column justify-center px-2">
     <div class="d-flex justify-center">
       <v-text-field
+        id="text-field-title"
         label="What I need TO DO..."
         color="primary"
         v-model="model.title"
@@ -60,6 +61,7 @@ watch(() => model.value.title, () => {
 
     <div class="d-flex justify-center">
       <v-textarea
+        id="textarea-description"
         label="Tell me more about that (optional)"
         rows="2"
         no-resize
@@ -74,6 +76,7 @@ watch(() => model.value.title, () => {
     <div class="d-flex justify-space-between pb-4">
       <div class="d-flex">
         <v-checkbox
+          id="checkbox-priority"
           label="Priority?"
           v-model="model.priority"
           color="primary"
@@ -83,12 +86,12 @@ watch(() => model.value.title, () => {
       </div>
 
       <div class="d-flex pt-4">
-        <v-btn color="primary" @click="saveTask">
+        <v-btn id="button-save" color="primary" @click="saveTask">
           <v-icon>{{ props.isEditing ? 'mdi-check' : 'mdi-plus' }}</v-icon>
           {{ props.isEditing ? 'Save' : 'Add' }}
         </v-btn>
 
-        <v-btn v-if="props.isEditing" color="secondary" @click="cancelTask" class="ml-2">
+        <v-btn id="button-cancel" v-if="props.isEditing" color="secondary" @click="cancelTask" class="ml-2">
           <v-icon color="secondary">mdi-cancel</v-icon>
           cancel
         </v-btn>

@@ -1,5 +1,6 @@
 <script setup>
 const properties = defineProps({
+  id: { type: String, default: '' },
   tooltip: { type: String, required: true },
   icon: { type: String, required: true },
   colorIcon: { type: String, default: 'primary' },
@@ -12,6 +13,7 @@ const properties = defineProps({
   <v-tooltip location="top">
     <template #activator="{ props }">
       <v-btn
+        :id="id"
         density="default"
         variant="text"
         :icon="properties.icon"

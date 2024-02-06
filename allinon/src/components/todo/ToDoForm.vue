@@ -62,7 +62,7 @@ watch(() => model.value.title, () => {
     <div class="d-flex justify-center">
       <v-textarea
         id="textarea-description"
-        label="Tell me more about that (optional)"
+        label="Tell me more..."
         rows="2"
         no-resize
         color="primary"

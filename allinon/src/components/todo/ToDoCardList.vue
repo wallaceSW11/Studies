@@ -19,11 +19,17 @@ const showDetail = (item) => {
   openDialog.value = true
 }
 
+const deleteTodo = (id) => {
+  let index = props.todoList.findIndex(t => t.id == id);
+  if (index == -1) return;
+  props.todoList.splice(index, 1);
+}
+
 </script>
 
 <template>
   <div class="d-flex justify-center py-2">
-    <h2>{{ !!todoList.length ? `You're so busy!!!` : 'Nothing to do!' }}</h2>
+    <h3>{{ !!todoList.length ? `You're so busy!!!` : 'Nothing to do!' }}</h3>
   </div>
 
   <div class="d-flex flex-column card-list">
@@ -54,7 +60,7 @@ const showDetail = (item) => {
               <ButtonTooltip
                 tooltip="Delete"
                 icon="mdi-delete"
-                :callback="() => {}"
+                :callback="() => deleteTodo(item.id)"
                 :disabled="props.isEditing"
               />
             </div>

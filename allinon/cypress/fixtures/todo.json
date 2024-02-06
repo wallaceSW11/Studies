@@ -1,9 +1,17 @@
 [
   {
-    "title": "Study VUE3"
+    "title": "Study vue3",
+    "description": "As soon as possible",
+    "priority": false
   },
   {
-    "title": "Study Vuetify 3",
-    "description": "We'll need soon"
+    "title": "Study vuetify3",
+    "description": "We'll need soon",
+    "priority": true
+  },
+  {
+    "title": "Study English",
+    "description": "At least 2 hours by day",
+    "priority": true
   }
 ]

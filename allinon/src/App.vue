@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { RouterView } from 'vue-router'
-import ThemeSwitch from './components/ThemeSwitch.vue';
+import ThemeSwitch from '@/components/system/ThemeSwitch.vue';
 
 let drawer = ref(false);
 
@@ -17,13 +17,11 @@ let drawer = ref(false);
     </v-navigation-drawer>
 
     <v-app-bar app>
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon @click="drawer = !drawer" name="toggle-menu" id="toggle-menu" aria-label="menu" ></v-app-bar-nav-icon>
 
       <v-toolbar-title><b>All</b> <i>in</i> ONE</v-toolbar-title>
 
       <v-spacer></v-spacer>
-      
-
     </v-app-bar>
 
     <v-main id="main-view">

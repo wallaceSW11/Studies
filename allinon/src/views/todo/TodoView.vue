@@ -20,7 +20,7 @@ const editTask = (item) => {
 let storage = storageAPI.get(STORAGE_KEY_TASKS)
 
 if (!!storage) {
-  Object.assign(tasks, storage)
+  Object.assign(tasks, new Task(storage))
 }
 
 watch(tasks, () => {

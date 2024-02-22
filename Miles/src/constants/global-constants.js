@@ -33,19 +33,19 @@ const TRANSACTION_TYPE = {
 
 const POINT_PROGRAM = {
   LIVELO: {
-    title: 'Livelo',
-    value: 'LIVELO',
-    image: 'https://www.livelo.com.br/file/general/pt_logo-v1.svg'
+    title: 'Li',
+    value: 'LI',
+    image: 'https://api.lorem.space/image/movie?w=150&amp;amp;amp;amp;h=220'
   },
   ESFERA: {
-    title: 'Esfera',
-    value: 'ESFERA',
-    image: 'https://www.esfera.com.vc/file/v2921935191691134188/general/Logo_Esfera_300dpi.png'
+    title: 'Es',
+    value: 'ES',
+    image: 'https://api.lorem.space/image/movie?w=150&amp;amp;amp;amp;h=220'
   },
   IUPP: {
     title: 'IUPP',
     value: 'IUPP',
-    image: 'https://milheirodeprimeira.com.br/wp-content/plugins/phastpress/phast.php/c2VydmljZT1pbWFnZXMmc3JjPWh0dHBzJTNBJTJGJTJGbWlsaGVpcm9kZXByaW1laXJhLmNvbS5iciUyRndwLWNvbnRlbnQlMkZ1cGxvYWRzJTJGaXVwcC1pdGF1LTkwMHg1MDAucG5nJmNhY2hlTWFya2VyPTE2NjA0MTUzMjQtMTgxOTQmdG9rZW49MGY0ZjM3ZDc2MzMzMGI5NQ.q.png'
+    image: 'https://api.lorem.space/image/movie?w=150&amp;amp;amp;amp;h=220'
   },
 }
 
@@ -53,17 +53,17 @@ const AIRLINE_PROGRAM = {
   SMILE: {
     title: 'Smile',
     value: 'SMILE',
-    image: 'https://logodownload.org/wp-content/uploads/2017/09/smiles-logo.png'
+    image: 'https://api.lorem.space/image/movie?w=150&amp;amp;amp;amp;h=220'
   },
   LATAM: {
     title: 'Latam',
     value: 'LATAM',
-    image: 'https://logospng.org/wp-content/uploads/latam.jpg'
+    image: 'https://api.lorem.space/image/movie?w=150&amp;amp;amp;amp;h=220'
   },
   TUDO_AZUL: {
     title: 'Tudo Azul',
     value: 'TUDO_AZUL',
-    image: 'https://tudoazul.azulviagens.com.br/handlers/ImageRequest.ashx?path=%2fimg%2flogo-tudoazul.png&mediaSize=lg&imgSize=original'
+    image: 'https://api.lorem.space/image/movie?w=150&amp;amp;amp;amp;h=220'
   },
 }
 
